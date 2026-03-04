@@ -13,7 +13,7 @@ const ProblemSection: React.FC = () => {
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
                     >
-                        <h2 style={{ fontSize: '3rem', marginBottom: '1.5rem', fontWeight: 800 }}>The Smart Way to <span className="gradient-text">Get Your License.</span></h2>
+                        <h2 className="display-small" style={{ marginBottom: '1.5rem', fontWeight: 800 }}>The Smart Way to <span className="gradient-text">Get Your License.</span></h2>
                         <p className="body-large text-secondary" style={{ maxWidth: '700px', margin: '0 auto' }}>
                             Getting on the road shouldn&apos;t be a source of stress. As a brother-sister team, we&apos;ve helped hundreds of families skip the confusion and build the real confidence needed to pass.
                         </p>

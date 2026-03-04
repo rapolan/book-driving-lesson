@@ -61,7 +61,7 @@ const PlanPage: React.FC = () => {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.6 }}
                     >
-                        <h1 style={{ fontSize: '4rem', marginBottom: '1.5rem', fontWeight: 800 }}>
+                        <h1 className="display-large" style={{ marginBottom: '1.5rem', fontWeight: 800 }}>
                             Your Path to <span style={{ color: 'var(--primary)' }}>Success.</span>
                         </h1>
                         <p style={{ fontSize: '1.25rem', color: 'var(--text-secondary)', maxWidth: '700px', margin: '0 auto', lineHeight: 1.6 }}>
@@ -115,7 +115,7 @@ const PlanPage: React.FC = () => {
                                         }}>
                                             <step.icon size={32} color="var(--primary)" />
                                         </div>
-                                        <h2 style={{ fontSize: '3rem', margin: 0, fontWeight: 800 }}>{step.title}</h2>
+                                        <h2 className="display-small" style={{ margin: 0, fontWeight: 800 }}>{step.title}</h2>
                                     </div>
                                     <p style={{ fontSize: '1.25rem', color: 'var(--text-secondary)', lineHeight: 1.6, marginBottom: '2.5rem' }}>
                                         {step.desc}
@@ -241,7 +241,7 @@ const PlanPage: React.FC = () => {
                                         borderRadius: '1.5rem',
                                         boxShadow: 'var(--shadow-lg)'
                                     }}>
-                                        <div style={{ fontSize: '1.75rem', fontWeight: 800, color: 'var(--primary)', lineHeight: 1 }}>Step {i + 1}</div>
+                                        <div className="display-small" style={{ fontWeight: 800, color: 'var(--primary)', lineHeight: 1 }}>Step {i + 1}</div>
                                     </div>
                                 </motion.div>
                             </div>
@@ -259,7 +259,7 @@ const PlanPage: React.FC = () => {
                         viewport={{ once: true }}
                     >
                         <div className="card-layered textured-asphalt text-center" style={{ maxWidth: '800px', margin: '0 auto', border: '1px solid var(--glass-border)' }}>
-                            <h2 style={{ fontSize: '3rem', marginBottom: '1.5rem', fontWeight: 800 }}>
+                            <h2 className="display-small" style={{ marginBottom: '1.5rem', fontWeight: 800 }}>
                                 Ready to Take the <span className="gradient-text">Wheel?</span>
                             </h2>
                             <p className="body-large text-secondary" style={{ maxWidth: '600px', margin: '0 auto 3rem auto' }}>

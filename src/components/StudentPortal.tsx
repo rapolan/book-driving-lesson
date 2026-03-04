@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowRight, Calendar, MapPin, User, Loader2, Sparkles, BookOpen, Clock, ChevronLeft, ChevronRight, CheckCircle, GraduationCap, ListTodo, AlertCircle, Check, Lock, X } from 'lucide-react';
+import { ArrowRight, Calendar, MapPin, User, Loader2, Sparkles, BookOpen, Clock, ChevronLeft, ChevronRight, CheckCircle, GraduationCap, ListTodo, AlertCircle, Check, Lock, X, LogOut } from 'lucide-react';
 import emailjs from '@emailjs/browser';
 import curriculumData from '../data/curriculum.json';
 import '../styles/components/StudentPortal.css';

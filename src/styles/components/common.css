@@ -43,8 +43,14 @@
   }
 }
 
-@media (max-width: 768px) {
-  .road-path-animated {
+@media (max-width: 1024px) {
+
+  .road-path-animated,
+  .road-curve-container,
+  .hero-road-svg,
+  .hero-road-circle,
+  .desktop-road-line,
+  .road-divider {
     display: none !important;
   }
 }

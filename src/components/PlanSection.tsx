@@ -30,7 +30,7 @@ const PlanSection: React.FC = () => {
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
                     >
-                        <h2 style={{ fontSize: '3rem', marginBottom: '1.5rem' }}>Your Path to <span style={{ color: 'var(--primary)' }}>Success.</span></h2>
+                        <h2 className="display-small" style={{ marginBottom: '1.5rem' }}>Your Path to <span style={{ color: 'var(--primary)' }}>Success.</span></h2>
                         <p style={{ fontSize: '1.25rem', color: 'var(--text-secondary)', maxWidth: '600px', margin: '0 auto' }}>
                             We've simplified the journey with our proven 3-day milestone curriculum. No stress, no confusion—just clear goals.
                         </p>

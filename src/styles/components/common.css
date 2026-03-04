@@ -16,6 +16,7 @@
 }
 
 .road-divider {
+  display: none;
   height: 2px;
   background-image: linear-gradient(to right, var(--road-grey) 50%, transparent 50%);
   background-size: 40px 100%;
@@ -23,6 +24,12 @@
   border: none;
   opacity: 0.3;
   margin: 4rem 0;
+}
+
+@media (min-width: 768px) {
+  .road-divider {
+    display: block;
+  }
 }
 
 .road-path-animated {

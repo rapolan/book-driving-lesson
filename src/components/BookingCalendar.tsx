@@ -355,12 +355,12 @@ const BookingCalendar: React.FC = () => {
   return (
     <section id="booking" className="section container">
       <div className="text-center mb-5">
-        <h2 className="booking-title mb-4">
+        <h2 className="display-small mb-4">
           <span className="gradient-text">Reserve Your Session</span>
         </h2>
         <p
-          className="body-large text-secondary"
-          style={{ maxWidth: "600px", margin: "0 auto" }}
+          className="body-large text-secondary mx-auto"
+          style={{ maxWidth: "600px" }}
         >
           Expert instruction tailored to your schedule. Start your journey with
           confidence.
@@ -369,9 +369,8 @@ const BookingCalendar: React.FC = () => {
           Returning student?{" "}
           <a
             href="/portal"
+            className="small text-primary"
             style={{
-              color: "var(--primary)",
-              fontWeight: 600,
               textDecoration: "none",
             }}
           >
@@ -441,7 +440,7 @@ const BookingCalendar: React.FC = () => {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -20 }}
             >
-              <h3 className="h4 mb-4" style={{ fontFamily: "Outfit" }}>
+              <h3 className="h3 mb-4" style={{ fontFamily: "Outfit" }}>
                 Select Your Instructor
               </h3>
               <div className="school-instructor-grid">
@@ -460,10 +459,7 @@ const BookingCalendar: React.FC = () => {
                       <User size={32} />
                     </div>
                     <div>
-                      <div
-                        className="fw-bold"
-                        style={{ fontSize: "1.1rem", marginBottom: "0.25rem" }}
-                      >
+                      <div className="h5 mb-1" style={{ fontWeight: 700 }}>
                         {instructor.name}
                       </div>
                       <div className="text-secondary small">
@@ -497,7 +493,7 @@ const BookingCalendar: React.FC = () => {
               exit={{ opacity: 0, x: -20 }}
             >
               <div className="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
-                <h3 className="h4" style={{ fontFamily: "Outfit" }}>
+                <h3 className="h3" style={{ fontFamily: "Outfit" }}>
                   Choose Date & Time
                 </h3>
                 <div className="d-flex align-items-center gap-2 text-secondary small">
@@ -602,8 +598,7 @@ const BookingCalendar: React.FC = () => {
                   className="mb-4"
                 >
                   <label
-                    className="form-label d-block mb-3"
-                    style={{ fontSize: "0.9rem", opacity: 0.8 }}
+                    className="form-label d-block mb-3 small opacity-75"
                   >
                     Available Times (2-Hour Lessons)
                   </label>
@@ -668,7 +663,7 @@ const BookingCalendar: React.FC = () => {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -20 }}
             >
-              <h3 className="h4 mb-4" style={{ fontFamily: "Outfit" }}>
+              <h3 className="h3 mb-4" style={{ fontFamily: "Outfit" }}>
                 Complete Registration
               </h3>
               <form onSubmit={handleSubmit} className="d-flex flex-column gap-4">
@@ -1064,7 +1059,7 @@ const BookingCalendar: React.FC = () => {
                     >
                       Lesson Date
                     </div>
-                    <div className="fw-bold" style={{ fontSize: "1.1rem" }}>
+                    <div className="h5 fw-bold">
                       {new Date(selectedDate! + "T00:00:00").toLocaleDateString(
                         "en-US",
                         { weekday: "long", month: "long", day: "numeric" },
@@ -1087,7 +1082,7 @@ const BookingCalendar: React.FC = () => {
                     >
                       Instructor
                     </div>
-                    <div className="fw-bold" style={{ fontSize: "1.1rem" }}>
+                    <div className="h5 fw-bold">
                       {selectedInstructor}
                     </div>
                   </div>
@@ -1104,7 +1099,7 @@ const BookingCalendar: React.FC = () => {
                     >
                       Pickup Point
                     </div>
-                    <div className="fw-bold" style={{ fontSize: "1.1rem" }}>
+                    <div className="h5 fw-bold">
                       {formData.pickupLocation}
                     </div>
                   </div>

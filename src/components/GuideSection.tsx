@@ -31,8 +31,8 @@ const GuideSection: React.FC = () => {
                             borderRadius: '1.5rem',
                             boxShadow: 'var(--shadow-lg)'
                         }}>
-                            <div style={{ fontSize: '2.5rem', fontWeight: 700, color: 'var(--primary)', lineHeight: 1 }}>100%</div>
-                            <div style={{ fontSize: '1rem', color: 'var(--text-secondary)', lineHeight: 1.2, marginTop: '0.25rem' }}>
+                            <div className="display-small" style={{ fontWeight: 700, color: 'var(--primary)', lineHeight: 1 }}>100%</div>
+                            <div className="small text-secondary" style={{ lineHeight: 1.2, marginTop: '0.25rem' }}>
                                 Satisfaction<br />Guaranteed ✨✅
                             </div>
                         </div>
@@ -44,7 +44,7 @@ const GuideSection: React.FC = () => {
                         viewport={{ once: true }}
                     >
                         <h2 className="display-small" style={{ marginBottom: '1.5rem' }}>Expert Training. <span style={{ color: 'var(--primary)' }}>Proven Results.</span></h2>
-                        <p style={{ fontSize: '1.25rem', color: 'var(--text-secondary)', marginBottom: '2rem', lineHeight: 1.6 }}>
+                        <p className="body-large text-secondary" style={{ marginBottom: '2rem', lineHeight: 1.6 }}>
                             We provide high-quality driver education that students enjoy and parents trust, focusing on building safe, capable drivers through clear and professional training.
                         </p>
 
@@ -63,7 +63,7 @@ const GuideSection: React.FC = () => {
                                         <item.icon color="var(--primary)" size={24} />
                                     </div>
                                     <div>
-                                        <h4 style={{ fontSize: '1.25rem', marginBottom: '0.5rem' }}>{item.title}</h4>
+                                        <h4 className="h5" style={{ marginBottom: '0.5rem' }}>{item.title}</h4>
                                         <p style={{ color: 'var(--text-secondary)' }}>{item.desc}</p>
                                     </div>
                                 </div>

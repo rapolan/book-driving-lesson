@@ -85,3 +85,12 @@
     font-size: 1.125rem;
     border-radius: 1rem;
 }
+
+@media (max-width: 768px) {
+    .hero-btn {
+        padding: 1rem 2rem;
+        font-size: 1rem;
+        width: 100%;
+        max-width: 300px;
+    }
+}

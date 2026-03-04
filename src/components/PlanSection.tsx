@@ -31,7 +31,7 @@ const PlanSection: React.FC = () => {
                         viewport={{ once: true }}
                     >
                         <h2 className="display-small" style={{ marginBottom: '1.5rem' }}>Your Path to <span style={{ color: 'var(--primary)' }}>Success.</span></h2>
-                        <p style={{ fontSize: '1.25rem', color: 'var(--text-secondary)', maxWidth: '600px', margin: '0 auto' }}>
+                        <p className="body-large text-secondary" style={{ maxWidth: '600px', margin: '0 auto' }}>
                             We've simplified the journey with our proven 3-day milestone curriculum. No stress, no confusion—just clear goals.
                         </p>
                     </motion.div>
@@ -83,7 +83,7 @@ const PlanSection: React.FC = () => {
                                 }}>
                                     <step.icon size={32} color="var(--primary)" />
                                 </div>
-                                <h3 style={{ fontSize: '1.5rem', marginBottom: '1.25rem' }}>{step.title}</h3>
+                                <h3 className="h4" style={{ marginBottom: '1.25rem' }}>{step.title}</h3>
                                 <p style={{ color: 'var(--text-secondary)', lineHeight: 1.6 }}>{step.desc}</p>
                             </motion.div>
                         ))}
@@ -92,8 +92,7 @@ const PlanSection: React.FC = () => {
 
                 <div style={{ textAlign: 'center', marginTop: '4rem' }}>
                     <button
-                        className="btn btn-primary"
-                        style={{ padding: '1.25rem 3rem', fontSize: '1.125rem' }}
+                        className="btn btn-primary btn-cta body-large"
                         onClick={() => document.getElementById('booking')?.scrollIntoView({ behavior: 'smooth' })}
                     >
                         Start Your Journey Now

@@ -59,7 +59,7 @@ const ProblemSection: React.FC = () => {
                             }}>
                                 <prob.icon size={30} color="var(--primary)" />
                             </div>
-                            <h3 style={{ fontSize: '1.5rem', marginBottom: '1rem' }}>{prob.title}</h3>
+                            <h3 className="h4" style={{ marginBottom: '1rem' }}>{prob.title}</h3>
                             <p style={{ color: 'var(--text-secondary)', lineHeight: 1.6 }}>{prob.desc}</p>
                         </motion.div>
                     ))}

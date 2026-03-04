@@ -436,14 +436,14 @@ const StudentPortal: React.FC = () => {
                                 <div className="icon-box-primary icon-box-lg mb-2">
                                     <Calendar size={24} />
                                 </div>
-                                <div className="h3 m-0">{studentLeads.length}</div>
+                                <div className="h1 m-0">{studentLeads.length}</div>
                                 <p className="text-secondary small m-0 fw-bold text-uppercase opacity-75">Lessons Completed</p>
                             </div>
                             <div className="stat-card-modern">
                                 <div className="icon-box-primary icon-box-lg mb-2">
                                     <Sparkles size={24} />
                                 </div>
-                                <div className="h3 m-0">Active Driver</div>
+                                <div className="h1 m-0">Active Driver</div>
                                 <p className="text-secondary small m-0 fw-bold text-uppercase opacity-75">Account Status</p>
                             </div>
                             <div
@@ -461,7 +461,7 @@ const StudentPortal: React.FC = () => {
                                 <div className="icon-box-primary icon-box-lg mb-2 text-danger">
                                     <Sparkles size={24} />
                                 </div>
-                                <div className="h3 m-0">Refer & Save $10</div>
+                                <div className="h1 m-0">Refer & Save $10</div>
                                 <p className="text-secondary small m-0 fw-bold text-uppercase opacity-75">Discount applies to both</p>
                             </div>
                         </div>
@@ -516,7 +516,7 @@ const StudentPortal: React.FC = () => {
                                                 <div className="card-layered d-flex justify-content-between align-items-center">
                                                     <div className="d-flex gap-4 align-items-center">
                                                         <div className="timeline-date-box">
-                                                            <div className="h3 fw-bold mb-0">{new Date(lead.date + 'T00:00:00').getDate()}</div>
+                                                            <div className="h2 fw-bold mb-0">{new Date(lead.date + 'T00:00:00').getDate()}</div>
                                                             <div className="text-secondary small fw-bold text-uppercase">{new Date(lead.date + 'T00:00:00').toLocaleDateString('en-US', { month: 'short' })}</div>
                                                         </div>
                                                         <div className="timeline-divider" />
@@ -685,7 +685,7 @@ const StudentPortal: React.FC = () => {
                                         <GraduationCap size={20} />
                                     </div>
                                     <div>
-                                        <h3 className="m-0 font-outfit h4">The Master's Track</h3>
+                                        <h3 className="m-0 font-outfit h2">The Master's Track</h3>
                                         <p className="text-secondary small m-0">Your path to independence</p>
                                     </div>
                                 </div>
@@ -730,7 +730,7 @@ const StudentPortal: React.FC = () => {
                                                     {isMastered ? <Check size={18} className="text-white" /> : isLocked ? <Lock size={14} className="text-secondary opacity-50" /> : <div className="bg-primary rounded-circle indicator-dot-sm" />}
                                                 </motion.div>
 
-                                                <div className={`fw-bold text-uppercase milestone-day-text ${isMastered ? 'text-primary' : isCurrent ? 'text-accent' : 'text-secondary'}`}>
+                                                <div className={`fw-bold text-uppercase small milestone-day-text ${isMastered ? 'text-primary' : isCurrent ? 'text-accent' : 'text-secondary'}`}>
                                                     Day {day.day}
                                                 </div>
                                             </motion.button>
@@ -767,7 +767,7 @@ const StudentPortal: React.FC = () => {
                                                         <div className="d-flex align-items-center gap-2 mb-2">
                                                             <span className="badge bg-white-transparent">Hardened Frame 🛡️</span>
                                                         </div>
-                                                        <h2 className="h3 m-0 text-white font-outfit">
+                                                        <h2 className="display-small m-0 text-white font-outfit">
                                                             Day {selectedDayModal}: {curriculumData.days.find((d: any) => d.day === selectedDayModal)?.title}
                                                         </h2>
                                                     </div>

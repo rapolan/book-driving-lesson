@@ -49,7 +49,7 @@ const PlanPage: React.FC = () => {
     ];
 
     return (
-        <div className="plan-page" style={{ paddingTop: '8rem', paddingBottom: '0' }}>
+        <div className="plan-page">
 
 
 
@@ -64,7 +64,7 @@ const PlanPage: React.FC = () => {
                         <h1 className="display-large" style={{ marginBottom: '1.5rem', fontWeight: 800 }}>
                             Your Path to <span style={{ color: 'var(--primary)' }}>Success.</span>
                         </h1>
-                        <p style={{ fontSize: '1.25rem', color: 'var(--text-secondary)', maxWidth: '700px', margin: '0 auto', lineHeight: 1.6 }}>
+                        <p className="body-large text-secondary" style={{ maxWidth: '750px', margin: '0 auto', lineHeight: 1.6 }}>
                             We&apos;ve simplified the journey into three easy steps. No stress, no confusion—just a clear road to your California Driver&apos;s License.
                         </p>
                     </motion.div>
@@ -117,13 +117,14 @@ const PlanPage: React.FC = () => {
                                         </div>
                                         <h2 className="display-small" style={{ margin: 0, fontWeight: 800 }}>{step.title}</h2>
                                     </div>
-                                    <p style={{ fontSize: '1.25rem', color: 'var(--text-secondary)', lineHeight: 1.6, marginBottom: '2.5rem' }}>
+                                    <p className="body-large text-secondary" style={{ lineHeight: 1.6, marginBottom: '2.5rem' }}>
                                         {step.desc}
                                     </p>
 
                                     {(step as any).link && (
                                         <Link
                                             to={(step as any).link.href}
+                                            className="body-large"
                                             style={{
                                                 display: 'inline-flex',
                                                 alignItems: 'center',
@@ -132,7 +133,6 @@ const PlanPage: React.FC = () => {
                                                 fontWeight: 700,
                                                 textDecoration: 'none',
                                                 marginBottom: '3rem',
-                                                fontSize: '1.125rem',
                                                 padding: '0.875rem 2rem',
                                                 borderRadius: '2rem',
                                                 border: '1px solid var(--primary)',
@@ -156,7 +156,6 @@ const PlanPage: React.FC = () => {
                                             <div key={idx} style={{ display: 'flex', gap: '1.25rem', alignItems: 'flex-start' }}>
                                                 <div style={{
                                                     backgroundColor: 'var(--bg-secondary)',
-                                                    padding: '0.5rem',
                                                     borderRadius: '50%',
                                                     display: 'flex',
                                                     alignItems: 'center',
@@ -164,10 +163,10 @@ const PlanPage: React.FC = () => {
                                                     width: '36px',
                                                     height: '36px',
                                                     flexShrink: 0
-                                                }}>
+                                                }} className="p-sm">
                                                     <CheckCircle color="var(--primary)" size={18} />
                                                 </div>
-                                                <p style={{ color: 'var(--text-secondary)', fontSize: '1.125rem', lineHeight: 1.6, margin: 0, paddingTop: '0.1rem' }}>{detail}</p>
+                                                <p className="body-large text-secondary" style={{ lineHeight: 1.6, margin: 0, paddingTop: '0.1rem' }}>{detail}</p>
                                             </div>
                                         ))}
                                     </div>
@@ -251,7 +250,7 @@ const PlanPage: React.FC = () => {
             </div>
 
             {/* Final CTA Full Width using wallpaper-cone style */}
-            <section className="section wallpaper-cone" style={{ borderTop: '1px solid var(--glass-border)', backgroundColor: 'var(--bg-primary)' }}>
+            <section className="section container bg-primary text-center">
                 <div className="container" style={{ textAlign: 'center' }}>
                     <motion.div
                         initial={{ opacity: 0, y: 30 }}
@@ -262,12 +261,11 @@ const PlanPage: React.FC = () => {
                             <h2 className="display-small" style={{ marginBottom: '1.5rem', fontWeight: 800 }}>
                                 Ready to Take the <span className="gradient-text">Wheel?</span>
                             </h2>
-                            <p className="body-large text-secondary" style={{ maxWidth: '600px', margin: '0 auto 3rem auto' }}>
+                            <p className="body-large text-secondary" style={{ maxWidth: '600px', margin: '0 auto', marginBottom: '3rem' }}>
                                 The first step to freedom on the road starts right here. Book your first lesson today and secure your spot on our schedule.
                             </p>
                             <button
-                                className="btn btn-primary"
-                                style={{ padding: '1.25rem 4rem', fontSize: '1.125rem', borderRadius: '1rem', fontWeight: 700 }}
+                                className="btn btn-primary btn-cta body-large"
                                 onClick={() => navigate('/#booking')}
                             >
                                 Book Your First Lesson

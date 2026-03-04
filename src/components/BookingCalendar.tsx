@@ -1048,7 +1048,7 @@ const BookingCalendar: React.FC = () => {
                 className="body-large text-secondary mb-5"
                 style={{ maxWidth: "500px", margin: "0 auto 3rem" }}
               >
-                We're excited to help you get on the road. A confirmation email
+                We&apos;re excited to help you get on the road. A confirmation email
                 has been sent to <strong>{formData.email}</strong>.
               </p>
 

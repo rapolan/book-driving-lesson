@@ -25,18 +25,18 @@ const SuccessSection: React.FC = () => {
                         whileInView={{ opacity: 1, x: 0 }}
                         viewport={{ once: true }}
                         className="card-layered textured"
-                        style={{ backgroundColor: 'var(--primary)', color: 'var(--bg-primary)', border: 'none' }}
+                        style={{ backgroundColor: 'var(--primary)', color: 'white', border: 'none' }}
                     >
-                        <h3 style={{ fontSize: '2rem', marginBottom: '2rem', color: 'var(--bg-primary)' }}>Clear Outcomes</h3>
+                        <h3 style={{ fontSize: '2rem', marginBottom: '2rem', color: 'white' }}>Clear Outcomes</h3>
                         <ul style={{ listStyle: 'none', padding: 0 }}>
                             {[
                                 { icon: Map, text: "Successfully earn your state-certified license." },
                                 { icon: Smile, text: "Drive with confidence in city and highway traffic." },
                                 { icon: Heart, text: "Build a lifetime of safe and smart driving habits." }
                             ].map((item, i) => (
-                                <li key={i} style={{ display: 'flex', gap: '1rem', alignItems: 'center', marginBottom: '1.5rem', fontSize: '1.125rem' }}>
-                                    <item.icon size={24} />
-                                    <span>{item.text}</span>
+                                <li key={i} style={{ display: 'flex', gap: '1rem', alignItems: 'center', marginBottom: '1.5rem', fontSize: '1.125rem', color: 'white' }}>
+                                    <item.icon size={24} color="white" />
+                                    <span style={{ color: 'white' }}>{item.text}</span>
                                 </li>
                             ))}
                         </ul>

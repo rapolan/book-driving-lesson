@@ -272,3 +272,13 @@
 .max-w-500 {
     max-width: 500px;
 }
+
+.portal-header-actions {
+    width: auto;
+}
+
+@media (max-width: 768px) {
+    .portal-header-actions {
+        width: 100%;
+    }
+}

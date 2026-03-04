@@ -502,8 +502,8 @@
 /* Global Instructor Card Definition */
 .school-instructor-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+  gap: 1rem;
   margin-bottom: 2rem;
 }
 
@@ -635,12 +635,17 @@
   outline: none;
 }
 
-/* Calendar Grid & Styling */
 .calendar-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 0.5rem;
+  gap: 0.25rem;
   text-align: center;
+}
+
+@media (min-width: 768px) {
+  .calendar-grid {
+    gap: 0.5rem;
+  }
 }
 
 .calendar-cell {
@@ -656,11 +661,18 @@
   color: var(--text-primary);
   font-family: inherit;
   cursor: pointer;
-  border-radius: 0.75rem;
-  /* Rounded corners as requested */
+  border-radius: 0.5rem;
   transition: all 0.2s ease;
-  font-size: 1rem;
+  font-size: 0.9rem;
   font-weight: 500;
+  padding: 0;
+}
+
+@media (min-width: 768px) {
+  .calendar-cell {
+    border-radius: 0.75rem;
+    font-size: 1rem;
+  }
 }
 
 .calendar-cell:hover:not(:disabled):not(.selected) {

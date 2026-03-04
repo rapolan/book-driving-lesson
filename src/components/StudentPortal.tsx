@@ -378,11 +378,6 @@ const StudentPortal: React.FC = () => {
                         </div>
                         <h2 className="h2 mb-2">Student Portal</h2>
                         <p className="text-secondary small">Enter your email to receive a secure login link.</p>
-                        <div className="mt-3 p-2 bg-primary-subtle rounded-3 small border border-primary-subtle" style={{ display: 'inline-block', opacity: 0.8 }}>
-                            <span className="text-primary" style={{ fontSize: '0.75rem' }}>
-                                <strong>Note:</strong> Link must be opened on this same device/browser.
-                            </span>
-                        </div>
                     </div>
 
                     <form onSubmit={handleRequestLink}>

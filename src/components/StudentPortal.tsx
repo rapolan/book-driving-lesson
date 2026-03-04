@@ -147,26 +147,39 @@ const StudentPortal: React.FC = () => {
         const emailToUse = email.trim();
         const storedToken = localStorage.getItem(`magic_token_${emailToUse}`);
 
-        console.log("Validating Magic Link:", {
-            providedEmail: email,
-            trimmedEmail: emailToUse,
-            providedToken: token,
-            storedToken: storedToken,
-            match: storedToken === token
-        });
+        // Guard against React 18 StrictMode double-validation
+        const alreadyValidated = sessionStorage.getItem(`validated_${token}`);
+        if (alreadyValidated) return;
 
         if (storedToken === token) {
+            sessionStorage.setItem(`validated_${token}`, 'true');
             const newSession = {
-                email,
+                email: emailToUse,
                 token,
-                expires: Date.now() + (7 * 24 * 60 * 60 * 1000) // 7 days
+                expires: Date.now() + (7 * 24 * 60 * 60 * 1000)
             };
             setSession(newSession);
             localStorage.setItem('school_student_session', JSON.stringify(newSession));
-            loadStudentData(email);
-            localStorage.removeItem(`magic_token_${email}`);
+            loadStudentData(emailToUse);
+            localStorage.removeItem(`magic_token_${emailToUse}`);
         } else {
-            setMessage({ type: 'error', text: 'Invalid or expired magic link.' });
+            // Only show error if the token was actually present but mismatched
+            // If storedToken is null, it might have been deleted by a previous run or device mismatch
+            if (storedToken !== null) {
+                setMessage({
+                    type: 'error',
+                    text: 'Invalid magic link. Please ensure you are using the same device/browser and that the link hasn\'t already been used.'
+                });
+            } else {
+                // If token is missing, check if we already have a session for this email
+                const storedSession = localStorage.getItem('school_student_session');
+                if (!storedSession) {
+                    setMessage({
+                        type: 'error',
+                        text: 'Magic link expired or used on a different device. Please request a new one.'
+                    });
+                }
+            }
         }
     };
 
@@ -353,7 +366,7 @@ const StudentPortal: React.FC = () => {
 
     if (!session) {
         return (
-            <div className="section container portal-login-container">
+            <div className="section container portal-login-container dashboard-page-section">
                 <motion.div
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
@@ -365,6 +378,11 @@ const StudentPortal: React.FC = () => {
                         </div>
                         <h2 className="h2 mb-2">Student Portal</h2>
                         <p className="text-secondary small">Enter your email to receive a secure login link.</p>
+                        <div className="mt-3 p-2 bg-primary-subtle rounded-3 small border border-primary-subtle" style={{ display: 'inline-block', opacity: 0.8 }}>
+                            <span className="text-primary" style={{ fontSize: '0.75rem' }}>
+                                <strong>Note:</strong> Link must be opened on this same device/browser.
+                            </span>
+                        </div>
                     </div>
 
                     <form onSubmit={handleRequestLink}>

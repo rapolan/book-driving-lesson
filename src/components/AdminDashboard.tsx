@@ -1,0 +1,408 @@
+import React, { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
+import { Users, Calendar, Download, Trash2, ExternalLink, ShieldCheck } from 'lucide-react';
+import '../styles/components/AdminDashboard.css';
+
+interface Lead {
+    id: string;
+    name: string;
+    email: string;
+    phone: string;
+    birthdate: string;
+    permitNumber: string;
+    instructor: string;
+    date: string;
+    time: string;
+    timestamp: string;
+    pickupLocation: string;
+    guardians?: Array<{ name: string; phone: string; email: string }>;
+    referralCode?: string;
+}
+
+const AdminDashboard: React.FC = () => {
+    const [leads, setLeads] = useState<Lead[]>([]);
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [password, setPassword] = useState('');
+    const [view, setView] = useState<'leads' | 'availability'>('leads');
+    const [activeInstructor, setActiveInstructor] = useState<string>("Rob Polan");
+
+    // Default Availability matching BookingCalendar.tsx
+    const defaultAvail = {
+        enabled: true,
+        days: {
+            0: { enabled: false, start: '09:00', end: '17:00' },
+            1: { enabled: true, start: '09:00', end: '18:00' },
+            2: { enabled: true, start: '09:00', end: '18:00' },
+            3: { enabled: true, start: '09:00', end: '18:00' },
+            4: { enabled: true, start: '09:00', end: '18:00' },
+            5: { enabled: true, start: '09:00', end: '18:00' },
+            6: { enabled: false, start: '09:00', end: '17:00' }
+        },
+        excludedDates: [] as string[],
+        googleScriptUrl: ''
+    };
+
+    const [availDraft, setAvailDraft] = useState(defaultAvail);
+
+    useEffect(() => {
+        const storedLeads = JSON.parse(localStorage.getItem('driving_leads') || '[]');
+        setLeads(storedLeads.sort((a: Lead, b: Lead) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()));
+    }, []);
+
+    useEffect(() => {
+        const stored = JSON.parse(localStorage.getItem(`availability_${activeInstructor}`) || 'null');
+        setAvailDraft(stored || defaultAvail);
+    }, [activeInstructor]);
+
+    const saveAvailability = () => {
+        localStorage.setItem(`availability_${activeInstructor}`, JSON.stringify(availDraft));
+        alert('Availability updated successfully!');
+    };
+
+    const handleLogin = (e: React.FormEvent) => {
+        e.preventDefault();
+        // Simple 'school' password for demonstration
+        if (password === 'School2026') {
+            setIsAuthenticated(true);
+        } else {
+            alert('Incorrect School Code');
+        }
+    };
+
+    const deleteLead = (id: string) => {
+        if (window.confirm('Remove this lead?')) {
+            const updatedLeads = leads.filter(l => l.id !== id);
+            setLeads(updatedLeads);
+            localStorage.setItem('driving_leads', JSON.stringify(updatedLeads));
+        }
+    };
+
+    const exportLeads = () => {
+        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(leads, null, 2));
+        const downloadAnchorNode = document.createElement('a');
+        downloadAnchorNode.setAttribute("href", dataStr);
+        downloadAnchorNode.setAttribute("download", "driving_leads_school.json");
+        document.body.appendChild(downloadAnchorNode);
+        downloadAnchorNode.click();
+        downloadAnchorNode.remove();
+    };
+
+    if (!isAuthenticated) {
+        return (
+            <div className="admin-login-container">
+                <motion.div
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    className="glass card-layered admin-login-card"
+                >
+                    <ShieldCheck size={48} color="var(--primary)" style={{ marginBottom: '1.5rem' }} />
+                    <h2 style={{ marginBottom: '1rem' }}>Instructor Access</h2>
+                    <p style={{ color: 'var(--text-secondary)', marginBottom: '2rem', fontSize: '0.9rem' }}>Enter the school Access Code to view your leads.</p>
+                    <form onSubmit={handleLogin}>
+                        <input
+                            type="password"
+                            placeholder="School Code"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            className="school-input text-center h3 mb-4"
+                            style={{ letterSpacing: '0.2em' }}
+                        />
+                        <button type="submit" className="btn btn-primary w-100 p-3 rounded-3">Enter Dashboard</button>
+                    </form>
+                </motion.div>
+            </div>
+        );
+    }
+
+    return (
+        <div className="section container" style={{ paddingTop: '8rem', paddingBottom: '8rem' }}>
+            <div className="dashboard-narrow">
+                <div className="dashboard-header flex-wrap gap-4">
+                    <div>
+                        <h1 style={{ fontSize: '2.5rem', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                            <ShieldCheck size={40} color="var(--primary)" />
+                            Admin School
+                        </h1>
+                        <p style={{ color: 'var(--text-secondary)' }}>Secure Instructor Control Center</p>
+                    </div>
+                    <div className="d-flex gap-3">
+                        <button
+                            className={`btn ${view === 'leads' ? 'btn-primary' : 'btn-outline'} p-3 px-4`}
+                            onClick={() => setView('leads')}
+                        >
+                            <Users size={18} className="me-2" /> Leads
+                        </button>
+                        <button
+                            className={`btn ${view === 'availability' ? 'btn-primary' : 'btn-outline'} p-3 px-4`}
+                            onClick={() => setView('availability')}
+                        >
+                            <Calendar size={18} className="me-2" /> Availability
+                        </button>
+                        <button onClick={exportLeads} className="btn-circle" style={{ width: '48px', height: '48px' }} title="Export CSV">
+                            <Download size={18} />
+                        </button>
+                    </div>
+                </div>
+
+                {view === 'leads' ? (
+                    <div className="d-flex flex-column gap-3">
+                        {leads.length === 0 ? (
+                            <div className="admin-empty-state">
+                                <Users size={48} style={{ opacity: 0.2, marginBottom: '1rem' }} />
+                                <p style={{ color: 'var(--text-secondary)' }}>No leads captured yet. school is quiet.</p>
+                            </div>
+                        ) : (
+                            leads.map((lead) => (
+                                <motion.div
+                                    key={lead.id}
+                                    layoutId={lead.id}
+                                    className="card-layered textured textured-asphalt lead-card-grid p-4 mb-3"
+                                >
+                                    <div className="d-flex flex-column align-items-start text-start">
+                                        <div className="lead-name">{lead.name}</div>
+                                        <div className="lead-meta">{lead.instructor} • {lead.birthdate}</div>
+                                        {lead.referralCode && (
+                                            <div className="lead-referral">
+                                                🎁 Referred By: {lead.referralCode}
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    <div className="d-flex flex-column align-items-start text-start">
+                                        <div className="lead-date">
+                                            <Calendar size={14} color="var(--primary)" />
+                                            {lead.date}
+                                        </div>
+                                        <div className="lead-time">{lead.time}</div>
+                                    </div>
+
+                                    <div className="d-flex flex-column align-items-start text-start">
+                                        <div className="lead-location">{lead.pickupLocation}</div>
+                                        <div style={{ display: 'flex', gap: '0.4rem' }}>
+                                            <a
+                                                href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(lead.pickupLocation)}`}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                style={{ fontSize: '0.7rem', color: 'var(--primary)', textDecoration: 'none' }}
+                                            >
+                                                Google Maps
+                                            </a>
+                                            <span style={{ color: 'var(--glass-border)' }}>|</span>
+                                            <a
+                                                href={`https://maps.apple.com/?q=${encodeURIComponent(lead.pickupLocation)}`}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                style={{ fontSize: '0.7rem', color: 'var(--primary)', textDecoration: 'none' }}
+                                            >
+                                                Apple Maps
+                                            </a>
+                                        </div>
+                                    </div>
+
+                                    <div className="d-flex flex-column align-items-start text-start">
+                                        <div className="lead-permit">{lead.permitNumber}</div>
+                                        <div className="lead-meta">{lead.phone} • {lead.email}</div>
+                                        {lead.guardians && lead.guardians.length > 0 && lead.guardians[0].name && (
+                                            <div className="lead-guardian">
+                                                Guardian: {lead.guardians[0].name} ({lead.guardians[0].phone})
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    <div className="d-flex align-items-center justify-content-end gap-2">
+                                        <button
+                                            className="btn-circle btn-sm"
+                                            onClick={() => window.open(`mailto:${lead.email}`)}
+                                            title="Email Student"
+                                        >
+                                            <ExternalLink size={16} />
+                                        </button>
+                                        <button
+                                            className="btn-circle btn-sm text-error"
+                                            onClick={() => deleteLead(lead.id)}
+                                            title="Delete Lead"
+                                        >
+                                            <Trash2 size={16} />
+                                        </button>
+                                    </div>
+                                </motion.div>
+                            ))
+                        )}
+                    </div>
+                ) : (
+                    <div className="card-layered textured p-5 bg-primary">
+                        <div className="d-flex justify-content-between align-items-center mb-5">
+                            <div>
+                                <h2 className="h2 mb-1">Working Hours & Availability</h2>
+                                <p className="text-secondary m-0">Manage your weekly schedule for 2-hour lesson blocks.</p>
+                            </div>
+                            <div className="d-flex gap-2 bg-secondary p-1 rounded-3">
+                                {["Rob Polan", "Natalie Polan"].map(name => (
+                                    <motion.button
+                                        key={name}
+                                        onClick={() => setActiveInstructor(name)}
+                                        className={`btn ${activeInstructor === name ? 'btn-primary' : ''} p-2 px-3 rounded-2 fw-bold`}
+                                        whileHover={{ scale: 1.05 }}
+                                        whileTap={{ scale: 0.95 }}
+                                    >
+                                        {name.split(' ')[0]}
+                                    </motion.button>
+                                ))}
+                            </div>
+                        </div>
+
+                        <div className="textured-asphalt mb-5 p-4 bg-secondary rounded-3 border border-glass position-relative overflow-hidden">
+                            <h3 className="h5 mb-1 position-relative" style={{ zIndex: 2 }}>Google Calendar Sync (Bridge)</h3>
+                            <p className="text-secondary small mb-3 position-relative" style={{ zIndex: 2 }}>Paste your Google Apps Script URL here to enable two-way sync.</p>
+                            <input
+                                type="text"
+                                className="school-input"
+                                placeholder="https://script.google.com/macros/s/.../exec"
+                                value={availDraft.googleScriptUrl || ''}
+                                onChange={(e) => setAvailDraft({ ...availDraft, googleScriptUrl: e.target.value })}
+                            />
+                        </div>
+
+                        <div style={{ maxWidth: '800px' }}>
+                            {[0, 1, 2, 3, 4, 5, 6].map(day => {
+                                const dayName = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][day];
+                                const config = availDraft.days[day as keyof typeof availDraft.days];
+
+                                return (
+                                    <div key={day} className="grid grid-3-cols align-items-center gap-4 py-3 border-bottom border-glass">
+                                        <div className="fw-bold h5 mb-0">{dayName}</div>
+                                        <div>
+                                            <button
+                                                onClick={() => setAvailDraft({
+                                                    ...availDraft,
+                                                    days: { ...availDraft.days, [day]: { ...config, enabled: !config.enabled } }
+                                                })}
+                                                className={`availability-toggle ${config.enabled ? 'enabled' : 'disabled'}`}
+                                            >
+                                                <div className="availability-toggle-knob" />
+                                            </button>
+                                        </div>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', opacity: config.enabled ? 1 : 0.3, pointerEvents: config.enabled ? 'auto' : 'none' }}>
+                                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                                <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>Start:</span>
+                                                <input
+                                                    type="time"
+                                                    value={config.start}
+                                                    onChange={(e) => setAvailDraft({
+                                                        ...availDraft,
+                                                        days: { ...availDraft.days, [day]: { ...config, start: e.target.value } }
+                                                    })}
+                                                    className="availability-time-input"
+                                                />
+                                            </div>
+                                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                                <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>End:</span>
+                                                <input
+                                                    type="time"
+                                                    value={config.end}
+                                                    onChange={(e) => setAvailDraft({
+                                                        ...availDraft,
+                                                        days: { ...availDraft.days, [day]: { ...config, end: e.target.value } }
+                                                    })}
+                                                    className="availability-time-input"
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+
+                        <div style={{ marginTop: '3.5rem', paddingTop: '2rem', borderTop: '1px solid var(--glass-border)' }}>
+                            <h3 style={{ marginBottom: '1rem', fontSize: '1.25rem' }}>Blocked Dates (Vacations & Holidays)</h3>
+                            <p style={{ color: 'var(--text-secondary)', marginBottom: '1.5rem', fontSize: '0.9rem' }}>Select specific dates where you are completely unavailable.</p>
+
+                            <div style={{ display: 'flex', gap: '1rem', marginBottom: '2rem' }}>
+                                <input
+                                    type="date"
+                                    id="blockDateInput"
+                                    className="availability-time-input"
+                                    style={{ padding: '0.75rem' }}
+                                />
+                                <button
+                                    className="btn btn-primary"
+                                    onClick={() => {
+                                        const input = document.getElementById('blockDateInput') as HTMLInputElement;
+                                        if (input.value && !availDraft.excludedDates.includes(input.value)) {
+                                            setAvailDraft({
+                                                ...availDraft,
+                                                excludedDates: [...availDraft.excludedDates, input.value].sort()
+                                            });
+                                            input.value = '';
+                                        }
+                                    }}
+                                    style={{ padding: '0.75rem 1.5rem' }}
+                                >
+                                    Block Date
+                                </button>
+                            </div>
+
+                            <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
+                                {availDraft.excludedDates.length === 0 && <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', fontStyle: 'italic' }}>No dates blocked.</p>}
+                                {availDraft.excludedDates.map(date => (
+                                    <div key={date} className="blocked-date-badge">
+                                        {new Date(date + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                                        <button
+                                            onClick={() => setAvailDraft({
+                                                ...availDraft,
+                                                excludedDates: availDraft.excludedDates.filter(d => d !== date)
+                                            })}
+                                            className="btn-remove-blocked"
+                                        >
+                                            ✕
+                                        </button>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
+                        <div style={{ marginTop: '3.5rem', paddingTop: '2rem', borderTop: '1px solid var(--glass-border)' }}>
+                            <h3 style={{ marginBottom: '1rem', fontSize: '1.25rem' }}>Google Calendar Integration</h3>
+                            <p style={{ color: 'var(--text-secondary)', marginBottom: '1.5rem', fontSize: '0.9rem' }}>
+                                Paste your deployed Google Apps Script URL here to sync availability and push new bookings.
+                                <br />
+                                <span style={{ fontSize: '0.8rem', fontStyle: 'italic' }}>
+                                    Need help? Check the <a href="#" onClick={(e) => { e.preventDefault(); alert('Refer to google_apps_script_instructions.md in your brain folder.'); }} style={{ color: 'var(--primary)' }}>Setup Guide</a>.
+                                </span>
+                            </p>
+
+                            <div style={{ display: 'flex', gap: '1rem', marginBottom: '1rem' }}>
+                                <input
+                                    type="text"
+                                    placeholder="https://script.google.com/macros/s/.../exec"
+                                    value={availDraft.googleScriptUrl}
+                                    onChange={(e) => setAvailDraft({ ...availDraft, googleScriptUrl: e.target.value })}
+                                    style={{
+                                        flex: 1,
+                                        padding: '0.75rem',
+                                        borderRadius: '0.5rem',
+                                        border: '1px solid var(--glass-border)',
+                                        background: 'var(--bg-secondary)',
+                                        color: 'var(--text-primary)',
+                                        fontSize: '0.85rem'
+                                    }}
+                                />
+                            </div>
+                        </div>
+
+                        <div className="mt-5 pt-4 border-top border-glass d-flex justify-content-end">
+                            <button
+                                className="btn btn-primary p-3 px-5 rounded-3"
+                                onClick={saveAvailability}
+                            >
+                                Save Changes
+                            </button>
+                        </div>
+                    </div>
+                )}
+            </div>
+        </div >
+    );
+};
+
+export default AdminDashboard;

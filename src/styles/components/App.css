@@ -1,0 +1,35 @@
+.road-curve-container {
+    height: 150px;
+    position: relative;
+    overflow: hidden;
+}
+
+.road-curve-svg {
+    position: absolute;
+    top: 0;
+    opacity: 0.1;
+}
+
+.road-curve-svg-left {
+    left: -100px;
+}
+
+.road-curve-svg-right {
+    right: -100px;
+}
+
+.app-footer {
+    border-top: 1px solid var(--glass-border);
+    text-align: center;
+}
+
+.app-footer-text {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.app-footer-subtext {
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+    margin-top: 0.5rem;
+}

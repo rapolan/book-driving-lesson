@@ -1,0 +1,274 @@
+/* StudentPortal Component Styles */
+
+.portal-page-container {
+    min-height: 100vh;
+    padding-top: 6rem;
+}
+
+.portal-login-card {
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.success-icon-container {
+    width: 64px;
+    height: 64px;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background-color: var(--primary);
+    color: white;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.btn-icon-lg {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Master's Track Milestone Journey */
+
+
+.milestone-card {
+    backdrop-filter: blur(10px);
+    min-height: 140px;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.milestone-card:hover {
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 0 12px 24px rgba(var(--primary-rgb), 0.15);
+    border-color: var(--primary) !important;
+}
+
+.milestone-card:active {
+    transform: translateY(0) scale(0.98);
+}
+
+.milestone-indicator {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.milestone-card:hover .milestone-indicator {
+    box-shadow: 0 0 15px rgba(var(--primary-rgb), 0.4) !important;
+}
+
+/* Modal Styles */
+.modal-backdrop {
+    z-index: 2000;
+}
+
+.modal-container {
+    max-width: 700px;
+    position: relative;
+    z-index: 2001;
+    background: transparent;
+}
+
+.modal-frame {
+    border-radius: 1.5rem;
+    background-color: var(--bg-primary);
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.4);
+    overflow: hidden;
+    position: relative;
+}
+
+.modal-header {
+    background-color: var(--primary);
+    padding: 2.5rem;
+    color: white;
+}
+
+.modal-close-btn {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: white;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.modal-close-btn:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+}
+
+.bg-white-transparent {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: white;
+}
+
+.skill-mastery-grid {
+    grid-auto-rows: 1fr;
+}
+
+.skill-mastery-item {
+    background: rgba(var(--primary-rgb), 0.05);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--shadow-sm);
+    height: 100%;
+}
+
+.status-indicator-dot {
+    width: 6px;
+    height: 6px;
+}
+
+/* Utilities for StudentPortal */
+.message-alert-box {
+    border: 1px solid currentColor;
+    opacity: 0.9;
+}
+
+.rotate-180 {
+    transform: rotate(180deg);
+}
+
+.rotate-90 {
+    transform: rotate(90deg);
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+.overflow-hidden {
+    overflow: hidden;
+}
+
+.checklist-icon-circle {
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.rotate-minus-90 {
+    transform: rotate(-90deg);
+}
+
+.grid-col-full {
+    grid-column: 1 / -1;
+}
+
+.border-glass {
+    border-color: var(--glass-border) !important;
+}
+
+.icon-box-lg {
+    width: 40px;
+    height: 40px;
+}
+
+.font-outfit {
+    font-family: 'Outfit', sans-serif;
+}
+
+.milestone-grid {
+    z-index: 1;
+    padding: 10px 5px;
+}
+
+/* Master's Track Dynamic States */
+.milestone-card.locked {
+    cursor: default;
+    opacity: 0.4;
+    background: var(--bg-secondary);
+    border: 1px solid var(--glass-border);
+}
+
+.milestone-card.glass-card-active {
+    background: rgba(var(--primary-rgb), 0.05);
+    border: 2px solid var(--primary);
+}
+
+.milestone-card:not(.locked):not(.glass-card-active) {
+    cursor: pointer;
+    opacity: 1;
+    background: var(--bg-secondary);
+    border: 1px solid var(--glass-border);
+}
+
+.milestone-indicator.mastered {
+    background-color: var(--primary);
+    border: none;
+}
+
+.milestone-indicator.current {
+    background-color: var(--bg-primary);
+    border: 2px solid var(--glass-border);
+    box-shadow: 0 0 15px rgba(var(--primary-rgb), 0.6);
+}
+
+.milestone-indicator:not(.mastered):not(.current) {
+    background-color: var(--bg-primary);
+    border: 2px solid var(--glass-border);
+    box-shadow: none;
+}
+
+.indicator-dot-sm {
+    width: 8px;
+    height: 8px;
+}
+
+.milestone-day-text {
+    font-size: 0.85rem;
+    letter-spacing: 0.05em;
+}
+
+/* Booking Flow Utilities */
+.instructor-name-lg {
+    font-size: 1.1rem;
+    margin-bottom: 0.25rem;
+}
+
+.instructor-active-badge {
+    top: 10px;
+    right: 10px;
+    width: 10px;
+    height: 10px;
+    background: var(--primary);
+}
+
+.booking-form-container {
+    max-width: 500px;
+    margin: 0 auto 3rem;
+}
+
+.z-20 {
+    z-index: 20;
+}
+
+.btn-toggle-option {
+    border-radius: 0.5rem;
+    border: none;
+    transition: all 0.2s;
+}
+
+.flex-2 {
+    flex: 2;
+}
+
+.flex-1 {
+    flex: 1;
+}
+
+.max-w-500 {
+    max-width: 500px;
+}

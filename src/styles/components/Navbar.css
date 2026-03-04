@@ -1,0 +1,123 @@
+.navbar-container {
+    position: fixed;
+    top: 1.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 1200px;
+    height: 4.5rem;
+    border-radius: 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    z-index: 1000;
+}
+
+@media (max-width: 768px) {
+    .navbar-container {
+        padding: 0 1rem;
+        width: 95%;
+    }
+}
+
+.navbar-logo-link {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    color: var(--text-primary);
+}
+
+.navbar-logo-text {
+    font-size: 1.25rem;
+    font-weight: 700;
+    font-family: 'Outfit', sans-serif;
+    letter-spacing: -0.02em;
+}
+
+@media (max-width: 768px) {
+    .navbar-logo-text {
+        font-size: 1.1rem;
+    }
+}
+
+.navbar-links-wrapper {
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+}
+
+@media (max-width: 768px) {
+    .navbar-links-wrapper {
+        gap: 1rem;
+    }
+}
+
+.navbar-link {
+    text-decoration: none;
+    color: var(--text-secondary);
+    font-weight: 500;
+    font-size: 0.9rem;
+    transition: color 0.2s ease;
+}
+
+.navbar-link:hover {
+    color: var(--primary);
+}
+
+@media (max-width: 768px) {
+    .navbar-link {
+        display: none;
+    }
+}
+
+.navbar-actions {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    margin-left: 1rem;
+}
+
+@media (max-width: 768px) {
+    .navbar-actions {
+        margin-left: 0;
+        gap: 0.5rem;
+    }
+}
+
+.navbar-login-link {
+    text-decoration: none;
+    color: var(--text-secondary);
+    font-weight: 600;
+    font-size: 0.9rem;
+    padding: 0.6rem 1rem;
+    border-radius: 0.75rem;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.navbar-login-link:hover {
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+}
+
+@media (max-width: 768px) {
+    .navbar-login-link {
+        padding: 0.5rem;
+    }
+}
+
+.navbar-book-btn {
+    padding: 0.6rem 1.5rem;
+    border-radius: 0.75rem;
+    font-size: 0.9rem;
+    background-color: var(--primary);
+    color: white;
+    font-weight: 600;
+}
+
+@media (max-width: 768px) {
+    .navbar-book-btn {
+        padding: 0.6rem 1rem;
+    }
+}

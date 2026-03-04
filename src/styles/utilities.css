@@ -1,0 +1,150 @@
+/* Utilities */
+.text-center {
+  text-align: center;
+}
+
+.mb-1 {
+  margin-bottom: 0.25rem;
+}
+
+.mb-2 {
+  margin-bottom: 0.5rem;
+}
+
+.mb-3 {
+  margin-bottom: 1rem;
+}
+
+.mb-4 {
+  margin-bottom: 1.5rem;
+}
+
+.mb-5 {
+  margin-bottom: 3rem;
+}
+
+.mt-3 {
+  margin-top: 1rem;
+}
+
+.mt-4 {
+  margin-top: 1.5rem;
+}
+
+.mt-5 {
+  margin-top: 3rem;
+}
+
+.p-4 {
+  padding: 1.5rem;
+}
+
+.p-5 {
+  padding: 3rem;
+}
+
+.gap-2 {
+  gap: 0.5rem;
+}
+
+.gap-3 {
+  gap: 1rem;
+}
+
+.gap-4 {
+  gap: 1.5rem;
+}
+
+.d-flex {
+  display: flex;
+}
+
+.d-block {
+  display: block;
+}
+
+.flex-column {
+  flex-direction: column;
+}
+
+.align-items-center {
+  align-items: center;
+}
+
+.justify-content-between {
+  justify-content: space-between;
+}
+
+.flex-grow-1 {
+  flex-grow: 1;
+}
+
+.fw-bold {
+  font-weight: 700;
+}
+
+.m-0 {
+  margin: 0;
+}
+
+.small {
+  font-size: 0.875rem;
+}
+
+.text-primary {
+  color: var(--text-primary);
+}
+
+.text-school-green {
+  color: var(--primary);
+}
+
+.text-secondary {
+  color: var(--text-secondary);
+}
+
+.text-uppercase {
+  text-transform: uppercase;
+}
+
+.rounded-3 {
+  border-radius: 1rem;
+}
+
+.bg-secondary-subtle {
+  background-color: var(--bg-secondary);
+}
+
+.text-success {
+  color: #198754;
+}
+
+
+/* Added Utility Classes for Robust Layout (Address Autocomplete Fix) */
+.w-100 {
+  width: 100% !important;
+}
+
+.position-relative {
+  position: relative !important;
+}
+
+.position-absolute {
+  position: absolute !important;
+}
+
+.shadow-lg {
+  box-shadow: var(--shadow-lg) !important;
+}
+
+.bg-white {
+  background-color: var(--bg-primary) !important;
+}
+
+.border {
+  border: 1px solid var(--glass-border) !important;
+}
+
+.mt-2 {
+  margin-top: 0.5rem !important;
+}

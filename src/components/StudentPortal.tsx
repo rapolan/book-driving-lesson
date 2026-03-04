@@ -11,6 +11,7 @@ import {
     isMinor,
     EMAILJS_SERVICE_ID,
     EMAILJS_TEMPLATE_ID,
+    EMAILJS_MAGIC_LINK_TEMPLATE_ID,
     EMAILJS_PUBLIC_KEY,
     toLocalISOString,
     parseLocalDate,
@@ -216,24 +217,25 @@ const StudentPortal: React.FC = () => {
         const token = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
         localStorage.setItem(`magic_token_${loginEmail}`, token);
 
-        const magicLink = `${window.location.origin}${window.location.pathname}?token=${token}&email=${loginEmail}`;
+        const emailToUse = loginEmail.trim();
+        const magicLink = `${window.location.origin}${window.location.pathname}?token=${token}&email=${emailToUse}`;
 
         try {
             await emailjs.send(
-                "service_0x5sd3e",
-                "template_magic_link",
+                EMAILJS_SERVICE_ID,
+                EMAILJS_MAGIC_LINK_TEMPLATE_ID,
                 {
-                    to_email: loginEmail,
+                    to_email: emailToUse,
                     magic_link: magicLink,
                 },
-                "ZUuklDvmTL5PGUqi_"
+                EMAILJS_PUBLIC_KEY
             );
             setMessage({ type: 'success', text: 'Magic link sent! Check your inbox to login.' });
         } catch (error) {
             console.error("Magic link failed:", error);
             setMessage({
                 type: 'success',
-                text: `Development Mode: Click below to login: \n${magicLink} `
+                text: `Email service (EmailJS) error. \n\nPlease use this direct link to login: \n\n${magicLink}`
             });
         } finally {
             setIsSending(false);
@@ -363,7 +365,7 @@ const StudentPortal: React.FC = () => {
 
                         {message && (
                             <div
-                                className={`p - 3 rounded - 3 mb - 4 small message-alert-box ${message.type === 'success' ? 'bg-success-subtle text-success' : 'bg-danger-subtle text-danger'} `}
+                                className={`p-3 rounded-3 mb-4 small message-alert-box ${message.type === 'success' ? 'bg-success-subtle text-success' : 'bg-danger-subtle text-danger'} `}
                             >
                                 {message.text}
                             </div>

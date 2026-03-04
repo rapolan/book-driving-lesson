@@ -133,6 +133,8 @@
 .message-alert-box {
     border: 1px solid currentColor;
     opacity: 0.9;
+    white-space: pre-wrap;
+    word-break: break-all;
 }
 
 .rotate-180 {

@@ -12,6 +12,7 @@ export const parseLocalDate = (dateStr: string) => {
 };
 export const EMAILJS_SERVICE_ID = "service_0x5sd3e";
 export const EMAILJS_TEMPLATE_ID = "template_qud6r7d";
+export const EMAILJS_MAGIC_LINK_TEMPLATE_ID = "template_7waqf3o";
 export const EMAILJS_PUBLIC_KEY = "ZUuklDvmTL5PGUqi_";
 
 export type PaymentMethod = 'Zelle' | 'Venmo' | 'Cash';

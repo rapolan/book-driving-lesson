@@ -43,6 +43,12 @@
   }
 }
 
+@media (max-width: 768px) {
+  .road-path-animated {
+    display: none !important;
+  }
+}
+
 .card-layered {
   background: var(--bg-primary);
   border-radius: 1.5rem;

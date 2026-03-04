@@ -40,6 +40,14 @@
     transform: rotate(-15deg) translateY(-50%);
 }
 
+@media (max-width: 768px) {
+
+    .hero-road-circle,
+    .hero-road-svg {
+        display: none !important;
+    }
+}
+
 .hero-content-wrapper {
     position: relative;
     z-index: 1;

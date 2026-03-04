@@ -18,7 +18,7 @@ const PlanPage: React.FC = () => {
             link: { label: "View Full Permit Guide", href: "/permit-guide" },
             details: [
                 "Complete a California-approved Online Driver Education course.",
-                "Study the official California DMV Driver's Handbook.",
+                "Study the official California DMV Driver&apos;s Handbook.",
                 "Gather required documents (Birth Certificate, SSN, 2 Proofs of Residency).",
                 "Pass the 46-question written knowledge test at your local DMV."
             ]
@@ -65,7 +65,7 @@ const PlanPage: React.FC = () => {
                             Your Path to <span style={{ color: 'var(--primary)' }}>Success.</span>
                         </h1>
                         <p style={{ fontSize: '1.25rem', color: 'var(--text-secondary)', maxWidth: '700px', margin: '0 auto', lineHeight: 1.6 }}>
-                            We've simplified the journey into three easy steps. No stress, no confusion—just a clear road to your California Driver's License.
+                            We&apos;ve simplified the journey into three easy steps. No stress, no confusion—just a clear road to your California Driver&apos;s License.
                         </p>
                     </motion.div>
                 </header>

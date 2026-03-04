@@ -14,7 +14,7 @@ const SuccessSection: React.FC = () => {
                     >
                         <h2 style={{ fontSize: '3rem', marginBottom: '1.5rem', fontWeight: 800 }}>Master the Road. <span style={{ color: 'var(--primary)' }}>Earn Your License.</span></h2>
                         <p className="body-large text-secondary" style={{ maxWidth: '700px', margin: '0 auto' }}>
-                            A driver's license is more than identification. It's the key to your independence and lifelong safety and confidence on the road.
+                            A driver&apos;s license is more than identification. It&apos;s the key to your independence and lifelong safety and confidence on the road.
                         </p>
                     </motion.div>
                 </div>

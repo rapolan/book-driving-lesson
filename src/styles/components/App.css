@@ -4,6 +4,12 @@
     overflow: hidden;
 }
 
+@media (max-width: 768px) {
+    .road-curve-container {
+        display: none;
+    }
+}
+
 .road-curve-svg {
     position: absolute;
     top: 0;

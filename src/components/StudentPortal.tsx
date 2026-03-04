@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowRight, Calendar, MapPin, User, LogOut, Loader2, Sparkles, BookOpen, Clock, ChevronLeft, ChevronRight, CheckCircle, GraduationCap, ListTodo, AlertCircle, Check, Lock, X } from 'lucide-react';
+import { ArrowRight, Calendar, MapPin, User, Loader2, Sparkles, BookOpen, Clock, ChevronLeft, ChevronRight, CheckCircle, GraduationCap, ListTodo, AlertCircle, Check, Lock, X } from 'lucide-react';
 import emailjs from '@emailjs/browser';
 import curriculumData from '../data/curriculum.json';
 import '../styles/components/StudentPortal.css';
@@ -173,7 +173,7 @@ const StudentPortal: React.FC = () => {
                 const hasNumbers = /\d/.test(parts[0]);
 
                 if (hasNumbers) {
-                    // It's likely an address. Let's capture the street, and everything else is city/zip
+                    // It&apos;s likely an address. Let's capture the street, and everything else is city/zip
                     const street = parts[0];
                     const remaining = parts.slice(1).join(', ').trim();
                     const lastSpaceIndex = remaining.lastIndexOf(' ');
@@ -184,7 +184,7 @@ const StudentPortal: React.FC = () => {
                     setPickupType('address');
                     setPickupAddress({ street, city, zip, schoolName: '' });
                 } else {
-                    // It's likely a school
+                    // It&apos;s likely a school
                     setPickupType('school');
                     setPickupAddress({ street: '', city: parts.slice(1).join(', '), zip: '', schoolName: parts[0] });
                 }
@@ -544,7 +544,7 @@ const StudentPortal: React.FC = () => {
 
                             <div className="text-start">
                                 <h3 className="h3 mb-4 d-flex align-items-center gap-2">
-                                    <BookOpen size={24} className="text-primary" /> Driver's Resources
+                                    <BookOpen size={24} className="text-primary" /> Driver&apos;s Resources
                                 </h3>
                                 <div className="d-flex flex-column gap-3">
                                     <div className="resource-card-container">
@@ -1168,7 +1168,7 @@ const StudentPortal: React.FC = () => {
                                     <h1 className="display-small mb-3 font-outfit">Session Reserved! 🎉</h1>
                                     <p className="body-large text-secondary mb-5 booking-form-container">
                                         Your lesson with <strong>{selectedInstructor}</strong> on <strong>{new Date(selectedDate!).toLocaleDateString('en-US', { month: 'long', day: 'numeric' })}</strong> is confirmed.
-                                        We've added this to your dashboard and sent a confirmation email.
+                                        We&apos;ve added this to your dashboard and sent a confirmation email.
                                     </p>
                                     <motion.button
                                         onClick={() => setView('overview')}

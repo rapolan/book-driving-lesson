@@ -231,11 +231,13 @@ const StudentPortal: React.FC = () => {
                 EMAILJS_PUBLIC_KEY
             );
             setMessage({ type: 'success', text: 'Magic link sent! Check your inbox to login.' });
-        } catch (error) {
+        } catch (error: any) {
             console.error("Magic link failed:", error);
+            const errorMsg = error?.text || error?.message || JSON.stringify(error) || "Unknown Error";
+
             setMessage({
                 type: 'success',
-                text: `Email service (EmailJS) error. \n\nPlease use this direct link to login: \n\n${magicLink}`
+                text: `Email service (EmailJS) error: ${errorMsg}\n\nPlease use this direct link to login: \n\n${magicLink}`
             });
         } finally {
             setIsSending(false);

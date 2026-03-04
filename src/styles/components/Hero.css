@@ -58,7 +58,7 @@
 
 @media (max-width: 768px) {
     .hero-title {
-        font-size: 3rem;
+        font-size: clamp(2.25rem, 8vw, 3rem);
     }
 }
 

@@ -110,6 +110,13 @@ input {
   background-color: var(--bg-primary);
 }
 
+@media (max-width: 768px) {
+  .btn {
+    padding: 0.6rem 1.25rem;
+    font-size: 0.95rem;
+  }
+}
+
 input:focus,
 select:focus,
 textarea:focus {
@@ -140,6 +147,22 @@ textarea:focus {
   background-color: var(--bg-secondary) !important;
   color: var(--text-primary) !important;
   border-color: var(--glass-border) !important;
+}
+
+.btn-cta {
+  padding: 1.25rem 4rem;
+  border-radius: 1rem;
+  font-weight: 700;
+}
+
+@media (max-width: 768px) {
+  .btn-cta {
+    padding: 1rem 2rem;
+    width: 100%;
+    max-width: 320px;
+    margin-left: auto;
+    margin-right: auto;
+  }
 }
 
 .btn-secondary:hover {

@@ -34,7 +34,7 @@ const SuccessSection: React.FC = () => {
                                 { icon: Smile, text: "Drive with confidence in city and highway traffic." },
                                 { icon: Heart, text: "Build a lifetime of safe and smart driving habits." }
                             ].map((item, i) => (
-                                <li key={i} style={{ display: 'flex', gap: '1rem', alignItems: 'center', marginBottom: '1.5rem', fontSize: '1.125rem', color: 'white' }}>
+                                <li key={i} className="body-large" style={{ display: 'flex', gap: '1rem', alignItems: 'center', marginBottom: '1.5rem', color: 'white' }}>
                                     <item.icon size={24} color="white" />
                                     <span style={{ color: 'white' }}>{item.text}</span>
                                 </li>
@@ -48,8 +48,8 @@ const SuccessSection: React.FC = () => {
                         viewport={{ once: true }}
                         className="card-layered textured"
                     >
-                        <h3 className="h2" style={{ marginBottom: '2rem' }}>Avoid the Risk</h3>
-                        <p style={{ color: 'var(--text-secondary)', marginBottom: '1.5rem', fontSize: '1.125rem' }}>
+                        <h3 className="h4" style={{ marginBottom: '1rem' }}>Avoid the Risk</h3>
+                        <p className="body-large text-secondary" style={{ marginBottom: '1.5rem' }}>
                             Don't leave your safety to chance:
                         </p>
                         <ul style={{ listStyle: 'none', padding: 0 }}>

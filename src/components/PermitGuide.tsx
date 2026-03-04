@@ -37,7 +37,7 @@ const PermitGuide: React.FC = () => {
                         >
                             Start Online Course
                         </a>
-                        <p style={{ fontSize: '0.9rem', opacity: 0.8 }}>
+                        <p className="small opacity-75">
                             Prefer a classroom setting? We partner with a **local driving school in San Diego** and recommend their <a href="https://www.budgetdrivingschoolonline.com/driveredclassroom.php" target="_blank" rel="noreferrer" style={{ color: 'var(--primary)', fontWeight: 600 }}>In-person Class Option</a>.
                         </p>
                     </div>
@@ -81,14 +81,13 @@ const PermitGuide: React.FC = () => {
                     <p>The test has 46 questions. You must correctly answer at least 38 (max 8 errors).</p>
                     <div style={{ marginTop: '1.5rem', marginBottom: '1.5rem' }}>
                         <a
-                            href="https://www.dmv.ca.gov/portal/driver-education-and-safety/educational-materials/sample-driver-license-dl-knowledge-tests/"
+                            href="https://www.budgetdrivingschoolonline.com/driveredonline.php"
                             target="_blank"
                             rel="noreferrer"
-                            className="btn btn-primary"
+                            className="btn btn-primary small"
                             style={{
                                 display: 'inline-flex',
-                                padding: '0.75rem 1.5rem',
-                                fontSize: '0.9rem'
+                                padding: '0.75rem 1.5rem'
                             }}
                         >
                             Take a Practice Test
@@ -163,14 +162,12 @@ const PermitGuide: React.FC = () => {
                             href="https://www.dmv.ca.gov/portal/driver-education-and-safety/educational-materials/sample-driver-license-dl-knowledge-tests/"
                             target="_blank"
                             rel="noreferrer"
-                            className="btn"
+                            className="btn small"
                             style={{
                                 display: 'inline-flex',
-                                backgroundColor: 'var(--bg-primary)',
                                 border: '1px solid var(--glass-border)',
                                 color: 'var(--text-primary)',
-                                padding: '0.6rem 1.25rem',
-                                fontSize: '0.9rem'
+                                padding: '0.6rem 1.25rem'
                             }}
                         >
                             Take a Practice Test
@@ -198,7 +195,7 @@ const PermitGuide: React.FC = () => {
     const activeModules = ageGroup === 'under-18' ? under18Modules : over18Modules;
 
     return (
-        <div className="permit-guide-page" style={{ paddingTop: '8rem', paddingBottom: '8rem' }}>
+        <div className="permit-guide-page">
             <div className="container">
                 <header style={{ textAlign: 'center', marginBottom: '4rem' }}>
                     <motion.h1
@@ -209,7 +206,7 @@ const PermitGuide: React.FC = () => {
                     >
                         California <span style={{ color: 'var(--primary)' }}>Permit Guide</span>
                     </motion.h1>
-                    <p style={{ fontSize: '1.25rem', color: 'var(--text-secondary)', maxWidth: '600px', margin: '0 auto', marginBottom: '3rem' }}>
+                    <p className="body-large text-secondary" style={{ maxWidth: '600px', margin: '0 auto', marginBottom: '3rem' }}>
                         Everything you need to know about getting your learner's permit in California.
                     </p>
 
@@ -229,16 +226,18 @@ const PermitGuide: React.FC = () => {
                             <button
                                 key={choice.id}
                                 onClick={() => setAgeGroup(choice.id as any)}
+                                className="body-large"
                                 style={{
-                                    padding: '0.75rem 2.5rem',
+                                    padding: '1.5rem',
+                                    width: '100%',
                                     borderRadius: '0.5rem',
                                     border: 'none',
                                     cursor: 'pointer',
-                                    fontSize: '1.125rem',
                                     fontWeight: 700,
                                     position: 'relative',
                                     backgroundColor: 'transparent',
                                     color: ageGroup === choice.id ? '#ffffff' : 'var(--text-secondary)',
+                                    textAlign: 'left',
                                     transition: 'color 0.3s ease',
                                     zIndex: 1
                                 }}
@@ -319,7 +318,7 @@ const PermitGuide: React.FC = () => {
                                         </div>
                                         <div style={{ flex: 1, paddingTop: '0.5rem' }}>
                                             <h2 className="display-small" style={{ marginBottom: '1.5rem', color: 'var(--text-primary)', fontWeight: 800 }}>{module.title}</h2>
-                                            <div style={{ color: 'var(--text-secondary)', fontSize: '1.25rem', lineHeight: 1.6 }}>
+                                            <div className="body-large text-secondary" style={{ lineHeight: 1.6 }}>
                                                 {module.content}
                                             </div>
                                         </div>
@@ -340,15 +339,14 @@ const PermitGuide: React.FC = () => {
                         viewport={{ once: true }}
                     >
                         <div className="card-layered textured-asphalt text-center" style={{ maxWidth: '800px', margin: '0 auto', border: '1px solid var(--glass-border)' }}>
-                            <h2 style={{ fontSize: '3rem', marginBottom: '1.5rem', fontWeight: 800 }}>
+                            <h2 className="display-small" style={{ marginBottom: '1.5rem', fontWeight: 800 }}>
                                 Ready to Start <span className="gradient-text">Driving?</span>
                             </h2>
                             <p className="body-large text-secondary" style={{ maxWidth: '600px', margin: '0 auto 3rem auto' }}>
                                 Book your behind-the-wheel training to validate your permit with our expert instructors.
                             </p>
                             <button
-                                className="btn btn-primary"
-                                style={{ padding: '1.25rem 4rem', fontSize: '1.125rem', borderRadius: '1rem', fontWeight: 700 }}
+                                className="btn btn-primary btn-cta body-large"
                                 onClick={() => navigate('/#booking')}
                             >
                                 View Lesson Schedule

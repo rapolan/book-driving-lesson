@@ -19,7 +19,7 @@ const About: React.FC = () => {
                             <h1 className="display-small" style={{ marginBottom: '1.5rem', fontWeight: 800 }}>
                                 Meet Nat & Rob: <span style={{ color: 'var(--primary)' }}>The Sibling Duo.</span>
                             </h1>
-                            <p style={{ fontSize: '1.25rem', color: 'var(--text-secondary)', maxWidth: '750px', margin: '0 auto', lineHeight: 1.6 }}>
+                            <p className="body-large text-secondary" style={{ maxWidth: '750px', margin: '0 auto', lineHeight: 1.6 }}>
                                 A personalized, family-run approach to safe driving. We are licensed instructors partnered with Budget Driving School LLC to render professional road training services.
                             </p>
                         </motion.div>
@@ -34,10 +34,10 @@ const About: React.FC = () => {
                         >
                             <div className="badge">The Instructors</div>
                             <h2 className="h1" style={{ marginBottom: '1.5rem' }}>Siblings in Safety</h2>
-                            <p style={{ fontSize: '1.125rem', color: 'var(--text-secondary)', lineHeight: 1.8, marginBottom: '2rem' }}>
+                            <p className="body-large text-secondary" style={{ lineHeight: 1.8, marginBottom: '2rem' }}>
                                 We started this journey with a shared mission: to provide patient, consistent instruction for students and their families. We aren't a high-volume factory; we are individual licensed instructors who care about your progress.
                             </p>
-                            <p style={{ fontSize: '1.125rem', color: 'var(--text-secondary)', lineHeight: 1.8 }}>
+                            <p className="body-large text-secondary" style={{ lineHeight: 1.8 }}>
                                 Through our partnership with Budget Driving School LLC, we are able to provide official, high-quality behind-the-wheel training that meets all state requirements while maintaining the personal touch of a family duo.
                             </p>
                         </motion.div>
@@ -51,7 +51,7 @@ const About: React.FC = () => {
                         >
                             <div style={{ textAlign: 'center' }}>
                                 <Users size={80} color="var(--primary)" style={{ opacity: 0.5, marginBottom: '1rem' }} />
-                                <p style={{ fontFamily: 'Outfit', fontWeight: 600, fontSize: '1.5rem', color: 'var(--primary)' }}>Family Owned & Operated</p>
+                                <p className="h4 text-primary" style={{ fontFamily: 'Outfit', fontWeight: 600 }}>Family Owned & Operated</p>
                             </div>
                         </motion.div>
                     </div>
@@ -101,8 +101,9 @@ const About: React.FC = () => {
                                     }}>
                                         <pillar.icon size={30} />
                                     </div>
-                                    <h3 className="h3" style={{ marginBottom: '1rem' }}>{pillar.title}</h3>
-                                    <p style={{ color: 'var(--text-secondary)', lineHeight: 1.6 }}>{pillar.desc}</p>
+                                    <h3 className="h4" style={{ marginBottom: '1.25rem' }}>{pillar.title}</h3>
+                                    <p className="body-large text-secondary" style={{ maxWidth: '600px', margin: '0 auto' }}>
+                                        {pillar.desc}</p>
                                 </motion.div>
                             ))}
                         </div>
@@ -126,8 +127,7 @@ const About: React.FC = () => {
                                 Connect with professional instructors who prioritize your safety and comfort.
                             </p>
                             <button
-                                className="btn btn-primary"
-                                style={{ padding: '1.25rem 4rem', fontSize: '1.125rem', borderRadius: '1rem', fontWeight: 700 }}
+                                className="btn btn-primary btn-cta body-large"
                                 onClick={() => navigate('/#booking')}
                             >
                                 Book a Lesson

@@ -96,8 +96,8 @@ const AdminDashboard: React.FC = () => {
                     className="glass card-layered admin-login-card"
                 >
                     <ShieldCheck size={48} color="var(--primary)" style={{ marginBottom: '1.5rem' }} />
-                    <h2 style={{ marginBottom: '1rem' }}>Instructor Access</h2>
-                    <p style={{ color: 'var(--text-secondary)', marginBottom: '2rem', fontSize: '0.9rem' }}>Enter the school Access Code to view your leads.</p>
+                    <h2 className="h2" style={{ marginBottom: '1rem' }}>Instructor Access</h2>
+                    <p className="small text-secondary" style={{ marginBottom: '2rem' }}>Enter the school Access Code to view your leads.</p>
                     <form onSubmit={handleLogin}>
                         <input
                             type="password"
@@ -115,11 +115,11 @@ const AdminDashboard: React.FC = () => {
     }
 
     return (
-        <div className="section container" style={{ paddingTop: '8rem', paddingBottom: '8rem' }}>
+        <div className="section container">
             <div className="dashboard-narrow">
                 <div className="dashboard-header flex-wrap gap-4">
                     <div>
-                        <h1 style={{ fontSize: '2.5rem', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                        <h1 className="display-small" style={{ marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
                             <ShieldCheck size={40} color="var(--primary)" />
                             Admin School
                         </h1>
@@ -149,7 +149,7 @@ const AdminDashboard: React.FC = () => {
                         {leads.length === 0 ? (
                             <div className="admin-empty-state">
                                 <Users size={48} style={{ opacity: 0.2, marginBottom: '1rem' }} />
-                                <p style={{ color: 'var(--text-secondary)' }}>No leads captured yet. school is quiet.</p>
+                                <p className="text-secondary">No leads captured yet. school is quiet.</p>
                             </div>
                         ) : (
                             leads.map((lead) => (
@@ -183,7 +183,8 @@ const AdminDashboard: React.FC = () => {
                                                 href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(lead.pickupLocation)}`}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
-                                                style={{ fontSize: '0.7rem', color: 'var(--primary)', textDecoration: 'none' }}
+                                                className="small text-primary"
+                                                style={{ textDecoration: 'none' }}
                                             >
                                                 Google Maps
                                             </a>
@@ -192,7 +193,8 @@ const AdminDashboard: React.FC = () => {
                                                 href={`https://maps.apple.com/?q=${encodeURIComponent(lead.pickupLocation)}`}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
-                                                style={{ fontSize: '0.7rem', color: 'var(--primary)', textDecoration: 'none' }}
+                                                className="small text-primary"
+                                                style={{ textDecoration: 'none' }}
                                             >
                                                 Apple Maps
                                             </a>
@@ -284,7 +286,7 @@ const AdminDashboard: React.FC = () => {
                                         </div>
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', opacity: config.enabled ? 1 : 0.3, pointerEvents: config.enabled ? 'auto' : 'none' }}>
                                             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                                                <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>Start:</span>
+                                                <span className="small text-secondary">Start:</span>
                                                 <input
                                                     type="time"
                                                     value={config.start}
@@ -296,7 +298,7 @@ const AdminDashboard: React.FC = () => {
                                                 />
                                             </div>
                                             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                                                <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>End:</span>
+                                                <span className="small text-secondary">End:</span>
                                                 <input
                                                     type="time"
                                                     value={config.end}
@@ -314,8 +316,8 @@ const AdminDashboard: React.FC = () => {
                         </div>
 
                         <div style={{ marginTop: '3.5rem', paddingTop: '2rem', borderTop: '1px solid var(--glass-border)' }}>
-                            <h3 style={{ marginBottom: '1rem', fontSize: '1.25rem' }}>Blocked Dates (Vacations & Holidays)</h3>
-                            <p style={{ color: 'var(--text-secondary)', marginBottom: '1.5rem', fontSize: '0.9rem' }}>Select specific dates where you are completely unavailable.</p>
+                            <h3 className="h3" style={{ marginBottom: '1rem' }}>Blocked Dates (Vacations & Holidays)</h3>
+                            <p className="small text-secondary" style={{ marginBottom: '1.5rem' }}>Select specific dates where you are completely unavailable.</p>
 
                             <div style={{ display: 'flex', gap: '1rem', marginBottom: '2rem' }}>
                                 <input
@@ -343,10 +345,10 @@ const AdminDashboard: React.FC = () => {
                             </div>
 
                             <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
-                                {availDraft.excludedDates.length === 0 && <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', fontStyle: 'italic' }}>No dates blocked.</p>}
+                                {availDraft.excludedDates.length === 0 && <p className="small text-secondary italic">No dates blocked.</p>}
                                 {availDraft.excludedDates.map(date => (
                                     <div key={date} className="blocked-date-badge">
-                                        {new Date(date + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                                        <span className="small">{new Date(date + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
                                         <button
                                             onClick={() => setAvailDraft({
                                                 ...availDraft,
@@ -362,11 +364,11 @@ const AdminDashboard: React.FC = () => {
                         </div>
 
                         <div style={{ marginTop: '3.5rem', paddingTop: '2rem', borderTop: '1px solid var(--glass-border)' }}>
-                            <h3 style={{ marginBottom: '1rem', fontSize: '1.25rem' }}>Google Calendar Integration</h3>
-                            <p style={{ color: 'var(--text-secondary)', marginBottom: '1.5rem', fontSize: '0.9rem' }}>
+                            <h3 className="h3" style={{ marginBottom: '1rem' }}>Google Calendar Integration</h3>
+                            <p className="small text-secondary" style={{ marginBottom: '1.5rem' }}>
                                 Paste your deployed Google Apps Script URL here to sync availability and push new bookings.
                                 <br />
-                                <span style={{ fontSize: '0.8rem', fontStyle: 'italic' }}>
+                                <span className="small italic text-secondary" style={{ fontSize: '0.8rem' }}>
                                     Need help? Check the <a href="#" onClick={(e) => { e.preventDefault(); alert('Refer to google_apps_script_instructions.md in your brain folder.'); }} style={{ color: 'var(--primary)' }}>Setup Guide</a>.
                                 </span>
                             </p>
@@ -377,14 +379,14 @@ const AdminDashboard: React.FC = () => {
                                     placeholder="https://script.google.com/macros/s/.../exec"
                                     value={availDraft.googleScriptUrl}
                                     onChange={(e) => setAvailDraft({ ...availDraft, googleScriptUrl: e.target.value })}
+                                    className="small"
                                     style={{
                                         flex: 1,
                                         padding: '0.75rem',
                                         borderRadius: '0.5rem',
                                         border: '1px solid var(--glass-border)',
                                         background: 'var(--bg-secondary)',
-                                        color: 'var(--text-primary)',
-                                        fontSize: '0.85rem'
+                                        color: 'var(--text-primary)'
                                     }}
                                 />
                             </div>

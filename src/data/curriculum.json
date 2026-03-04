@@ -1,0 +1,121 @@
+{
+    "days": [
+        {
+            "day": 1,
+            "title": "Basic Skills & Vehicle Control",
+            "desc": "Foundational control and residential awareness.",
+            "skills": [
+                {
+                    "id": "d1_orientation",
+                    "text": "Vehicle equipment orientation"
+                },
+                {
+                    "id": "d1_mirrors",
+                    "text": "Mirrors & blind spot awareness"
+                },
+                {
+                    "id": "d1_steering",
+                    "text": "Hand position & hand-over-hand technique"
+                },
+                {
+                    "id": "d1_scanning",
+                    "text": "Straight driving, scanning, and speed control"
+                },
+                {
+                    "id": "d1_intersections",
+                    "text": "Complete stops & scanning uncontrolled intersections"
+                },
+                {
+                    "id": "d1_curb",
+                    "text": "Pulling over to curb with shoulder check"
+                },
+                {
+                    "id": "d1_backing",
+                    "text": "Backing up in a straight line"
+                },
+                {
+                    "id": "d1_lane_changes",
+                    "text": "Lane changes & crossing trolley tracks"
+                },
+                {
+                    "id": "d1_defensive",
+                    "text": "Defensive driving & general awareness"
+                }
+            ]
+        },
+        {
+            "day": 2,
+            "title": "Intermediate Traffic Skills",
+            "desc": "Navigating complex intersections and legal maneuvers.",
+            "skills": [
+                {
+                    "id": "d2_red_turns",
+                    "text": "Right turns on solid red (legal reminders)"
+                },
+                {
+                    "id": "d2_protected_left",
+                    "text": "Protected left turns at intersections"
+                },
+                {
+                    "id": "d2_unprotected_left",
+                    "text": "Unprotected left turns at intersections"
+                },
+                {
+                    "id": "d2_ending_turns",
+                    "text": "Properly ending left and right turns"
+                },
+                {
+                    "id": "d2_center_lane",
+                    "text": "Left turns into driveways from center lane"
+                },
+                {
+                    "id": "d2_u_turns_lights",
+                    "text": "Right turns into driveways / U-turns at lights"
+                },
+                {
+                    "id": "d2_residential_u",
+                    "text": "U-turns in residential areas / 3-point turns"
+                },
+                {
+                    "id": "d2_freeway_intro",
+                    "text": "Freeway driving (if safe)"
+                }
+            ]
+        },
+        {
+            "day": 3,
+            "title": "Advanced Maneuvers & Test Prep",
+            "desc": "High-stakes maneuvers and final DMV certification.",
+            "skills": [
+                {
+                    "id": "d3_yellow_lines",
+                    "text": "Left turns across solid yellow lines"
+                },
+                {
+                    "id": "d3_two_point",
+                    "text": "U-turns & two-point turns (200 ft)"
+                },
+                {
+                    "id": "d3_intersect_u",
+                    "text": "U-turns at intersections"
+                },
+                {
+                    "id": "d3_freeway_reps",
+                    "text": "Freeway entry/exit (4–5 repetitions)"
+                },
+                {
+                    "id": "d3_parking",
+                    "text": "Angle, perpendicular, and parallel parking"
+                },
+                {
+                    "id": "d3_test_prep",
+                    "text": "Road test prep & requirements review"
+                },
+                {
+                    "id": "d3_completion",
+                    "text": "Issue Certificate of Completion"
+                }
+            ]
+        }
+    ]
+}

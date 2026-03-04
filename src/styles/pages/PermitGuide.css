@@ -1,0 +1,28 @@
+.permit-guide-page .guide-list {
+    list-style: none;
+    padding: 0;
+}
+
+.permit-guide-page .guide-list li {
+    position: relative;
+    padding-left: 1.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.permit-guide-page .guide-list li::before {
+    content: "•";
+    position: absolute;
+    left: 0;
+    color: var(--primary);
+    font-weight: bold;
+}
+
+.permit-guide-page .alert-box {
+    margin-top: 1rem;
+    padding: 1rem;
+    background-color: var(--bg-secondary);
+    border-left: 4px solid var(--accent);
+    border-radius: 0.5rem;
+    font-size: 1.125rem;
+    color: var(--text-secondary);
+}

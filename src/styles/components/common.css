@@ -1,0 +1,199 @@
+.glass {
+  background: var(--glass-bg);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+.textured {
+  background-image: var(--asphalt-texture);
+}
+
+.wallpaper-cone {
+  background-image: var(--cone-pattern);
+  background-repeat: repeat;
+}
+
+.road-divider {
+  height: 2px;
+  background-image: linear-gradient(to right, var(--road-grey) 50%, transparent 50%);
+  background-size: 40px 100%;
+  width: 100%;
+  border: none;
+  opacity: 0.3;
+  margin: 4rem 0;
+}
+
+.road-path-animated {
+  stroke-dasharray: 20, 20;
+  animation: dash 10s linear infinite;
+}
+
+@keyframes dash {
+  to {
+    stroke-dashoffset: -1000;
+  }
+}
+
+.card-layered {
+  background: var(--bg-primary);
+  border-radius: 1.5rem;
+  padding: 1.5rem;
+  /* Mobile first */
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-md);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+@media (min-width: 768px) {
+  .card-layered {
+    padding: 2.5rem;
+    /* Desktop density */
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .card-layered {
+    background: var(--bg-secondary);
+    /* Cards should be slightly lighter in dark mode for elevation */
+  }
+}
+
+.card-layered:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-lg);
+}
+
+label,
+strong {
+  color: var(--text-primary);
+}
+
+input {
+  color: var(--text-primary);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  border: 1px solid var(--glass-border);
+  font-family: inherit;
+  color: var(--text-primary);
+  background-color: var(--bg-primary);
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(143, 177, 128, 0.2);
+}
+
+.btn:hover {
+  background-color: var(--bg-secondary);
+  border-color: var(--primary);
+  transform: translateY(-1px);
+}
+
+.btn-primary {
+  background-color: var(--primary) !important;
+  color: white !important;
+  border-color: var(--primary) !important;
+}
+
+.btn-primary:hover {
+  background-color: var(--primary-hover) !important;
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-secondary {
+  background-color: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--glass-border) !important;
+}
+
+.btn-secondary:hover {
+  background-color: var(--road-grey) !important;
+}
+
+.btn-accent {
+  background-color: var(--accent) !important;
+  color: white !important;
+  border-color: var(--accent) !important;
+}
+
+.btn-accent:hover {
+  background-color: var(--accent) !important;
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-circle {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 1px solid var(--glass-border);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-circle:hover {
+  background: var(--bg-secondary);
+  border-color: var(--primary);
+}
+
+.btn-sm {
+  padding: 0.4rem 0.8rem;
+  font-size: 0.875rem;
+}
+
+.form-label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: var(--text-primary);
+}
+
+.form-input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: 0.75rem;
+  border: 1px solid var(--glass-border);
+  background: var(--bg-primary);
+  /* Default for light mode */
+  color: var(--text-primary);
+  font-family: inherit;
+  transition: all 0.2s;
+}
+
+@media (prefers-color-scheme: dark) {
+  .form-input {
+    background: rgba(0, 0, 0, 0.2);
+    /* Sunk effect for fields in dark mode */
+    border-color: rgba(245, 242, 237, 0.2);
+  }
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(74, 103, 65, 0.1);
+}

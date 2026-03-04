@@ -1,0 +1,10 @@
+@import './styles/base.css';
+@import './styles/layout.css';
+@import './styles/utilities.css';
+@import './styles/components/common.css';
+@import './styles/components/legacy.css';
+@import './styles/components/App.css';
+@import './styles/components/Navbar.css';
+@import './styles/components/Hero.css';
+
+/* Original index.css has been modularized. Legacy component styles are in components/legacy.css. */

@@ -1,0 +1,146 @@
+.lead-card-grid {
+    display: grid;
+    /* Use flexible fluid fractions instead of rigid pixels to prevent squishing */
+    grid-template-columns: minmax(200px, 1.2fr) minmax(130px, 1fr) minmax(150px, 1.5fr) minmax(250px, 1.8fr) auto;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 1.25rem 2rem;
+}
+
+@media (max-width: 992px) {
+    .lead-card-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+        padding: 1.5rem;
+    }
+}
+
+.admin-empty-state {
+    text-align: center;
+    padding: 6rem;
+    background-color: var(--bg-primary);
+    border-radius: 2rem;
+    border: 1px dashed var(--glass-border);
+}
+
+.lead-name {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.lead-meta {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+}
+
+.lead-referral {
+    font-size: 0.75rem;
+    color: var(--accent);
+    margin-top: 0.2rem;
+    font-weight: bold;
+}
+
+.lead-date {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    font-size: 0.9rem;
+}
+
+.lead-time {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.lead-location {
+    font-size: 0.85rem;
+    color: var(--text-primary);
+    margin-bottom: 0.4rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.lead-permit {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.lead-guardian {
+    font-size: 0.75rem;
+    color: var(--primary);
+    margin-top: 0.2rem;
+}
+
+.text-error {
+    color: #ef4444 !important;
+}
+
+.availability-toggle {
+    width: 60px;
+    height: 30px;
+    border-radius: 15px;
+    position: relative;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.availability-toggle.enabled {
+    background-color: var(--primary);
+}
+
+.availability-toggle.disabled {
+    background-color: #555555;
+}
+
+.availability-toggle-knob {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background-color: white;
+    position: absolute;
+    top: 4px;
+    transition: left 0.3s;
+}
+
+.availability-toggle.enabled .availability-toggle-knob {
+    left: 34px;
+}
+
+.availability-toggle.disabled .availability-toggle-knob {
+    left: 4px;
+}
+
+.availability-time-input {
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    border: 1px solid var(--glass-border);
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+}
+
+.blocked-date-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    background-color: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    border-radius: 0.5rem;
+    font-size: 0.85rem;
+    color: #ef4444;
+}
+
+.btn-remove-blocked {
+    background: none;
+    border: none;
+    color: #ef4444;
+    cursor: pointer;
+    font-weight: 800;
+    padding: 0 0.25rem;
+}

@@ -1,0 +1,911 @@
+/* Boutique Card Centering */
+.next-lesson-card,
+.resource-card,
+.stat-card-modern,
+.schedule-item {
+  max-width: 500px;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  width: 100%;
+}
+
+@media (min-width: 992px) {
+
+  .next-lesson-card,
+  .resource-card,
+  .stat-card-modern,
+  .schedule-item {
+    max-width: 100%;
+    /* Restore full relative width in the grid on desktop */
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+}
+
+/* Calendar Grid Styles */
+.calendar-container {
+  background: var(--bg-secondary);
+  border-radius: 1.25rem;
+  padding: 1.5rem;
+  border: 1px solid var(--glass-border);
+}
+
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+
+.calendar-day-header {
+  text-align: center;
+  font-weight: 700;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  padding: 0.5rem 0;
+}
+
+.calendar-cell {
+  aspect-ratio: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text-primary);
+  font-family: inherit;
+}
+
+.calendar-cell:hover:not(:disabled) {
+  background: var(--bg-primary);
+  border-color: var(--glass-border);
+}
+
+.calendar-cell.selected {
+  background: var(--primary) !important;
+  color: white !important;
+  font-weight: 700;
+  box-shadow: var(--shadow-md);
+}
+
+.calendar-cell.today {
+  border-color: var(--primary);
+  color: var(--primary);
+  font-weight: 700;
+}
+
+.calendar-cell:disabled {
+  opacity: 0.25;
+  cursor: not-allowed;
+}
+
+.calendar-cell.outside {
+  opacity: 0.1;
+  pointer-events: none;
+}
+
+/* Step Animations */
+.step-container {
+  overflow: hidden;
+}
+
+.requirement-dot {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* Instructor Admin Specifics */
+.admin-login-container {
+  min-height: 80vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--bg-secondary);
+}
+
+.admin-login-card {
+  padding: 3rem;
+  max-width: 400px;
+  width: 90%;
+  text-align: center;
+}
+
+.instructor-tab-btn {
+  padding: 0.75rem 1.5rem;
+  border-radius: 12px;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.lead-table-container {
+  overflow-x: auto;
+  border-radius: 16px;
+  border: 1px solid var(--glass-border);
+  background: var(--bg-primary);
+}
+
+
+
+.grid-3-cols {
+  display: grid;
+  grid-template-columns: 150px 100px 1fr;
+}
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 3rem;
+}
+
+
+
+.step-circle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--bg-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  border: 2px solid var(--glass-border);
+  color: var(--text-secondary);
+  transition: all 0.3s;
+}
+
+.step-circle.active {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+  transform: scale(1.1);
+}
+
+.instructor-card {
+  background: var(--bg-primary);
+  border: 1px solid var(--glass-border);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  transition: all 0.2s;
+  width: 100%;
+  cursor: pointer;
+}
+
+@media (prefers-color-scheme: dark) {
+  .instructor-card {
+    background: var(--bg-primary);
+    /* Keep it slightly darker than the main card for depth */
+  }
+}
+
+.instructor-card:hover {
+  border-color: var(--primary);
+  background: var(--bg-secondary);
+}
+
+.instructor-card.active {
+  border-color: var(--primary);
+  background: rgba(143, 177, 128, 0.1);
+  box-shadow: 0 0 0 2px var(--primary);
+}
+
+.instructor-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--bg-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary);
+}
+
+.date-scroll::-webkit-scrollbar {
+  height: 6px;
+}
+
+.date-scroll::-webkit-scrollbar-thumb {
+  background: var(--glass-border);
+  border-radius: 10px;
+}
+
+.date-chip {
+  min-width: 80px;
+  padding: 1rem;
+  border-radius: 1rem;
+  border: 1px solid var(--glass-border);
+  background: var(--bg-primary);
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.date-chip:hover {
+  background: var(--bg-secondary);
+}
+
+.date-chip.active {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+}
+
+.time-chip {
+  padding: 0.75rem;
+  border-radius: 0.75rem;
+  border: 1px solid var(--glass-border);
+  background: var(--bg-primary);
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+@media (prefers-color-scheme: dark) {
+  .time-chip {
+    background: var(--bg-primary);
+  }
+}
+
+.time-chip:hover {
+  background: var(--bg-secondary);
+}
+
+.time-chip.active {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+}
+
+.success-icon {
+  width: 80px;
+  height: 80px;
+  background: rgba(25, 135, 84, 0.1);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+}
+
+
+@media (min-width: 992px) {
+  .calendar-main {
+    flex: 1.4;
+  }
+
+  .calendar-aside {
+    flex: 1;
+    border-left: 1px solid var(--glass-border);
+    padding-left: 2rem;
+  }
+}
+
+.btn-confirm {
+  background: white;
+  color: #0f172a;
+  border: none;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  width: 100%;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  margin-top: 2rem;
+  transition: all 0.2s;
+}
+
+.btn-confirm:hover:not(:disabled) {
+  background: var(--primary);
+  color: white;
+  transform: translateY(-2px);
+}
+
+/* Student Portal Refinements */
+.portal-header {
+  background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-primary) 100%);
+  border-radius: 2rem;
+  padding: 3rem;
+  margin-bottom: 3rem;
+  border: 1px solid var(--glass-border);
+  position: relative;
+  overflow: hidden;
+}
+
+.portal-header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: var(--asphalt-texture);
+  opacity: 0.03;
+  pointer-events: none;
+}
+
+.next-lesson-card {
+  background: var(--primary);
+  color: white;
+  border-radius: 1.5rem;
+  padding: 2rem;
+  box-shadow: var(--shadow-lg);
+  position: relative;
+  overflow: hidden;
+  border: none;
+}
+
+.next-lesson-card .text-secondary {
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+
+.next-lesson-card .card-icon {
+  position: absolute;
+  right: -1rem;
+  bottom: -1rem;
+  font-size: 8rem;
+  opacity: 0.1;
+  transform: rotate(-15deg);
+}
+
+.stat-card-modern {
+  background: var(--bg-primary);
+  border: 1px solid var(--glass-border);
+  border-radius: 1.25rem;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  transition: all 0.3s ease;
+}
+
+.stat-card-modern:hover {
+  border-color: var(--primary);
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+}
+
+.resource-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.25rem;
+  background: var(--bg-primary);
+  border: 1px solid var(--glass-border);
+  border-radius: 1rem;
+  text-decoration: none;
+  text-align: left;
+  transition: all 0.2s ease;
+  color: inherit;
+}
+
+.icon-box-primary {
+  width: 40px;
+  height: 40px;
+  border-radius: 0.75rem;
+  background: var(--bg-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary);
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+
+.resource-card:hover .icon-box-primary {
+  background: var(--primary);
+  color: white;
+}
+
+.resource-card:hover {
+  background: var(--bg-secondary);
+  border-color: var(--primary);
+  transform: translateX(5px);
+}
+
+.schedule-timeline {
+  position: relative;
+  padding-left: 1.5rem;
+}
+
+.schedule-timeline::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--glass-border);
+}
+
+.schedule-item {
+  position: relative;
+  margin-bottom: 2rem;
+}
+
+.schedule-item::before {
+  content: '';
+  position: absolute;
+  left: -1.75rem;
+  top: 0.5rem;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--bg-primary);
+  border: 2px solid var(--primary);
+}
+
+.step-road-line {
+  position: relative;
+  height: 4px;
+  background: var(--glass-border);
+  margin: 2rem 0;
+  border-radius: 2px;
+}
+
+.step-road-progress {
+  position: absolute;
+  height: 100%;
+  background: var(--primary);
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+
+.step-road-dot {
+  position: absolute;
+  top: 50%;
+  width: 12px;
+  height: 12px;
+  background: var(--bg-primary);
+  border: 2px solid var(--glass-border);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  transition: all 0.3s ease;
+}
+
+.step-road-dot.active {
+  background: var(--primary);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 4px rgba(74, 103, 65, 0.2);
+}
+
+.step-road-dot.completed {
+  border-color: var(--primary);
+  background: var(--bg-primary);
+}
+
+/* Global Instructor Card Definition */
+.school-instructor-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.school-instructor-card {
+  background: var(--bg-primary);
+  border: 1px solid var(--glass-border);
+  border-radius: 1.5rem;
+  padding: 1.5rem;
+  text-align: left;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  color: var(--text-primary) !important;
+  text-decoration: none;
+}
+
+.school-instructor-card .fw-bold {
+  color: var(--text-primary) !important;
+}
+
+.school-instructor-card:hover {
+  background: var(--bg-secondary);
+  border-color: var(--primary);
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+
+.school-instructor-card.active {
+  background: rgba(var(--primary-rgb), 0.05);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px var(--primary);
+}
+
+.school-instructor-avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 1.25rem;
+  background: var(--bg-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary);
+  flex-shrink: 0;
+  transition: all 0.3s ease;
+}
+
+.school-instructor-card:hover .school-instructor-avatar {
+  background: var(--primary);
+  color: white;
+}
+
+/* Dark Mode Overrides for Elevation */
+@media (prefers-color-scheme: dark) {
+  .school-instructor-card {
+    background: var(--bg-secondary);
+  }
+
+  .school-instructor-card.active {
+    background: rgba(143, 177, 128, 0.1);
+  }
+
+  .stat-card-modern {
+    background: var(--bg-secondary);
+  }
+
+  .resource-card {
+    background: var(--bg-secondary);
+  }
+
+  .resource-card:hover {
+    background: rgba(245, 242, 237, 0.05);
+  }
+}
+
+/* Texture & Motif Utilities */
+.textured-asphalt {
+  position: relative;
+}
+
+.textured-asphalt::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: var(--asphalt-texture);
+  opacity: 0.03;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.road-mask {
+  mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
+}
+
+/* Enhanced Form States */
+.school-input-group {
+  position: relative;
+  margin-bottom: 1.5rem;
+}
+
+.school-input {
+  width: 100%;
+  padding: 1rem 1.25rem;
+  background: var(--bg-primary);
+  border: 1px solid var(--glass-border);
+  border-radius: 1rem;
+  font-family: inherit;
+  transition: all 0.2s ease;
+  color: var(--text-primary);
+}
+
+@media (prefers-color-scheme: dark) {
+  .school-input {
+    background: rgba(0, 0, 0, 0.3);
+  }
+}
+
+.school-input:focus {
+  background: var(--bg-primary);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 4px rgba(74, 103, 65, 0.1);
+  outline: none;
+}
+
+/* Calendar Grid & Styling */
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.5rem;
+  text-align: center;
+}
+
+.calendar-cell {
+  width: 100%;
+  max-width: 42px;
+  aspect-ratio: 1;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text-primary);
+  font-family: inherit;
+  cursor: pointer;
+  border-radius: 0.75rem;
+  /* Rounded corners as requested */
+  transition: all 0.2s ease;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.calendar-cell:hover:not(:disabled):not(.selected) {
+  background: rgba(74, 103, 65, 0.1);
+}
+
+.calendar-cell.selected {
+  background: var(--primary) !important;
+  color: white !important;
+  font-weight: 700;
+}
+
+.calendar-cell.today {
+  border: 2px solid var(--primary) !important;
+  color: var(--primary);
+  font-weight: 700;
+}
+
+.calendar-cell:disabled {
+  opacity: 0.2;
+  cursor: not-allowed;
+}
+
+.calendar-cell.outside {
+  cursor: default;
+  opacity: 0.2;
+}
+
+.calendar-day-header {
+  font-size: 0.8rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  padding-bottom: 0.5rem;
+}
+
+/* Booking Flow Components */
+.booking-container {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.road-stepper {
+  position: relative;
+  padding: 0 1rem;
+  margin-bottom: 3rem;
+}
+
+.road-stepper-line {
+  position: absolute;
+  top: 21px;
+  left: 40px;
+  right: 40px;
+  height: 2px;
+  background: var(--glass-border);
+  z-index: 0;
+}
+
+.road-stepper-progress {
+  height: 100%;
+  background: var(--accent);
+}
+
+.step-item {
+  width: 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+}
+
+.step-circle {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  border: 2px solid var(--glass-border);
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  margin-bottom: 0.5rem;
+}
+
+.step-circle.active {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: white;
+  box-shadow: var(--shadow-md);
+  transform: scale(1.1);
+}
+
+.step-label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-secondary);
+  transition: color 0.3s ease;
+}
+
+.step-label.active {
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+/* Success Components */
+.success-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--glass-border);
+  min-width: 320px;
+  padding: 2.5rem;
+  display: inline-block;
+}
+
+.success-icon-container {
+  width: 100px;
+  height: 100px;
+  background: rgba(var(--primary-rgb), 0.1);
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  margin: 0 auto 2rem;
+  box-shadow: 0 0 0 8px rgba(var(--primary-rgb), 0.05);
+}
+
+.success-detail-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.success-detail-icon {
+  padding: 0.75rem;
+  border-radius: 1rem;
+  background: var(--bg-primary);
+  color: var(--primary);
+  width: fit-content;
+  margin-bottom: 0.25rem;
+}
+
+.btn-sync-pill {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.25rem 1rem;
+  border-radius: 2rem;
+  background: var(--bg-secondary);
+  border: 1px solid var(--glass-border);
+  color: var(--primary);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-sync-pill:hover {
+  background: var(--bg-primary);
+  border-color: var(--primary);
+  transform: translateY(-1px);
+}
+
+.calendar-card-premium {
+  background: rgba(143, 177, 128, 0.03);
+  /* Explicit low opacity green */
+  border: 1px solid var(--glass-border);
+  border-radius: 1.5rem;
+  padding: 2rem;
+}
+
+.time-chip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1rem;
+  border-radius: 1rem;
+  font-size: 0.9rem;
+  font-weight: 700;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border: 1px solid var(--glass-border);
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.time-chip:hover:not(.active) {
+  border-color: var(--primary);
+  background: var(--bg-primary);
+}
+
+.time-chip.active {
+  background: var(--primary);
+  color: white;
+  box-shadow: var(--shadow-md);
+}
+
+
+/* Availability Indicators */
+.calendar-cell.has-avail {
+  position: relative;
+}
+
+.calendar-cell.has-avail::after {
+  content: '';
+  position: absolute;
+  bottom: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 5px;
+  height: 5px;
+  background-color: var(--primary);
+  border-radius: 50%;
+  box-shadow: 0 0 8px var(--primary);
+  transition: all 0.2s ease;
+}
+
+.calendar-cell.selected.has-avail::after {
+  background-color: white;
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+}
+
+.availability-legend {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  margin-top: 1rem;
+  font-weight: 500;
+}
+
+.legend-dot {
+  width: 6px;
+  height: 6px;
+  background-color: var(--primary);
+  border-radius: 50%;
+  display: inline-block;
+  box-shadow: 0 0 5px var(--primary);
+}

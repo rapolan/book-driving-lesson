@@ -168,19 +168,26 @@ const StudentPortal: React.FC = () => {
 
             // Try to parse existing location
             const parts = loc.split(',').map((p: string) => p.trim());
-            if (parts.length >= 3) {
-                // Format: "Street, City Zip"
-                const lastPart = parts.pop() || '';
-                const lastSpaceIndex = lastPart.lastIndexOf(' ');
-                const zip = lastSpaceIndex !== -1 ? lastPart.substring(lastSpaceIndex).trim() : '';
-                const city = lastSpaceIndex !== -1 ? lastPart.substring(0, lastSpaceIndex).trim() : lastPart;
-                const street = parts.join(', ');
-                setPickupType('address');
-                setPickupAddress({ street, city, zip, schoolName: '' });
-            } else if (parts.length === 2) {
-                // Format: "School Name, City"
-                setPickupType('school');
-                setPickupAddress({ street: '', city: parts[1], zip: '', schoolName: parts[0] });
+            if (parts.length >= 2) {
+                // Determine if it's an address (has numbers) or school (just names)
+                const hasNumbers = /\d/.test(parts[0]);
+
+                if (hasNumbers) {
+                    // It's likely an address. Let's capture the street, and everything else is city/zip
+                    const street = parts[0];
+                    const remaining = parts.slice(1).join(', ').trim();
+                    const lastSpaceIndex = remaining.lastIndexOf(' ');
+
+                    const zip = lastSpaceIndex !== -1 ? remaining.substring(lastSpaceIndex).trim() : '';
+                    const city = lastSpaceIndex !== -1 ? remaining.substring(0, lastSpaceIndex).trim() : remaining;
+
+                    setPickupType('address');
+                    setPickupAddress({ street, city, zip, schoolName: '' });
+                } else {
+                    // It's likely a school
+                    setPickupType('school');
+                    setPickupAddress({ street: '', city: parts.slice(1).join(', '), zip: '', schoolName: parts[0] });
+                }
             } else if (loc) {
                 // Fallback for single line
                 setPickupType('address');
@@ -396,13 +403,13 @@ const StudentPortal: React.FC = () => {
                                     : `${studentLeads.length > 0 ? studentLeads[0].name : 'Student'} • ${session.email} `}
                             </p>
                         </div>
-                        <div className="d-flex gap-3">
+                        <div className="portal-header-actions d-flex gap-3">
                             <button
                                 onClick={() => {
                                     setView(view === 'overview' ? 'book' : 'overview');
                                     setBookingStep(0);
                                 }}
-                                className="btn btn-primary d-flex align-items-center gap-2 p-3 rounded-3"
+                                className="btn btn-primary d-flex align-items-center justify-content-center gap-2 p-3 rounded-3 flex-grow-1"
                             >
                                 {view === 'overview' ? (
                                     <>
@@ -414,7 +421,7 @@ const StudentPortal: React.FC = () => {
                                     </>
                                 )}
                             </button>
-                            <button onClick={logout} className="btn-circle btn-icon-lg" title="Logout">
+                            <button onClick={logout} className="btn-circle btn-icon-lg flex-shrink-0" title="Logout">
                                 <LogOut size={20} />
                             </button>
                         </div>
@@ -469,7 +476,7 @@ const StudentPortal: React.FC = () => {
                                 {nextLesson && (
                                     <div className="next-lesson-card mb-4 mt-2">
                                         <Clock className="card-icon" />
-                                        <div className="d-flex justify-content-between align-items-start mb-4">
+                                        <div className="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-4">
                                             <div>
                                                 <span className="small fw-bold opacity-75 text-uppercase">Next Scheduled Lesson</span>
                                                 <h2 className="h1 m-0 mt-1 text-white">{new Date(nextLesson.date + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}</h2>
@@ -880,15 +887,15 @@ const StudentPortal: React.FC = () => {
                                     animate={{ opacity: 1, y: 0 }}
                                     exit={{ opacity: 0, y: -10 }}
                                 >
-                                    <div className="d-flex justify-content-between align-items-center mb-4">
+                                    <div className="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
                                         <button onClick={() => setBookingStep(0)} className="btn-circle btn-sm">
                                             <ChevronLeft size={18} />
                                         </button>
                                         <h3 className="h3 m-0">Select Date & Time</h3>
-                                        <div className="icon-box-lg" />
+                                        <div className="icon-box-lg border-0 bg-transparent" />
                                     </div>
 
-                                    <div className="grid grid-2 gap-5">
+                                    <div className="grid grid-2 gap-4 gap-md-5">
                                         <div>
                                             <div className="d-flex justify-content-between align-items-center mb-4">
                                                 <h4 className="h5 m-0 fw-bold">{currentMonth.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</h4>
@@ -982,12 +989,12 @@ const StudentPortal: React.FC = () => {
                                     exit={{ opacity: 0, y: -10 }}
                                     className="text-center"
                                 >
-                                    <div className="d-flex justify-content-between align-items-center mb-4">
+                                    <div className="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
                                         <button onClick={() => setBookingStep(1)} className="btn-circle btn-sm">
                                             <ChevronLeft size={18} />
                                         </button>
                                         <h3 className="h3 m-0">Final Verification</h3>
-                                        <div className="icon-box-lg" />
+                                        <div className="icon-box-lg border-0 bg-transparent" />
                                     </div>
 
                                     <div className="card-layered p-4 mb-5 text-start textured success-card w-100">
@@ -1015,62 +1022,102 @@ const StudentPortal: React.FC = () => {
                                             <label className="form-label">Pickup Location</label>
 
                                             {/* Toggle Type */}
-                                            <div className="d-flex gap-2 mb-3 p-1 bg-secondary-subtle rounded-3 border border-glass">
+                                            <div
+                                                className="d-flex gap-2 mb-4 p-1 bg-secondary-subtle rounded-3 border"
+                                                style={{ borderColor: "var(--glass-border)" }}
+                                            >
                                                 <button
-                                                    onClick={() => setPickupType('address')}
-                                                    className={`flex - grow - 1 btn btn - sm btn-toggle-option ${pickupType === 'address' ? 'bg-white shadow-sm text-primary fw-bold' : 'text-secondary'} `}
+                                                    type="button"
+                                                    onClick={() => setPickupType("address")}
+                                                    className={`flex-grow-1 small ${pickupType === "address" ? "shadow-sm text-white fw-bold" : "text-secondary hover-text-primary"}`}
+                                                    style={{
+                                                        borderRadius: "0.5rem",
+                                                        border: "none",
+                                                        cursor: "pointer",
+                                                        transition: "all 0.2s",
+                                                        padding: "0.75rem",
+                                                        background: pickupType === "address" ? "var(--primary)" : "transparent",
+                                                        color: pickupType === "address" ? "white" : "inherit"
+                                                    }}
                                                 >
-                                                    Address
+                                                    Home Address
                                                 </button>
                                                 <button
-                                                    onClick={() => setPickupType('school')}
-                                                    className={`flex - grow - 1 btn btn - sm btn-toggle-option ${pickupType === 'school' ? 'bg-white shadow-sm text-primary fw-bold' : 'text-secondary'} `}
+                                                    type="button"
+                                                    onClick={() => setPickupType("school")}
+                                                    className={`flex-grow-1 small ${pickupType === "school" ? "shadow-sm text-white fw-bold" : "text-secondary hover-text-primary"}`}
+                                                    style={{
+                                                        borderRadius: "0.5rem",
+                                                        border: "none",
+                                                        cursor: "pointer",
+                                                        transition: "all 0.2s",
+                                                        padding: "0.75rem",
+                                                        background: pickupType === "school" ? "var(--primary)" : "transparent",
+                                                        color: pickupType === "school" ? "white" : "inherit"
+                                                    }}
                                                 >
-                                                    School
+                                                    School Pickup
                                                 </button>
                                             </div>
 
                                             <div className="d-flex flex-column gap-3">
                                                 {pickupType === 'address' ? (
                                                     <>
-                                                        <input
-                                                            type="text"
-                                                            className="school-input"
-                                                            placeholder="Street Address (e.g. 123 Main St)"
-                                                            value={pickupAddress.street}
-                                                            onChange={(e) => setPickupAddress({ ...pickupAddress, street: e.target.value })}
-                                                            required={pickupType === 'address'}
-                                                        />
+                                                        <div className="position-relative">
+                                                            <MapPin size={18} className="position-absolute text-secondary" style={{ top: '50%', transform: 'translateY(-50%)', left: '1rem' }} />
+                                                            <input
+                                                                type="text"
+                                                                className="school-input"
+                                                                style={{ paddingLeft: '2.8rem' }}
+                                                                placeholder="Street Address (e.g. 123 Main St)"
+                                                                value={pickupAddress.street}
+                                                                onChange={(e) => setPickupAddress({ ...pickupAddress, street: e.target.value })}
+                                                                required={pickupType === 'address'}
+                                                            />
+                                                        </div>
                                                         <div className="d-flex gap-3">
                                                             <input
                                                                 type="text"
-                                                                className="school-input flex-2"
+                                                                className="school-input"
                                                                 placeholder="City"
                                                                 value={pickupAddress.city}
                                                                 onChange={(e) => setPickupAddress({ ...pickupAddress, city: e.target.value })}
                                                                 required={pickupType === 'address'}
+                                                                style={{ flex: 3 }}
                                                             />
                                                             <input
                                                                 type="text"
-                                                                className="school-input flex-1"
+                                                                className="school-input text-center px-1"
+                                                                placeholder="State"
+                                                                defaultValue="CA"
+                                                                required={pickupType === 'address'}
+                                                                style={{ flex: 1, minWidth: '60px' }}
+                                                            />
+                                                            <input
+                                                                type="text"
+                                                                className="school-input"
                                                                 placeholder="Zip Code"
                                                                 value={pickupAddress.zip}
                                                                 onChange={(e) => setPickupAddress({ ...pickupAddress, zip: e.target.value })}
                                                                 required={pickupType === 'address'}
+                                                                style={{ flex: 2 }}
                                                             />
                                                         </div>
                                                     </>
                                                 ) : (
                                                     <>
-                                                        <input
-                                                            type="text"
-                                                            className="school-input"
-                                                            placeholder="School Name (e.g. Eastlake High)"
-                                                            value={pickupAddress.schoolName}
-                                                            onChange={(e) => setPickupAddress({ ...pickupAddress, schoolName: e.target.value })}
-                                                            required={pickupType === 'school'}
-                                                        />
-
+                                                        <div className="position-relative">
+                                                            <MapPin size={18} className="position-absolute text-secondary" style={{ top: '50%', transform: 'translateY(-50%)', left: '1rem' }} />
+                                                            <input
+                                                                type="text"
+                                                                className="school-input"
+                                                                style={{ paddingLeft: '2.8rem' }}
+                                                                placeholder="School Name (e.g. Eastlake High)"
+                                                                value={pickupAddress.schoolName}
+                                                                onChange={(e) => setPickupAddress({ ...pickupAddress, schoolName: e.target.value })}
+                                                                required={pickupType === 'school'}
+                                                            />
+                                                        </div>
                                                     </>
                                                 )}
                                             </div>

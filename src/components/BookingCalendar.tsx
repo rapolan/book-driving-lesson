@@ -355,7 +355,7 @@ const BookingCalendar: React.FC = () => {
   return (
     <section id="booking" className="section container">
       <div className="text-center mb-5">
-        <h2 style={{ fontSize: "3rem", marginBottom: "1.5rem" }}>
+        <h2 className="booking-title mb-4">
           <span className="gradient-text">Reserve Your Session</span>
         </h2>
         <p
@@ -496,7 +496,7 @@ const BookingCalendar: React.FC = () => {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -20 }}
             >
-              <div className="d-flex justify-content-between align-items-center mb-4">
+              <div className="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
                 <h3 className="h4" style={{ fontFamily: "Outfit" }}>
                   Choose Date & Time
                 </h3>
@@ -827,7 +827,15 @@ const BookingCalendar: React.FC = () => {
                               value={pickupAddress.city}
                               onChange={(e) => setPickupAddress({ ...pickupAddress, city: e.target.value })}
                               required={pickupType === "address"}
-                              style={{ flex: 2 }}
+                              style={{ flex: 3 }}
+                            />
+                            <input
+                              type="text"
+                              className="school-input text-center px-1"
+                              placeholder="State"
+                              defaultValue="CA"
+                              required={pickupType === "address"}
+                              style={{ flex: 1, minWidth: '60px' }}
                             />
                             <input
                               type="text"
@@ -836,7 +844,7 @@ const BookingCalendar: React.FC = () => {
                               value={pickupAddress.zip}
                               onChange={(e) => setPickupAddress({ ...pickupAddress, zip: e.target.value })}
                               required={pickupType === "address"}
-                              style={{ flex: 1 }}
+                              style={{ flex: 2 }}
                             />
                           </div>
                         </>
@@ -867,7 +875,6 @@ const BookingCalendar: React.FC = () => {
                   <div className="school-input-group mb-5">
                     <label className="form-label text-uppercase small fw-bold text-secondary d-flex justify-content-between align-items-center" style={{ letterSpacing: '0.05em' }}>
                       <span>Referral Code</span>
-                      <span className="fw-normal opacity-75 text-none">Optional</span>
                     </label>
                     <div className="position-relative">
                       <Ticket size={18} className="position-absolute text-secondary" style={{ top: '50%', transform: 'translateY(-50%)', left: '1rem' }} />
@@ -875,7 +882,7 @@ const BookingCalendar: React.FC = () => {
                         type="email"
                         className="school-input"
                         style={{ paddingLeft: '2.8rem' }}
-                        placeholder="Friend's email (if you were referred)"
+                        placeholder="Friend's email (Optional)"
                         value={formData.referralCode}
                         onChange={(e) => setFormData({ ...formData, referralCode: e.target.value })}
                       />

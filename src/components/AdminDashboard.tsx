@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Users, Calendar, Download, Trash2, ExternalLink, ShieldCheck } from 'lucide-react';
+import { getInstructorConfig } from '../utils/bookingUtils';
 import '../styles/components/AdminDashboard.css';
 
 interface Lead {
@@ -27,22 +28,7 @@ const AdminDashboard: React.FC = () => {
     const [activeInstructor, setActiveInstructor] = useState<string>("Rob Polan");
 
     // Default Availability matching BookingCalendar.tsx
-    const defaultAvail = {
-        enabled: true,
-        days: {
-            0: { enabled: false, start: '09:00', end: '17:00' },
-            1: { enabled: true, start: '09:00', end: '18:00' },
-            2: { enabled: true, start: '09:00', end: '18:00' },
-            3: { enabled: true, start: '09:00', end: '18:00' },
-            4: { enabled: true, start: '09:00', end: '18:00' },
-            5: { enabled: true, start: '09:00', end: '18:00' },
-            6: { enabled: false, start: '09:00', end: '17:00' }
-        },
-        excludedDates: [] as string[],
-        googleScriptUrl: ''
-    };
-
-    const [availDraft, setAvailDraft] = useState(defaultAvail);
+    const [availDraft, setAvailDraft] = useState(getInstructorConfig(activeInstructor));
 
     useEffect(() => {
         const storedLeads = JSON.parse(localStorage.getItem('driving_leads') || '[]');
@@ -50,8 +36,7 @@ const AdminDashboard: React.FC = () => {
     }, []);
 
     useEffect(() => {
-        const stored = JSON.parse(localStorage.getItem(`availability_${activeInstructor}`) || 'null');
-        setAvailDraft(stored || defaultAvail);
+        setAvailDraft(getInstructorConfig(activeInstructor));
     }, [activeInstructor]);
 
     const saveAvailability = () => {
@@ -115,7 +100,7 @@ const AdminDashboard: React.FC = () => {
     }
 
     return (
-        <div className="section container">
+        <div className="section container dashboard-page-section">
             <div className="dashboard-narrow">
                 <div className="dashboard-header flex-wrap gap-4">
                     <div>
@@ -232,7 +217,7 @@ const AdminDashboard: React.FC = () => {
                         )}
                     </div>
                 ) : (
-                    <div className="card-layered textured p-5 bg-primary">
+                    <div className="card-layered textured p-5">
                         <div className="d-flex justify-content-between align-items-center mb-5">
                             <div>
                                 <h2 className="h2 mb-1">Working Hours & Availability</h2>
@@ -346,13 +331,13 @@ const AdminDashboard: React.FC = () => {
 
                             <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
                                 {availDraft.excludedDates.length === 0 && <p className="small text-secondary italic">No dates blocked.</p>}
-                                {availDraft.excludedDates.map(date => (
+                                {availDraft.excludedDates.map((date: string) => (
                                     <div key={date} className="blocked-date-badge">
                                         <span className="small">{new Date(date + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
                                         <button
                                             onClick={() => setAvailDraft({
                                                 ...availDraft,
-                                                excludedDates: availDraft.excludedDates.filter(d => d !== date)
+                                                excludedDates: availDraft.excludedDates.filter((d: string) => d !== date)
                                             })}
                                             className="btn-remove-blocked"
                                         >

@@ -220,6 +220,46 @@ h6,
   font-family: 'Outfit', sans-serif;
 }
 
+/* Grid Utilities */
+.grid {
+  display: grid !important;
+}
+
+.grid-2 {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.grid-3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.grid-4 {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.grid-3-cols {
+  grid-template-columns: 140px 100px 1fr;
+}
+
+.col-span-all {
+  grid-column: 1 / -1;
+}
+
+.gap-1 {
+  gap: 0.25rem;
+}
+
+@media (max-width: 768px) {
+
+  .grid-2,
+  .grid-3,
+  .grid-4,
+  .grid-3-cols {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+}
+
 @media (max-width: 400px) {
 
   /* Prevent awkward word breaks on super narrow Android screens */

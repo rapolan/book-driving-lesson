@@ -31,6 +31,7 @@ const StudentPortal: React.FC = () => {
     const [isSending, setIsSending] = useState(false);
     const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
     const [session, setSession] = useState<SessionData | null>(null);
+    const hasValidatedMagicLink = React.useRef(false);
     const [studentLeads, setStudentLeads] = useState<any[]>([]);
     const [view, setView] = useState<'overview' | 'book'>('overview');
 
@@ -70,12 +71,15 @@ const StudentPortal: React.FC = () => {
     const [expandedResource, setExpandedResource] = useState<string | null>(null);
 
     useEffect(() => {
+        if (hasValidatedMagicLink.current) return;
+
         // 1. Check for token in URL
         const params = new URLSearchParams(window.location.search);
         const token = params.get('token');
         const email = params.get('email');
 
         if (token && email) {
+            hasValidatedMagicLink.current = true;
             validateMagicLink(email, token);
             // Clear URL params
             window.history.replaceState({}, document.title, window.location.pathname);
@@ -140,7 +144,17 @@ const StudentPortal: React.FC = () => {
     };
 
     const validateMagicLink = (email: string, token: string) => {
-        const storedToken = localStorage.getItem(`magic_token_${email}`);
+        const emailToUse = email.trim();
+        const storedToken = localStorage.getItem(`magic_token_${emailToUse}`);
+
+        console.log("Validating Magic Link:", {
+            providedEmail: email,
+            trimmedEmail: emailToUse,
+            providedToken: token,
+            storedToken: storedToken,
+            match: storedToken === token
+        });
+
         if (storedToken === token) {
             const newSession = {
                 email,
@@ -202,10 +216,12 @@ const StudentPortal: React.FC = () => {
         setIsSending(true);
         setMessage(null);
 
+        const emailToUse = loginEmail.trim();
+
         // Check if student exists (by student email or guardian email)
         const allLeads = JSON.parse(localStorage.getItem('driving_leads') || '[]');
         const exists = allLeads.some((l: any) =>
-            l.email === loginEmail || l.guardians?.some((g: any) => g.email === loginEmail)
+            l.email?.trim() === emailToUse || l.guardians?.some((g: any) => g.email?.trim() === emailToUse)
         );
 
         if (!exists) {
@@ -215,9 +231,8 @@ const StudentPortal: React.FC = () => {
         }
 
         const token = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-        localStorage.setItem(`magic_token_${loginEmail}`, token);
+        localStorage.setItem(`magic_token_${emailToUse}`, token);
 
-        const emailToUse = loginEmail.trim();
         const magicLink = `${window.location.origin}${window.location.pathname}?token=${token}&email=${emailToUse}`;
 
         try {

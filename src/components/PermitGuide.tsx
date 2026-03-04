@@ -204,7 +204,8 @@ const PermitGuide: React.FC = () => {
                     <motion.h1
                         initial={{ opacity: 0, y: -20 }}
                         animate={{ opacity: 1, y: 0 }}
-                        style={{ fontSize: '3.5rem', marginBottom: '1rem' }}
+                        className="display-large"
+                        style={{ marginBottom: '1rem' }}
                     >
                         California <span style={{ color: 'var(--primary)' }}>Permit Guide</span>
                     </motion.h1>
@@ -317,7 +318,7 @@ const PermitGuide: React.FC = () => {
                                             <module.icon size={32} />
                                         </div>
                                         <div style={{ flex: 1, paddingTop: '0.5rem' }}>
-                                            <h2 style={{ fontSize: '3rem', marginBottom: '1.5rem', color: 'var(--text-primary)', fontWeight: 800 }}>{module.title}</h2>
+                                            <h2 className="display-small" style={{ marginBottom: '1.5rem', color: 'var(--text-primary)', fontWeight: 800 }}>{module.title}</h2>
                                             <div style={{ color: 'var(--text-secondary)', fontSize: '1.25rem', lineHeight: 1.6 }}>
                                                 {module.content}
                                             </div>

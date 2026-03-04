@@ -12,7 +12,7 @@ const SuccessSection: React.FC = () => {
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
                     >
-                        <h2 style={{ fontSize: '3rem', marginBottom: '1.5rem', fontWeight: 800 }}>Master the Road. <span style={{ color: 'var(--primary)' }}>Earn Your License.</span></h2>
+                        <h2 className="display-small" style={{ marginBottom: '1.5rem', fontWeight: 800 }}>Master the Road. <span style={{ color: 'var(--primary)' }}>Earn Your License.</span></h2>
                         <p className="body-large text-secondary" style={{ maxWidth: '700px', margin: '0 auto' }}>
                             A driver&apos;s license is more than identification. It&apos;s the key to your independence and lifelong safety and confidence on the road.
                         </p>
@@ -27,7 +27,7 @@ const SuccessSection: React.FC = () => {
                         className="card-layered textured"
                         style={{ backgroundColor: 'var(--primary)', color: 'white', border: 'none' }}
                     >
-                        <h3 style={{ fontSize: '2rem', marginBottom: '2rem', color: 'white' }}>Clear Outcomes</h3>
+                        <h3 className="h2" style={{ marginBottom: '2rem', color: 'white' }}>Clear Outcomes</h3>
                         <ul style={{ listStyle: 'none', padding: 0 }}>
                             {[
                                 { icon: Map, text: "Successfully earn your state-certified license." },
@@ -48,7 +48,7 @@ const SuccessSection: React.FC = () => {
                         viewport={{ once: true }}
                         className="card-layered textured"
                     >
-                        <h3 style={{ fontSize: '2rem', marginBottom: '2rem' }}>Avoid the Risk</h3>
+                        <h3 className="h2" style={{ marginBottom: '2rem' }}>Avoid the Risk</h3>
                         <p style={{ color: 'var(--text-secondary)', marginBottom: '1.5rem', fontSize: '1.125rem' }}>
                             Don't leave your safety to chance:
                         </p>

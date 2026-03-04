@@ -16,8 +16,8 @@ const About: React.FC = () => {
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.6 }}
                         >
-                            <h1 style={{ fontSize: '4rem', marginBottom: '1.5rem', fontWeight: 800 }}>
-                                Expert <span style={{ color: 'var(--primary)' }}>Instruction</span>
+                            <h1 className="display-small" style={{ marginBottom: '1.5rem', fontWeight: 800 }}>
+                                Meet Nat & Rob: <span style={{ color: 'var(--primary)' }}>The Sibling Duo.</span>
                             </h1>
                             <p style={{ fontSize: '1.25rem', color: 'var(--text-secondary)', maxWidth: '750px', margin: '0 auto', lineHeight: 1.6 }}>
                                 A personalized, family-run approach to safe driving. We are licensed instructors partnered with Budget Driving School LLC to render professional road training services.
@@ -33,7 +33,7 @@ const About: React.FC = () => {
                             viewport={{ once: true }}
                         >
                             <div className="badge">The Instructors</div>
-                            <h2 style={{ fontSize: '2.5rem', marginBottom: '1.5rem' }}>Siblings in Safety</h2>
+                            <h2 className="h1" style={{ marginBottom: '1.5rem' }}>Siblings in Safety</h2>
                             <p style={{ fontSize: '1.125rem', color: 'var(--text-secondary)', lineHeight: 1.8, marginBottom: '2rem' }}>
                                 We started this journey with a shared mission: to provide patient, consistent instruction for students and their families. We aren't a high-volume factory; we are individual licensed instructors who care about your progress.
                             </p>
@@ -59,7 +59,7 @@ const About: React.FC = () => {
                     {/* Values Grid */}
                     <div style={{ marginBottom: '8rem' }}>
                         <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
-                            <h2 style={{ fontSize: '2.5rem' }}>Our Core Pillars</h2>
+                            <h2 className="h1">Our Core Pillars</h2>
                         </div>
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2rem' }}>
                             {[
@@ -101,7 +101,7 @@ const About: React.FC = () => {
                                     }}>
                                         <pillar.icon size={30} />
                                     </div>
-                                    <h3 style={{ fontSize: '1.5rem', marginBottom: '1rem' }}>{pillar.title}</h3>
+                                    <h3 className="h3" style={{ marginBottom: '1rem' }}>{pillar.title}</h3>
                                     <p style={{ color: 'var(--text-secondary)', lineHeight: 1.6 }}>{pillar.desc}</p>
                                 </motion.div>
                             ))}
@@ -119,8 +119,8 @@ const About: React.FC = () => {
                         viewport={{ once: true }}
                     >
                         <div className="card-layered textured-asphalt text-center" style={{ maxWidth: '800px', margin: '0 auto', border: '1px solid var(--glass-border)' }}>
-                            <h2 style={{ fontSize: '3rem', marginBottom: '1.5rem', fontWeight: 800 }}>
-                                Join the <span className="gradient-text">Family</span>
+                            <h2 className="display-small" style={{ marginBottom: '1.5rem', fontWeight: 800 }}>
+                                Our Training <span className="gradient-text">Philosophy.</span>
                             </h2>
                             <p className="body-large text-secondary" style={{ maxWidth: '600px', margin: '0 auto 3rem auto' }}>
                                 Connect with professional instructors who prioritize your safety and comfort.

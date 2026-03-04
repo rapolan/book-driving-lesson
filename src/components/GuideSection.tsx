@@ -43,7 +43,7 @@ const GuideSection: React.FC = () => {
                         whileInView={{ opacity: 1, x: 0 }}
                         viewport={{ once: true }}
                     >
-                        <h2 style={{ fontSize: '3rem', marginBottom: '1.5rem' }}>Expert Training. <span style={{ color: 'var(--primary)' }}>Proven Results.</span></h2>
+                        <h2 className="display-small" style={{ marginBottom: '1.5rem' }}>Expert Training. <span style={{ color: 'var(--primary)' }}>Proven Results.</span></h2>
                         <p style={{ fontSize: '1.25rem', color: 'var(--text-secondary)', marginBottom: '2rem', lineHeight: 1.6 }}>
                             We provide high-quality driver education that students enjoy and parents trust, focusing on building safe, capable drivers through clear and professional training.
                         </p>

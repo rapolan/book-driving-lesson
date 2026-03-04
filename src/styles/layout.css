@@ -29,9 +29,17 @@
   /* Healthy mobile sections */
 }
 
+.dashboard-page-section {
+  padding-top: 8rem !important;
+}
+
 @media (min-width: 768px) {
   .section {
     padding: 5rem 0;
+  }
+
+  .dashboard-page-section {
+    padding-top: 10rem !important;
   }
 }
 

@@ -385,7 +385,7 @@ const StudentPortal: React.FC = () => {
     const nextLesson = studentLeads.find(l => new Date(l.date).getTime() >= new Date().setHours(0, 0, 0, 0));
 
     return (
-        <div className="section container portal-page-container">
+        <div className="section container portal-page-container dashboard-page-section">
             <div className="dashboard-narrow">
                 {/* High-Fidelity Header Area */}
                 <div className="portal-header text-start">

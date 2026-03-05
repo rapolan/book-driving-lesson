@@ -28,8 +28,7 @@ const Hero: React.FC = () => {
                         transition={{ duration: 0.8 }}
                     >
                         <h1 className="hero-title">
-                            Expert Driver Training. <br />
-                            <span className="hero-title-highlight">A Clear Path to Your License.</span>
+                            Master the Road with <span className="text-accent">Confidence.</span>
                         </h1>
                         <p className="hero-subtitle">
                             Expert instruction from a dedicated sibling duo. We guide you and your family through every step of the process with a personal, professional touch.

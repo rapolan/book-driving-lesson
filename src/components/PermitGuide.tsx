@@ -195,74 +195,49 @@ const PermitGuide: React.FC = () => {
     const activeModules = ageGroup === 'under-18' ? under18Modules : over18Modules;
 
     return (
-        <div className="permit-guide-page">
+        <div className="permit-guide-page page-top-padding">
             <div className="container">
                 <header style={{ textAlign: 'center', marginBottom: '4rem' }}>
                     <motion.h1
                         initial={{ opacity: 0, y: -20 }}
                         animate={{ opacity: 1, y: 0 }}
                         className="display-large"
-                        style={{ marginBottom: '1rem' }}
+                        style={{ marginBottom: '1.5rem' }}
                     >
-                        California <span style={{ color: 'var(--primary)' }}>Permit Guide</span>
+                        California <span className="text-accent">Permit Guide</span>
                     </motion.h1>
-                    <p className="body-large text-secondary" style={{ maxWidth: '600px', margin: '0 auto', marginBottom: '3rem' }}>
+                    <p className="body-large text-secondary" style={{ maxWidth: '800px', margin: '0 auto' }}>
                         Everything you need to know about getting your learner's permit in California.
                     </p>
-
-                    {/* Age Toggle */}
-                    <div style={{
-                        display: 'inline-flex',
-                        backgroundColor: 'var(--bg-secondary)',
-                        padding: '0.5rem',
-                        borderRadius: '1rem',
-                        border: '1px solid var(--glass-border)',
-                        boxShadow: 'var(--shadow-sm)'
-                    }}>
-                        {[
-                            { id: 'under-18', label: 'Under 18' },
-                            { id: 'over-18', label: 'Over 18' }
-                        ].map((choice) => (
-                            <button
-                                key={choice.id}
-                                onClick={() => setAgeGroup(choice.id as any)}
-                                className="body-large"
-                                style={{
-                                    padding: '1.5rem',
-                                    width: '100%',
-                                    borderRadius: '0.5rem',
-                                    border: 'none',
-                                    cursor: 'pointer',
-                                    fontWeight: 700,
-                                    position: 'relative',
-                                    backgroundColor: 'transparent',
-                                    color: ageGroup === choice.id ? '#ffffff' : 'var(--text-secondary)',
-                                    textAlign: 'left',
-                                    transition: 'color 0.3s ease',
-                                    zIndex: 1
-                                }}
-                            >
-                                {choice.label}
-                                {ageGroup === choice.id && (
-                                    <motion.div
-                                        layoutId="active-tab"
-                                        style={{
-                                            position: 'absolute',
-                                            inset: 0,
-                                            backgroundColor: 'var(--primary)',
-                                            borderRadius: '0.5rem',
-                                            zIndex: -1
-                                        }}
-                                        transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}
-                                    />
-                                )}
-                            </button>
-                        ))}
-                    </div>
                 </header>
 
+                <div className="age-toggle-container">
+                    {[
+                        { id: 'under-18', label: 'Under 18' },
+                        { id: 'over-18', label: 'Over 18' }
+                    ].map((choice) => (
+                        <button
+                            key={choice.id}
+                            onClick={() => setAgeGroup(choice.id as any)}
+                            className="body-large age-toggle-btn"
+                            style={{
+                                color: ageGroup === choice.id ? '#ffffff' : 'var(--text-secondary)',
+                                zIndex: 1
+                            }}
+                        >
+                            {choice.label}
+                            {ageGroup === choice.id && (
+                                <motion.div
+                                    layoutId="active-tab"
+                                    className="age-toggle-active-bg"
+                                    transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}
+                                />
+                            )}
+                        </button>
+                    ))}
+                </div>
+
                 <div className="guide-modules" style={{ position: 'relative' }}>
-                    {/* Vertical Road Line Connection */}
                     <div style={{
                         position: 'absolute',
                         left: '32px',
@@ -330,7 +305,6 @@ const PermitGuide: React.FC = () => {
                 </div>
             </div>
 
-            {/* Final CTA Full Width using wallpaper-cone style */}
             <section className="section wallpaper-cone" style={{ borderTop: '1px solid var(--glass-border)', backgroundColor: 'var(--bg-primary)', marginTop: '4rem' }}>
                 <div className="container" style={{ textAlign: 'center' }}>
                     <motion.div
@@ -340,7 +314,7 @@ const PermitGuide: React.FC = () => {
                     >
                         <div className="card-layered textured-asphalt text-center" style={{ maxWidth: '800px', margin: '0 auto', border: '1px solid var(--glass-border)' }}>
                             <h2 className="display-small" style={{ marginBottom: '1.5rem', fontWeight: 800 }}>
-                                Ready to Start <span className="gradient-text">Driving?</span>
+                                Ready to Start <span className="text-accent">Driving?</span>
                             </h2>
                             <p className="body-large text-secondary" style={{ maxWidth: '600px', margin: '0 auto 3rem auto' }}>
                                 Book your behind-the-wheel training to validate your permit with our expert instructors.

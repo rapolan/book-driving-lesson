@@ -8,8 +8,6 @@ import {
   Users,
   MapPin,
   Loader2,
-  ChevronLeft,
-  ChevronRight,
   AlertCircle,
   CreditCard,
   Mail,
@@ -33,6 +31,7 @@ import {
   EMAILJS_TEMPLATE_ID,
   EMAILJS_PUBLIC_KEY,
 } from "../utils/bookingUtils";
+import CalendarGrid from "./shared/CalendarGrid";
 
 const BookingCalendar: React.FC = () => {
   const [selectedInstructor, setSelectedInstructor] = useState<string | null>(
@@ -122,44 +121,7 @@ const BookingCalendar: React.FC = () => {
     }
   }, []);
 
-  const getDaysInMonth = (month: Date) => {
-    const year = month.getFullYear();
-    const m = month.getMonth();
-    const firstDay = new Date(year, m, 1).getDay();
-    const daysInMonth = new Date(year, m + 1, 0).getDate();
 
-    const days = [];
-    // Add padding for previous month
-    for (let i = 0; i < firstDay; i++) {
-      days.push(null);
-    }
-    // Add actual days
-    for (let i = 1; i <= daysInMonth; i++) {
-      days.push(new Date(year, m, i));
-    }
-    return days;
-  };
-
-  const nextMonth = () => {
-    setCurrentMonth(
-      new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1),
-    );
-  };
-
-  const prevMonth = () => {
-    const now = new Date();
-    const prev = new Date(
-      currentMonth.getFullYear(),
-      currentMonth.getMonth() - 1,
-      1,
-    );
-    if (
-      prev.getMonth() >= now.getMonth() ||
-      prev.getFullYear() > now.getFullYear()
-    ) {
-      setCurrentMonth(prev);
-    }
-  };
 
   const generateTimeSlots = (date: Date) => {
     return baseGenerateTimeSlots(
@@ -353,19 +315,18 @@ const BookingCalendar: React.FC = () => {
   };
 
   return (
-    <section id="booking" className="section container">
+    <section id="booking" className="section container page-top-padding">
       <div className="text-center mb-5">
         <h2 className="display-small mb-4">
-          <span className="gradient-text">Reserve Your Session</span>
+          <span className="text-accent">Reserve Your Session</span>
         </h2>
         <p
-          className="body-large text-secondary mx-auto"
-          style={{ maxWidth: "600px" }}
+          className="body-large text-secondary text-center mx-auto"
+          style={{ maxWidth: '800px', display: 'block' }}
         >
-          Expert instruction tailored to your schedule. Start your journey with
-          confidence.
+          Expert instruction tailored to your schedule. Start your journey with confidence.
         </p>
-        <p className="mt-3 small" style={{ color: "var(--text-secondary)" }}>
+        <p className="mt-3 small text-center" style={{ color: "var(--text-secondary)" }}>
           Returning student?{" "}
           <a
             href="/portal"
@@ -393,7 +354,7 @@ const BookingCalendar: React.FC = () => {
           </div>
 
           <div
-            className="d-flex justify-content-between align-items-center position-relative"
+            className="d-flex w-100 justify-content-between align-items-center position-relative"
             style={{ zIndex: 1 }}
           >
             {[0, 1, 2, 3].map((step) => {
@@ -440,7 +401,7 @@ const BookingCalendar: React.FC = () => {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -20 }}
             >
-              <h3 className="h3 mb-4" style={{ fontFamily: "Outfit" }}>
+              <h3 className="h3 text-center" style={{ fontFamily: "Outfit", marginBottom: '2.5rem' }}>
                 Select Your Instructor
               </h3>
               <div className="school-instructor-grid">
@@ -492,104 +453,47 @@ const BookingCalendar: React.FC = () => {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -20 }}
             >
-              <div className="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
-                <h3 className="h3" style={{ fontFamily: "Outfit" }}>
-                  Choose Date & Time
-                </h3>
-                <div className="d-flex align-items-center gap-2 text-secondary small">
-                  {isSyncing ? (
-                    <div
-                      className="d-flex align-items-center gap-2 px-3 py-1 rounded-pill"
-                      style={{
-                        background: "var(--bg-secondary)",
-                        border: "1px solid var(--glass-border)",
-                      }}
-                    >
-                      <Loader2 size={14} className="animate-spin" />
-                      <span>Syncing...</span>
-                    </div>
-                  ) : (
-                    <button
-                      onClick={() =>
-                        selectedDate &&
-                        fetchGoogleAvailability(parseLocalDate(selectedDate))
-                      }
-                      className="btn-sync-pill"
-                    >
-                      <CheckCircle size={14} />
-                      Live Availability (Refresh)
-                    </button>
-                  )}
-                </div>
-              </div>
-              <div className="calendar-card-premium mb-4">
-                <div className="calendar-header mb-4">
-                  <h4 className="h5 m-0 fw-bold text-capitalize">
-                    {currentMonth.toLocaleDateString("en-US", {
-                      month: "long",
-                      year: "numeric",
-                    })}
-                  </h4>
-                  <div className="d-flex gap-2">
-                    <button onClick={prevMonth} className="btn-circle">
-                      <ChevronLeft size={20} />
-                    </button>
-                    <button onClick={nextMonth} className="btn-circle">
-                      <ChevronRight size={20} />
-                    </button>
+              <h3 className="h3 mb-4 text-center" style={{ fontFamily: "Outfit" }}>
+                Choose Date & Time
+              </h3>
+              <div className="d-flex justify-content-center align-items-center gap-2 text-secondary small mb-4">
+                {isSyncing ? (
+                  <div
+                    className="d-flex align-items-center gap-2 px-3 py-1 rounded-pill"
+                    style={{
+                      background: "var(--bg-secondary)",
+                      border: "1px solid var(--glass-border)",
+                    }}
+                  >
+                    <Loader2 size={14} className="animate-spin" />
+                    <span>Syncing...</span>
                   </div>
-                </div>
-
-                <div className="calendar-grid">
-                  {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map(
-                    (day) => (
-                      <div
-                        key={day}
-                        className="calendar-day-header"
-                        style={{ fontWeight: 800 }}
-                      >
-                        {day}
-                      </div>
-                    ),
-                  )}
-                  {getDaysInMonth(currentMonth).map((date, i) => {
-                    if (!date)
-                      return (
-                        <div
-                          key={`empty-${i}`}
-                          className="calendar-cell outside"
-                        />
-                      );
-
-                    const dateKey = toLocalISOString(date);
-                    const isSelected = selectedDate === dateKey;
-                    const isToday =
-                      toLocalISOString(date) === toLocalISOString(new Date());
-                    const isPast =
-                      date < new Date(new Date().setHours(0, 0, 0, 0));
-                    const hasAvail =
-                      !isPast && generateTimeSlots(date).length > 0;
-
-                    return (
-                      <button
-                        key={dateKey}
-                        disabled={isPast}
-                        onClick={() => {
-                          setSelectedDate(dateKey);
-                          setSelectedTime(null);
-                        }}
-                        className={`calendar-cell ${isSelected ? "selected" : ""} ${isToday ? "today" : ""} ${hasAvail ? "has-avail" : ""}`}
-                      >
-                        {date.getDate()}
-                      </button>
-                    );
-                  })}
-                </div>
-                <div className="availability-legend">
-                  <span className="legend-dot"></span>
-                  <span>Available Days</span>
-                </div>
+                ) : (
+                  <button
+                    onClick={() =>
+                      selectedDate &&
+                      fetchGoogleAvailability(parseLocalDate(selectedDate))
+                    }
+                    className="btn-sync-pill"
+                  >
+                    <CheckCircle size={14} />
+                    Live Availability (Refresh)
+                  </button>
+                )}
               </div>
+              <CalendarGrid
+                currentMonth={currentMonth}
+                selectedDate={selectedDate}
+                onDateSelect={(dateKey) => {
+                  setSelectedDate(dateKey);
+                  setSelectedTime(null);
+                }}
+                onMonthChange={(direction) => {
+                  const newMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + (direction === 'next' ? 1 : -1), 1);
+                  setCurrentMonth(newMonth);
+                }}
+                generateTimeSlots={(date) => generateTimeSlots(date)}
+              />
 
               {selectedDate && (
                 <motion.div
@@ -663,7 +567,7 @@ const BookingCalendar: React.FC = () => {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -20 }}
             >
-              <h3 className="h3 mb-4" style={{ fontFamily: "Outfit" }}>
+              <h3 className="h3 mb-4 text-center" style={{ fontFamily: "Outfit" }}>
                 Complete Registration
               </h3>
               <form onSubmit={handleSubmit} className="d-flex flex-column gap-4">

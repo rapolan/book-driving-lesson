@@ -12,7 +12,7 @@ const SuccessSection: React.FC = () => {
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
                     >
-                        <h2 className="display-small" style={{ marginBottom: '1.5rem', fontWeight: 800 }}>Master the Road. <span style={{ color: 'var(--primary)' }}>Earn Your License.</span></h2>
+                        <h2 className="display-small" style={{ marginBottom: '1.5rem', fontWeight: 800 }}>Master the Road. <span className="text-accent">Earn Your License.</span></h2>
                         <p className="body-large text-secondary" style={{ maxWidth: '700px', margin: '0 auto' }}>
                             A driver&apos;s license is more than identification. It&apos;s the key to your independence and lifelong safety and confidence on the road.
                         </p>

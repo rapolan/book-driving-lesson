@@ -6,5 +6,7 @@
 @import './styles/components/App.css';
 @import './styles/components/Navbar.css';
 @import './styles/components/Hero.css';
+@import './styles/components/ProblemSection.css';
+@import './styles/components/GuideSection.css';
 
 /* Original index.css has been modularized. Legacy component styles are in components/legacy.css. */

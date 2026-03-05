@@ -1,0 +1,85 @@
+.guide-grid {
+    align-items: center;
+    gap: 4rem;
+}
+
+@media (max-width: 768px) {
+    .guide-grid {
+        gap: 2rem;
+    }
+}
+
+.guide-image-container {
+    position: relative;
+    width: 100%;
+}
+
+.guide-image {
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    background-color: var(--bg-secondary);
+    border-radius: 2rem;
+    background-image: url("/anime-dmv.webp");
+    background-size: cover;
+    background-position: center;
+    box-shadow: var(--shadow-lg);
+}
+
+@media (max-width: 768px) {
+    .guide-image {
+        aspect-ratio: 1 / 1;
+    }
+}
+
+.guide-badge-floating {
+    position: absolute;
+    top: 2rem;
+    right: -2rem;
+    padding: 2rem;
+    border-radius: 1.5rem;
+    box-shadow: var(--shadow-lg);
+    z-index: 2;
+}
+
+@media (max-width: 1024px) {
+    .guide-badge-floating {
+        right: 1rem;
+        top: 1rem;
+        padding: 1.5rem;
+    }
+}
+
+.guide-title {
+    margin-bottom: 1.5rem;
+}
+
+.guide-content-text {
+    margin-bottom: 2rem;
+    line-height: 1.6;
+}
+
+.guide-items-list {
+    display: grid;
+    gap: 1.5rem;
+}
+
+.guide-item {
+    display: flex;
+    gap: 1.5rem;
+    align-items: flex-start;
+}
+
+.guide-item-icon-wrapper {
+    background-color: var(--bg-secondary);
+    padding: 0.75rem;
+    border-radius: 1rem;
+    flex-shrink: 0;
+}
+
+.guide-item-title {
+    margin-bottom: 0.5rem;
+}
+
+.guide-item-desc {
+    color: var(--text-secondary);
+}

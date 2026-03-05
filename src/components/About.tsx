@@ -6,20 +6,20 @@ import { Users, Heart, Shield, Star } from 'lucide-react';
 const About: React.FC = () => {
     const navigate = useNavigate();
     return (
-        <div className="about-page">
+        <div className="about-page page-top-padding">
             <section className="section">
                 <div className="container">
                     {/* Hero Section */}
-                    <header style={{ textAlign: 'center', marginBottom: '6rem', marginTop: '4rem' }}>
+                    <header style={{ textAlign: 'center', marginBottom: '4rem' }}>
                         <motion.div
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.6 }}
                         >
-                            <h1 className="display-small" style={{ marginBottom: '1.5rem', fontWeight: 800 }}>
-                                Meet Nat & Rob: <span style={{ color: 'var(--primary)' }}>The Sibling Duo.</span>
+                            <h1 className="display-large" style={{ marginBottom: '1.5rem', fontWeight: 800 }}>
+                                Meet Nat & Rob: <span className="text-accent">The Sibling Duo.</span>
                             </h1>
-                            <p className="body-large text-secondary" style={{ maxWidth: '750px', margin: '0 auto', lineHeight: 1.6 }}>
+                            <p className="body-large text-secondary" style={{ maxWidth: '800px', margin: '0 auto' }}>
                                 A personalized, family-run approach to safe driving. We are licensed instructors partnered with Budget Driving School LLC to render professional road training services.
                             </p>
                         </motion.div>
@@ -47,7 +47,7 @@ const About: React.FC = () => {
                             whileInView={{ opacity: 1, scale: 1 }}
                             viewport={{ once: true }}
                             className="card-layered textured"
-                            style={{ height: '400px', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'var(--bg-secondary)' }}
+                            style={{ minHeight: '300px', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'var(--bg-secondary)', padding: '2rem' }}
                         >
                             <div style={{ textAlign: 'center' }}>
                                 <Users size={80} color="var(--primary)" style={{ opacity: 0.5, marginBottom: '1rem' }} />
@@ -121,7 +121,7 @@ const About: React.FC = () => {
                     >
                         <div className="card-layered textured-asphalt text-center" style={{ maxWidth: '800px', margin: '0 auto', border: '1px solid var(--glass-border)' }}>
                             <h2 className="display-small" style={{ marginBottom: '1.5rem', fontWeight: 800 }}>
-                                Our Training <span className="gradient-text">Philosophy.</span>
+                                Our Training <span className="text-accent">Philosophy.</span>
                             </h2>
                             <p className="body-large text-secondary" style={{ maxWidth: '600px', margin: '0 auto 3rem auto' }}>
                                 Connect with professional instructors who prioritize your safety and comfort.

@@ -717,32 +717,48 @@
 
 .road-stepper {
   position: relative;
-  padding: 0 1rem;
+  padding: 0;
   margin-bottom: 3rem;
+}
+
+@media (max-width: 768px) {
+  .road-stepper {
+    margin-bottom: 2rem;
+  }
 }
 
 .road-stepper-line {
   position: absolute;
   top: 21px;
-  left: 40px;
-  right: 40px;
+  left: 30px;
+  right: 30px;
   height: 2px;
   background: var(--glass-border);
   z-index: 0;
 }
 
+@media (max-width: 768px) {
+  .road-stepper-line {
+    left: 20px;
+    right: 20px;
+  }
+}
+
 .road-stepper-progress {
   height: 100%;
   background: var(--accent);
+  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .step-item {
-  width: 80px;
+  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   position: relative;
   z-index: 1;
+  text-align: center;
 }
 
 .step-circle {
@@ -761,6 +777,14 @@
   margin-bottom: 0.5rem;
 }
 
+@media (max-width: 480px) {
+  .step-circle {
+    width: 36px;
+    height: 36px;
+    font-size: 0.9rem;
+  }
+}
+
 .step-circle.active {
   background: var(--primary);
   border-color: var(--primary);
@@ -770,12 +794,24 @@
 }
 
 .step-label {
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.05em;
+  text-align: center;
   color: var(--text-secondary);
+  width: 100%;
   transition: color 0.3s ease;
+}
+
+@media (max-width: 480px) {
+  .step-label {
+    font-size: 0.6rem;
+    max-width: 60px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 }
 
 .step-label.active {

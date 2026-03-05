@@ -18,6 +18,9 @@ import {
     type PaymentMethod,
     PAYMENT_METHODS
 } from '../utils/bookingUtils';
+import StatCard from './shared/StatCard';
+import ResourceCard from './shared/ResourceCard';
+import CalendarGrid from './shared/CalendarGrid';
 
 
 interface SessionData {
@@ -353,16 +356,6 @@ const StudentPortal: React.FC = () => {
         }
     };
 
-    const getDaysInMonth = (month: Date) => {
-        const year = month.getFullYear();
-        const m = month.getMonth();
-        const firstDay = new Date(year, m, 1).getDay();
-        const daysInMonth = new Date(year, m + 1, 0).getDate();
-        const days = [];
-        for (let i = 0; i < firstDay; i++) days.push(null);
-        for (let i = 1; i <= daysInMonth; i++) days.push(new Date(year, m, i));
-        return days;
-    };
 
     if (!session) {
         return (
@@ -420,18 +413,17 @@ const StudentPortal: React.FC = () => {
         <div className="section container portal-page-container dashboard-page-section">
             <div className="dashboard-narrow">
                 {/* High-Fidelity Header Area */}
-                <div className="portal-header text-start">
+                <div className="portal-header text-start mb-4">
                     <div className="d-flex justify-content-between align-items-center flex-wrap gap-4">
                         <div>
-                            <div className="d-flex align-items-center gap-2 mb-2">
-                                <span className="portal-badge">
-                                    Student Portal
-                                </span>
+                            <div className="d-flex align-items-center gap-2 mb-1">
+                                <span className="portal-badge">Student Portal</span>
+                                <span className="text-secondary small fw-bold text-uppercase opacity-75">• {studentLeads.length > 0 && studentLeads[0].email !== session.email ? 'Guardian Access' : 'Active Account'}</span>
                             </div>
-                            <h1 className="h1 mb-1">Welcome Back 👋</h1>
-                            <p className="text-secondary m-0">
+                            <h1 className="display-small m-0">Welcome Back 👋</h1>
+                            <p className="text-secondary mt-1">
                                 {studentLeads.length > 0 && studentLeads[0].email !== session.email
-                                    ? `Guardian Portal • Managing: ${[...new Set(studentLeads.map(l => l.name))].join(', ')} `
+                                    ? `Managing: ${[...new Set(studentLeads.map(l => l.name))].join(', ')} `
                                     : `${studentLeads.length > 0 ? studentLeads[0].name : 'Student'} • ${session.email} `}
                             </p>
                         </div>
@@ -464,22 +456,21 @@ const StudentPortal: React.FC = () => {
                     <>
                         {/* Status Dashboard Grid */}
                         <div className="grid grid-3 gap-3 gap-md-4 mb-5">
-                            <div className="stat-card-modern">
-                                <div className="icon-box-primary icon-box-lg mb-2">
-                                    <Calendar size={24} />
-                                </div>
-                                <div className="h1 m-0">{studentLeads.length}</div>
-                                <p className="text-secondary small m-0 fw-bold text-uppercase opacity-75">Lessons Completed</p>
-                            </div>
-                            <div className="stat-card-modern">
-                                <div className="icon-box-primary icon-box-lg mb-2">
-                                    <Sparkles size={24} />
-                                </div>
-                                <div className="h1 m-0">Active Driver</div>
-                                <p className="text-secondary small m-0 fw-bold text-uppercase opacity-75">Account Status</p>
-                            </div>
-                            <div
-                                className="stat-card-modern cursor-pointer"
+                            <StatCard
+                                icon={Calendar}
+                                value={studentLeads.length}
+                                label="Lessons Completed"
+                            />
+                            <StatCard
+                                icon={Sparkles}
+                                value="Active Driver"
+                                label="Account Status"
+                            />
+                            <StatCard
+                                icon={Sparkles}
+                                value="Refer & Save $10"
+                                label="Discount applies to both"
+                                iconColorClass="text-danger"
                                 onClick={() => {
                                     if (session?.email) {
                                         const refLink = `${window.location.origin}/?ref=${encodeURIComponent(session.email)}`;
@@ -489,13 +480,7 @@ const StudentPortal: React.FC = () => {
                                         alert('Unable to generate referral link. Please try again later.');
                                     }
                                 }}
-                            >
-                                <div className="icon-box-primary icon-box-lg mb-2 text-danger">
-                                    <Sparkles size={24} />
-                                </div>
-                                <div className="h1 m-0">Refer & Save $10</div>
-                                <p className="text-secondary small m-0 fw-bold text-uppercase opacity-75">Discount applies to both</p>
-                            </div>
+                            />
                         </div>
 
                         <div className="grid grid-2-1 gap-4 gap-md-5">
@@ -579,68 +564,55 @@ const StudentPortal: React.FC = () => {
                                     <BookOpen size={24} className="text-primary" /> Driver&apos;s Resources
                                 </h3>
                                 <div className="d-flex flex-column gap-3">
-                                    <div className="resource-card-container">
-                                        <button
-                                            onClick={() => setIsChecklistExpanded(!isChecklistExpanded)}
-                                            className="resource-card w-100 border-0 text-start cursor-pointer"
-                                        >
-                                            <div className="icon-box-primary">
-                                                <ListTodo size={20} />
-                                            </div>
-                                            <div className="flex-grow-1">
-                                                <div className="fw-bold text-primary">Pre-Arrival Checklist</div>
-                                                <div className="text-secondary small">Required items & road prep</div>
-                                            </div>
-                                            <motion.div
-                                                animate={{ rotate: isChecklistExpanded ? 180 : 0 }}
-                                                transition={{ duration: 0.2 }}
-                                            >
-                                                <ChevronRight size={16} className="text-secondary rotate-90" />
-                                            </motion.div>
-                                        </button>
+                                    <ResourceCard
+                                        icon={ListTodo}
+                                        title="Pre-Arrival Checklist"
+                                        description="Required items & road prep"
+                                        isExpanded={isChecklistExpanded}
+                                        onClick={() => setIsChecklistExpanded(!isChecklistExpanded)}
+                                    />
 
-                                        <AnimatePresence>
-                                            {isChecklistExpanded && (
-                                                <motion.div
-                                                    initial={{ height: 0, opacity: 0 }}
-                                                    animate={{ height: 'auto', opacity: 1 }}
-                                                    exit={{ height: 0, opacity: 0 }}
-                                                    transition={{ duration: 0.3 }}
-                                                    className="overflow-hidden"
-                                                >
-                                                    <div className="p-3 p-md-4 bg-secondary-subtle rounded-3 mt-2 mx-1 mx-md-2 text-start">
-                                                        <h4 className="small fw-bold text-uppercase mb-3 opacity-75">Student Requirements</h4>
-                                                        <ul className="list-unstyled mb-0 d-flex flex-column gap-3">
-                                                            <li className="d-flex align-items-center gap-3 small">
-                                                                <div className="rounded-circle bg-primary p-1 checklist-icon-circle">
-                                                                    <CheckCircle size={12} className="text-white" />
-                                                                </div>
-                                                                <span>Bring <strong>Physical Copy</strong> of your Instruction Permit</span>
-                                                            </li>
-                                                            <li className="d-flex align-items-center gap-3 small">
-                                                                <div className="rounded-circle bg-primary p-1 checklist-icon-circle">
-                                                                    <CheckCircle size={12} className="text-white" />
-                                                                </div>
-                                                                <span>Bring <strong>Glasses/Contact Lenses</strong> if prescribed</span>
-                                                            </li>
-                                                            <li className="d-flex align-items-center gap-3 small">
-                                                                <div className="rounded-circle bg-primary p-1" style={{ width: '20px', height: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                                                    <CheckCircle size={12} className="text-white" />
-                                                                </div>
-                                                                <span>Personal <strong>Water Bottle</strong> (2-hour session)</span>
-                                                            </li>
-                                                            <li className="d-flex align-items-center gap-3 small">
-                                                                <div className="rounded-circle bg-primary p-1" style={{ width: '20px', height: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                                                    <CheckCircle size={12} className="text-white" />
-                                                                </div>
-                                                                <span>Closed-toe flat shoes (no flip flops)</span>
-                                                            </li>
-                                                        </ul>
-                                                    </div>
-                                                </motion.div>
-                                            )}
-                                        </AnimatePresence>
-                                    </div>
+                                    <AnimatePresence>
+                                        {isChecklistExpanded && (
+                                            <motion.div
+                                                initial={{ height: 0, opacity: 0 }}
+                                                animate={{ height: 'auto', opacity: 1 }}
+                                                exit={{ height: 0, opacity: 0 }}
+                                                transition={{ duration: 0.3 }}
+                                                className="overflow-hidden"
+                                            >
+                                                <div className="p-3 p-md-4 bg-secondary-subtle rounded-3 mt-2 mx-1 mx-md-2 text-start">
+                                                    <h4 className="small fw-bold text-uppercase mb-3 opacity-75">Student Requirements</h4>
+                                                    <ul className="list-unstyled mb-0 d-flex flex-column gap-3">
+                                                        <li className="d-flex align-items-center gap-3 small">
+                                                            <div className="rounded-circle bg-primary p-1 checklist-icon-circle">
+                                                                <CheckCircle size={12} className="text-white" />
+                                                            </div>
+                                                            <span>Bring <strong>Physical Copy</strong> of your Instruction Permit</span>
+                                                        </li>
+                                                        <li className="d-flex align-items-center gap-3 small">
+                                                            <div className="rounded-circle bg-primary p-1 checklist-icon-circle">
+                                                                <CheckCircle size={12} className="text-white" />
+                                                            </div>
+                                                            <span>Bring <strong>Glasses/Contact Lenses</strong> if prescribed</span>
+                                                        </li>
+                                                        <li className="d-flex align-items-center gap-3 small">
+                                                            <div className="rounded-circle bg-primary p-1" style={{ width: '20px', height: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                                                <CheckCircle size={12} className="text-white" />
+                                                            </div>
+                                                            <span>Personal <strong>Water Bottle</strong> (2-hour session)</span>
+                                                        </li>
+                                                        <li className="d-flex align-items-center gap-3 small">
+                                                            <div className="rounded-circle bg-primary p-1" style={{ width: '20px', height: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                                                <CheckCircle size={12} className="text-white" />
+                                                            </div>
+                                                            <span>Closed-toe flat shoes (no flip flops)</span>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </motion.div>
+                                        )}
+                                    </AnimatePresence>
 
 
                                     <a href="https://www.dmv.ca.gov/portal/driver-handbooks/" target="_blank" rel="noopener noreferrer" className="resource-card mb-3">
@@ -850,370 +822,353 @@ const StudentPortal: React.FC = () => {
                         </AnimatePresence>
                     </>
                 ) : (
-                    <div className="card-layered textured-asphalt">
-                        {/* Road Path Stepper */}
-                        <div className="mb-5 px-3 px-md-5">
-                            <div className="step-road-line">
-                                <div className="step-road-progress" style={{ width: `${(bookingStep / 2) * 100}% ` }} />
-                                {[0, 1, 2].map((s) => (
-                                    <div
-                                        key={s}
-                                        className={`step-road-dot ${bookingStep === s ? 'active' : ''} ${bookingStep > s ? 'completed' : ''}`}
-                                        style={{ left: `${(s / 2) * 100}%` }}
-                                    />
-                                ))}
-                            </div>
-                            <div className="d-flex justify-content-between mt-2 small fw-bold text-muted">
-                                <span className={bookingStep >= 0 ? 'text-primary' : ''}>INSTRUCTOR</span>
-                                <span className={bookingStep >= 1 ? 'text-primary' : ''}>DATE & TIME</span>
-                                <span className={bookingStep >= 2 ? 'text-primary' : ''}>CONFIRM</span>
-                            </div>
+                    <>
+                        <div className="text-center mb-5">
+                            <h2 className="display-small mb-4">
+                                <span className="text-accent">Schedule a Lesson</span>
+                            </h2>
+                            <p className="body-large text-secondary mx-auto text-center" style={{ maxWidth: '600px' }}>
+                                Select your preferred instructor and time slot. We'll handle the rest.
+                            </p>
                         </div>
+                        <div className="card-layered textured-asphalt">
+                            {/* Road Path Stepper */}
+                            <div className="mb-5 px-3 px-md-5">
+                                <div className="step-road-line">
+                                    <div className="step-road-progress" style={{ width: `${(bookingStep / 2) * 100}% ` }} />
+                                    {[0, 1, 2].map((s) => (
+                                        <div
+                                            key={s}
+                                            className={`step-road-dot ${bookingStep === s ? 'active' : ''} ${bookingStep > s ? 'completed' : ''}`}
+                                            style={{ left: `${(s / 2) * 100}%` }}
+                                        />
+                                    ))}
+                                </div>
+                                <div className="d-flex justify-content-between mt-2 small fw-bold text-muted">
+                                    <span className={bookingStep >= 0 ? 'text-primary' : ''}>INSTRUCTOR</span>
+                                    <span className={bookingStep >= 1 ? 'text-primary' : ''}>DATE & TIME</span>
+                                    <span className={bookingStep >= 2 ? 'text-primary' : ''}>CONFIRM</span>
+                                </div>
+                            </div>
 
-                        <AnimatePresence mode="wait">
-                            {bookingStep === 0 && (
-                                <motion.div
-                                    key="step0"
-                                    initial={{ opacity: 0, y: 10 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    exit={{ opacity: 0, y: -10 }}
-                                    className="text-center"
-                                >
-                                    <h3 className="h2 mb-2">Choose Your Instructor</h3>
-                                    <p className="text-secondary mb-5">Select your preferred instructor for this lesson.</p>
-                                    <div className="school-instructor-grid">
-                                        {instructors.map((instructor) => (
-                                            <motion.button
-                                                key={instructor.name}
-                                                onClick={() => {
-                                                    setSelectedInstructor(instructor.name);
-                                                    setBookingStep(1);
+                            <AnimatePresence mode="wait">
+                                {bookingStep === 0 && (
+                                    <motion.div
+                                        key="step0"
+                                        initial={{ opacity: 0, y: 10 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        exit={{ opacity: 0, y: -10 }}
+                                        className="text-center"
+                                    >
+                                        <h3 className="h2 mb-2">Choose Your Instructor</h3>
+                                        <p className="text-secondary mb-5 text-center">Select your preferred instructor for this lesson.</p>
+                                        <div className="school-instructor-grid">
+                                            {instructors.map((instructor) => (
+                                                <motion.button
+                                                    key={instructor.name}
+                                                    onClick={() => {
+                                                        setSelectedInstructor(instructor.name);
+                                                        setBookingStep(1);
+                                                    }}
+                                                    className={`school-instructor-card ${selectedInstructor === instructor.name ? 'active' : ''}`}
+                                                    whileHover={{ y: -5 }}
+                                                    whileTap={{ scale: 0.98 }}
+                                                >
+                                                    <div className="school-instructor-avatar">
+                                                        <User size={32} />
+                                                    </div>
+                                                    <div className="text-start">
+                                                        <div className="fw-bold instructor-name-lg">{instructor.name}</div>
+                                                        <div className="text-secondary small">{instructor.role}</div>
+                                                    </div>
+                                                    {selectedInstructor === instructor.name && (
+                                                        <motion.div
+                                                            layoutId="activeInstructorPortal"
+                                                            className="position-absolute border border-2 border-primary rounded-pill instructor-active-badge"
+                                                        />
+                                                    )}
+                                                </motion.button>
+                                            ))}
+                                        </div>
+                                    </motion.div>
+                                )}
+
+                                {bookingStep === 1 && (
+                                    <motion.div
+                                        key="step1"
+                                        initial={{ opacity: 0, y: 10 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        exit={{ opacity: 0, y: -10 }}
+                                    >
+                                        <div className="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+                                            <button onClick={() => setBookingStep(0)} className="btn-circle btn-sm">
+                                                <ChevronLeft size={18} />
+                                            </button>
+                                            <h3 className="h3 m-0">Select Date & Time</h3>
+                                            <div className="icon-box-lg border-0 bg-transparent" />
+                                        </div>
+
+                                        <div className="grid grid-2 gap-4 gap-md-5">
+                                            <CalendarGrid
+                                                currentMonth={currentMonth}
+                                                selectedDate={selectedDate}
+                                                onDateSelect={(dateKey) => {
+                                                    setSelectedDate(dateKey);
+                                                    setSelectedTime(null);
                                                 }}
-                                                className={`school-instructor-card ${selectedInstructor === instructor.name ? 'active' : ''}`}
-                                                whileHover={{ y: -5 }}
-                                                whileTap={{ scale: 0.98 }}
-                                            >
-                                                <div className="school-instructor-avatar">
-                                                    <User size={32} />
-                                                </div>
-                                                <div className="text-start">
-                                                    <div className="fw-bold instructor-name-lg">{instructor.name}</div>
-                                                    <div className="text-secondary small">{instructor.role}</div>
-                                                </div>
-                                                {selectedInstructor === instructor.name && (
-                                                    <motion.div
-                                                        layoutId="activeInstructorPortal"
-                                                        className="position-absolute border border-2 border-primary rounded-pill instructor-active-badge"
-                                                    />
+                                                onMonthChange={(direction) => {
+                                                    const newMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + (direction === 'next' ? 1 : -1), 1);
+                                                    setCurrentMonth(newMonth);
+                                                }}
+                                                generateTimeSlots={(date) => generateTimeSlots(date, selectedInstructor, googleBusySlots, busySlots)}
+                                            />
+
+                                            <div>
+                                                <h4 className="h5 mb-4 fw-bold d-flex align-items-center gap-2">
+                                                    <Clock size={18} /> Available Sessions
+                                                </h4>
+                                                {selectedDate ? (
+                                                    <div className="d-flex flex-wrap gap-2">
+                                                        {isSyncing ? (
+                                                            <div className="w-100 text-center py-5">
+                                                                <Loader2 className="animate-spin text-primary mx-auto mb-2" />
+                                                                <p className="text-secondary small">Checking instructor calendar...</p>
+                                                            </div>
+                                                        ) : (
+                                                            generateTimeSlots(parseLocalDate(selectedDate), selectedInstructor, googleBusySlots, busySlots).length > 0 ? (
+                                                                generateTimeSlots(parseLocalDate(selectedDate), selectedInstructor, googleBusySlots, busySlots).map(time => (
+                                                                    <button
+                                                                        key={time}
+                                                                        onClick={() => {
+                                                                            setSelectedTime(time);
+                                                                            setBookingStep(2);
+                                                                        }}
+                                                                        className={`time-chip flex-column gap-1 align-items-center justify-content-center p-3 ${selectedTime === time ? 'active' : ''}`}
+                                                                    >
+                                                                        <div className="fw-bold">{time}</div>
+                                                                        <div className="small opacity-75 fw-normal">
+                                                                            ${parseLocalDate(selectedDate).getDay() === 0 || parseLocalDate(selectedDate).getDay() === 6 ? '160' : '140'}
+                                                                        </div>
+                                                                    </button>
+                                                                ))
+                                                            ) : (
+                                                                <p className="text-secondary small py-4 bg-secondary-subtle rounded-3 w-100 text-center">No open sessions for this day.</p>
+                                                            )
+                                                        )}
+                                                    </div>
+                                                ) : (
+                                                    <div className="text-center py-5 opacity-50 bg-secondary-subtle rounded-3">
+                                                        <Calendar size={32} className="mx-auto mb-2" />
+                                                        <p className="small m-0">Select a date to view available times</p>
+                                                    </div>
                                                 )}
-                                            </motion.button>
-                                        ))}
-                                    </div>
-                                </motion.div>
-                            )}
+                                            </div>
+                                        </div>
+                                    </motion.div>
+                                )}
 
-                            {bookingStep === 1 && (
-                                <motion.div
-                                    key="step1"
-                                    initial={{ opacity: 0, y: 10 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    exit={{ opacity: 0, y: -10 }}
-                                >
-                                    <div className="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
-                                        <button onClick={() => setBookingStep(0)} className="btn-circle btn-sm">
-                                            <ChevronLeft size={18} />
-                                        </button>
-                                        <h3 className="h3 m-0">Select Date & Time</h3>
-                                        <div className="icon-box-lg border-0 bg-transparent" />
-                                    </div>
+                                {bookingStep === 2 && (
+                                    <motion.div
+                                        key="step2"
+                                        initial={{ opacity: 0, y: 10 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        exit={{ opacity: 0, y: -10 }}
+                                        className="text-center"
+                                    >
+                                        <div className="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+                                            <button onClick={() => setBookingStep(1)} className="btn-circle btn-sm">
+                                                <ChevronLeft size={18} />
+                                            </button>
+                                            <h3 className="h3 m-0">Final Verification</h3>
+                                            <div className="icon-box-lg border-0 bg-transparent" />
+                                        </div>
 
-                                    <div className="grid grid-2 gap-4 gap-md-5">
-                                        <div>
-                                            <div className="d-flex justify-content-between align-items-center mb-4">
-                                                <h4 className="h5 m-0 fw-bold">{currentMonth.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</h4>
-                                                <div className="d-flex gap-2">
-                                                    <button onClick={() => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1))} className="btn-circle btn-sm"><ChevronLeft size={16} /></button>
-                                                    <button onClick={() => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1))} className="btn-circle btn-sm"><ChevronRight size={16} /></button>
+                                        <div className="card-layered p-4 mb-5 text-start textured success-card w-100">
+                                            <div className="grid grid-2 gap-4">
+                                                <div className="d-flex gap-3">
+                                                    <Calendar className="text-primary" />
+                                                    <div>
+                                                        <div className="small text-secondary fw-bold text-uppercase">Date & Time</div>
+                                                        <div className="fw-bold">{parseLocalDate(selectedDate!).toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}</div>
+                                                        <div className="text-primary">{selectedTime} (2hr)</div>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div className="calendar-grid">
-                                                {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map(d => (
-                                                    <div key={d} className="text-center small fw-bold text-secondary mb-2">{d}</div>
-                                                ))}
-                                                {getDaysInMonth(currentMonth).map((date, i) => {
-                                                    if (!date) return <div key={`empty - ${i} `} className="calendar-cell outside" />;
-                                                    const isPast = date < new Date(new Date().setHours(0, 0, 0, 0));
-                                                    const dateKey = toLocalISOString(date);
-                                                    const isSelected = selectedDate === dateKey;
-                                                    const isToday = toLocalISOString(date) === toLocalISOString(new Date());
-                                                    const hasAvail = !isPast && generateTimeSlots(date, selectedInstructor, googleBusySlots, busySlots).length > 0;
-
-                                                    return (
-                                                        <button
-                                                            key={i}
-                                                            disabled={isPast}
-                                                            onClick={() => {
-                                                                setSelectedDate(dateKey);
-                                                                setSelectedTime(null);
-                                                            }}
-                                                            className={`calendar-cell ${isSelected ? 'selected' : ''} ${isToday ? 'today' : ''} ${hasAvail ? 'has-avail' : ''}`}
-                                                        >
-                                                            {date.getDate()}
-                                                        </button>
-                                                    );
-                                                })}
-                                            </div>
-                                            <div className="availability-legend">
-                                                <span className="legend-dot"></span>
-                                                <span>Available Days</span>
+                                                <div className="d-flex gap-3">
+                                                    <User className="text-primary" />
+                                                    <div>
+                                                        <div className="small text-secondary fw-bold text-uppercase">Instructor</div>
+                                                        <div className="fw-bold">{selectedInstructor}</div>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
 
-                                        <div>
-                                            <h4 className="h5 mb-4 fw-bold d-flex align-items-center gap-2">
-                                                <Clock size={18} /> Available Sessions
-                                            </h4>
-                                            {selectedDate ? (
-                                                <div className="d-flex flex-wrap gap-2">
-                                                    {isSyncing ? (
-                                                        <div className="w-100 text-center py-5">
-                                                            <Loader2 className="animate-spin text-primary mx-auto mb-2" />
-                                                            <p className="text-secondary small">Checking instructor calendar...</p>
-                                                        </div>
+                                        <div className="text-start mb-5 booking-form-container">
+                                            <div className="school-input-group mb-4 z-20">
+                                                <label className="form-label">Pickup Location</label>
+
+                                                {/* Toggle Type */}
+                                                <div
+                                                    className="d-flex gap-2 mb-4 p-1 bg-secondary-subtle rounded-3 border"
+                                                    style={{ borderColor: "var(--glass-border)" }}
+                                                >
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => setPickupType("address")}
+                                                        className={`flex-grow-1 small ${pickupType === "address" ? "shadow-sm text-white fw-bold" : "text-secondary hover-text-primary"}`}
+                                                        style={{
+                                                            borderRadius: "0.5rem",
+                                                            border: "none",
+                                                            cursor: "pointer",
+                                                            transition: "all 0.2s",
+                                                            padding: "0.75rem",
+                                                            background: pickupType === "address" ? "var(--primary)" : "transparent",
+                                                            color: pickupType === "address" ? "white" : "inherit"
+                                                        }}
+                                                    >
+                                                        Home Address
+                                                    </button>
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => setPickupType("school")}
+                                                        className={`flex-grow-1 small ${pickupType === "school" ? "shadow-sm text-white fw-bold" : "text-secondary hover-text-primary"}`}
+                                                        style={{
+                                                            borderRadius: "0.5rem",
+                                                            border: "none",
+                                                            cursor: "pointer",
+                                                            transition: "all 0.2s",
+                                                            padding: "0.75rem",
+                                                            background: pickupType === "school" ? "var(--primary)" : "transparent",
+                                                            color: pickupType === "school" ? "white" : "inherit"
+                                                        }}
+                                                    >
+                                                        School Pickup
+                                                    </button>
+                                                </div>
+
+                                                <div className="d-flex flex-column gap-3">
+                                                    {pickupType === 'address' ? (
+                                                        <>
+                                                            <div className="position-relative">
+                                                                <MapPin size={18} className="position-absolute text-secondary" style={{ top: '50%', transform: 'translateY(-50%)', left: '1rem' }} />
+                                                                <input
+                                                                    type="text"
+                                                                    className="school-input"
+                                                                    style={{ paddingLeft: '2.8rem' }}
+                                                                    placeholder="Street Address (e.g. 123 Main St)"
+                                                                    value={pickupAddress.street}
+                                                                    onChange={(e) => setPickupAddress({ ...pickupAddress, street: e.target.value })}
+                                                                    required={pickupType === 'address'}
+                                                                />
+                                                            </div>
+                                                            <div className="d-flex gap-3">
+                                                                <input
+                                                                    type="text"
+                                                                    className="school-input"
+                                                                    placeholder="City"
+                                                                    value={pickupAddress.city}
+                                                                    onChange={(e) => setPickupAddress({ ...pickupAddress, city: e.target.value })}
+                                                                    required={pickupType === 'address'}
+                                                                    style={{ flex: 3 }}
+                                                                />
+                                                                <input
+                                                                    type="text"
+                                                                    className="school-input text-center px-1"
+                                                                    placeholder="State"
+                                                                    defaultValue="CA"
+                                                                    required={pickupType === 'address'}
+                                                                    style={{ flex: 1, minWidth: '60px' }}
+                                                                />
+                                                                <input
+                                                                    type="text"
+                                                                    className="school-input"
+                                                                    placeholder="Zip Code"
+                                                                    value={pickupAddress.zip}
+                                                                    onChange={(e) => setPickupAddress({ ...pickupAddress, zip: e.target.value })}
+                                                                    required={pickupType === 'address'}
+                                                                    style={{ flex: 2 }}
+                                                                />
+                                                            </div>
+                                                        </>
                                                     ) : (
-                                                        generateTimeSlots(parseLocalDate(selectedDate), selectedInstructor, googleBusySlots, busySlots).length > 0 ? (
-                                                            generateTimeSlots(parseLocalDate(selectedDate), selectedInstructor, googleBusySlots, busySlots).map(time => (
-                                                                <button
-                                                                    key={time}
-                                                                    onClick={() => {
-                                                                        setSelectedTime(time);
-                                                                        setBookingStep(2);
-                                                                    }}
-                                                                    className={`time-chip flex-column gap-1 align-items-center justify-content-center p-3 ${selectedTime === time ? 'active' : ''}`}
-                                                                >
-                                                                    <div className="fw-bold">{time}</div>
-                                                                    <div className="small opacity-75 fw-normal">
-                                                                        ${parseLocalDate(selectedDate).getDay() === 0 || parseLocalDate(selectedDate).getDay() === 6 ? '160' : '140'}
-                                                                    </div>
-                                                                </button>
-                                                            ))
-                                                        ) : (
-                                                            <p className="text-secondary small py-4 bg-secondary-subtle rounded-3 w-100 text-center">No open sessions for this day.</p>
-                                                        )
+                                                        <>
+                                                            <div className="position-relative">
+                                                                <MapPin size={18} className="position-absolute text-secondary" style={{ top: '50%', transform: 'translateY(-50%)', left: '1rem' }} />
+                                                                <input
+                                                                    type="text"
+                                                                    className="school-input"
+                                                                    style={{ paddingLeft: '2.8rem' }}
+                                                                    placeholder="School Name (e.g. Eastlake High)"
+                                                                    value={pickupAddress.schoolName}
+                                                                    onChange={(e) => setPickupAddress({ ...pickupAddress, schoolName: e.target.value })}
+                                                                    required={pickupType === 'school'}
+                                                                />
+                                                            </div>
+                                                        </>
                                                     )}
                                                 </div>
-                                            ) : (
-                                                <div className="text-center py-5 opacity-50 bg-secondary-subtle rounded-3">
-                                                    <Calendar size={32} className="mx-auto mb-2" />
-                                                    <p className="small m-0">Select a date to view available times</p>
-                                                </div>
-                                            )}
-                                        </div>
-                                    </div>
-                                </motion.div>
-                            )}
+                                                <p className="text-secondary small mt-2">Preferred meetup point? (Home, School, Public Location)</p>
+                                            </div>
 
-                            {bookingStep === 2 && (
-                                <motion.div
-                                    key="step2"
-                                    initial={{ opacity: 0, y: 10 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    exit={{ opacity: 0, y: -10 }}
-                                    className="text-center"
-                                >
-                                    <div className="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
-                                        <button onClick={() => setBookingStep(1)} className="btn-circle btn-sm">
-                                            <ChevronLeft size={18} />
+                                            <div className="school-input-group">
+                                                <label className="form-label">Payment Method</label>
+                                                <div className="d-flex flex-column gap-2 mb-3">
+                                                    {PAYMENT_METHODS.map(method => (
+                                                        <button
+                                                            key={method}
+                                                            onClick={() => setPaymentMethod(method)}
+                                                            className={`school-input text-start d-flex justify-content-between align-items-center cursor-pointer ${paymentMethod === method ? 'border-primary bg-secondary' : 'bg-primary'}`}
+                                                            style={{ height: 'auto' }}
+                                                        >
+                                                            <span className="fw-bold">{method}</span>
+                                                            {paymentMethod === method && <CheckCircle size={18} className="text-primary" />}
+                                                        </button>
+                                                    ))}
+                                                </div>
+                                                <div className="d-flex align-items-start gap-2 p-3 bg-secondary-subtle rounded-3 text-secondary small border border-glass">
+                                                    <AlertCircle size={16} className="text-primary mt-1 flex-shrink-0" />
+                                                    <div><strong>Note:</strong> Payment is required before the lesson begins.</div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <button
+                                            onClick={handleSubmit}
+                                            className="btn btn-primary w-100 p-3 rounded-3 max-w-500"
+                                        >
+                                            Confirm Session Reservation
                                         </button>
-                                        <h3 className="h3 m-0">Final Verification</h3>
-                                        <div className="icon-box-lg border-0 bg-transparent" />
-                                    </div>
+                                    </motion.div>
+                                )}
 
-                                    <div className="card-layered p-4 mb-5 text-start textured success-card w-100">
-                                        <div className="grid grid-2 gap-4">
-                                            <div className="d-flex gap-3">
-                                                <Calendar className="text-primary" />
-                                                <div>
-                                                    <div className="small text-secondary fw-bold text-uppercase">Date & Time</div>
-                                                    <div className="fw-bold">{parseLocalDate(selectedDate!).toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}</div>
-                                                    <div className="text-primary">{selectedTime} (2hr)</div>
-                                                </div>
-                                            </div>
-                                            <div className="d-flex gap-3">
-                                                <User className="text-primary" />
-                                                <div>
-                                                    <div className="small text-secondary fw-bold text-uppercase">Instructor</div>
-                                                    <div className="fw-bold">{selectedInstructor}</div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div className="text-start mb-5 booking-form-container">
-                                        <div className="school-input-group mb-4 z-20">
-                                            <label className="form-label">Pickup Location</label>
-
-                                            {/* Toggle Type */}
-                                            <div
-                                                className="d-flex gap-2 mb-4 p-1 bg-secondary-subtle rounded-3 border"
-                                                style={{ borderColor: "var(--glass-border)" }}
-                                            >
-                                                <button
-                                                    type="button"
-                                                    onClick={() => setPickupType("address")}
-                                                    className={`flex-grow-1 small ${pickupType === "address" ? "shadow-sm text-white fw-bold" : "text-secondary hover-text-primary"}`}
-                                                    style={{
-                                                        borderRadius: "0.5rem",
-                                                        border: "none",
-                                                        cursor: "pointer",
-                                                        transition: "all 0.2s",
-                                                        padding: "0.75rem",
-                                                        background: pickupType === "address" ? "var(--primary)" : "transparent",
-                                                        color: pickupType === "address" ? "white" : "inherit"
-                                                    }}
-                                                >
-                                                    Home Address
-                                                </button>
-                                                <button
-                                                    type="button"
-                                                    onClick={() => setPickupType("school")}
-                                                    className={`flex-grow-1 small ${pickupType === "school" ? "shadow-sm text-white fw-bold" : "text-secondary hover-text-primary"}`}
-                                                    style={{
-                                                        borderRadius: "0.5rem",
-                                                        border: "none",
-                                                        cursor: "pointer",
-                                                        transition: "all 0.2s",
-                                                        padding: "0.75rem",
-                                                        background: pickupType === "school" ? "var(--primary)" : "transparent",
-                                                        color: pickupType === "school" ? "white" : "inherit"
-                                                    }}
-                                                >
-                                                    School Pickup
-                                                </button>
-                                            </div>
-
-                                            <div className="d-flex flex-column gap-3">
-                                                {pickupType === 'address' ? (
-                                                    <>
-                                                        <div className="position-relative">
-                                                            <MapPin size={18} className="position-absolute text-secondary" style={{ top: '50%', transform: 'translateY(-50%)', left: '1rem' }} />
-                                                            <input
-                                                                type="text"
-                                                                className="school-input"
-                                                                style={{ paddingLeft: '2.8rem' }}
-                                                                placeholder="Street Address (e.g. 123 Main St)"
-                                                                value={pickupAddress.street}
-                                                                onChange={(e) => setPickupAddress({ ...pickupAddress, street: e.target.value })}
-                                                                required={pickupType === 'address'}
-                                                            />
-                                                        </div>
-                                                        <div className="d-flex gap-3">
-                                                            <input
-                                                                type="text"
-                                                                className="school-input"
-                                                                placeholder="City"
-                                                                value={pickupAddress.city}
-                                                                onChange={(e) => setPickupAddress({ ...pickupAddress, city: e.target.value })}
-                                                                required={pickupType === 'address'}
-                                                                style={{ flex: 3 }}
-                                                            />
-                                                            <input
-                                                                type="text"
-                                                                className="school-input text-center px-1"
-                                                                placeholder="State"
-                                                                defaultValue="CA"
-                                                                required={pickupType === 'address'}
-                                                                style={{ flex: 1, minWidth: '60px' }}
-                                                            />
-                                                            <input
-                                                                type="text"
-                                                                className="school-input"
-                                                                placeholder="Zip Code"
-                                                                value={pickupAddress.zip}
-                                                                onChange={(e) => setPickupAddress({ ...pickupAddress, zip: e.target.value })}
-                                                                required={pickupType === 'address'}
-                                                                style={{ flex: 2 }}
-                                                            />
-                                                        </div>
-                                                    </>
-                                                ) : (
-                                                    <>
-                                                        <div className="position-relative">
-                                                            <MapPin size={18} className="position-absolute text-secondary" style={{ top: '50%', transform: 'translateY(-50%)', left: '1rem' }} />
-                                                            <input
-                                                                type="text"
-                                                                className="school-input"
-                                                                style={{ paddingLeft: '2.8rem' }}
-                                                                placeholder="School Name (e.g. Eastlake High)"
-                                                                value={pickupAddress.schoolName}
-                                                                onChange={(e) => setPickupAddress({ ...pickupAddress, schoolName: e.target.value })}
-                                                                required={pickupType === 'school'}
-                                                            />
-                                                        </div>
-                                                    </>
-                                                )}
-                                            </div>
-                                            <p className="text-secondary small mt-2">Preferred meetup point? (Home, School, Public Location)</p>
-                                        </div>
-
-                                        <div className="school-input-group">
-                                            <label className="form-label">Payment Method</label>
-                                            <div className="d-flex flex-column gap-2 mb-3">
-                                                {PAYMENT_METHODS.map(method => (
-                                                    <button
-                                                        key={method}
-                                                        onClick={() => setPaymentMethod(method)}
-                                                        className={`school-input text-start d-flex justify-content-between align-items-center cursor-pointer ${paymentMethod === method ? 'border-primary bg-secondary' : 'bg-primary'}`}
-                                                        style={{ height: 'auto' }}
-                                                    >
-                                                        <span className="fw-bold">{method}</span>
-                                                        {paymentMethod === method && <CheckCircle size={18} className="text-primary" />}
-                                                    </button>
-                                                ))}
-                                            </div>
-                                            <div className="d-flex align-items-start gap-2 p-3 bg-secondary-subtle rounded-3 text-secondary small border border-glass">
-                                                <AlertCircle size={16} className="text-primary mt-1 flex-shrink-0" />
-                                                <div><strong>Note:</strong> Payment is required before the lesson begins.</div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <button
-                                        onClick={handleSubmit}
-                                        className="btn btn-primary w-100 p-3 rounded-3 max-w-500"
+                                {bookingStep === 3 && (
+                                    <motion.div
+                                        key="step3"
+                                        initial={{ opacity: 0, scale: 0.95 }}
+                                        animate={{ opacity: 1, scale: 1 }}
+                                        className="text-center py-5"
                                     >
-                                        Confirm Session Reservation
-                                    </button>
-                                </motion.div>
-                            )}
-
-                            {bookingStep === 3 && (
-                                <motion.div
-                                    key="step3"
-                                    initial={{ opacity: 0, scale: 0.95 }}
-                                    animate={{ opacity: 1, scale: 1 }}
-                                    className="text-center py-5"
-                                >
-                                    <div className="success-icon-container">
-                                        <CheckCircle size={56} strokeWidth={2.5} />
-                                    </div>
-                                    <h1 className="display-small mb-3 font-outfit">Session Reserved! 🎉</h1>
-                                    <p className="body-large text-secondary mb-5 booking-form-container">
-                                        Your lesson with <strong>{selectedInstructor}</strong> on <strong>{new Date(selectedDate!).toLocaleDateString('en-US', { month: 'long', day: 'numeric' })}</strong> is confirmed.
-                                        We&apos;ve added this to your dashboard and sent a confirmation email.
-                                    </p>
-                                    <motion.button
-                                        onClick={() => setView('overview')}
-                                        className="btn btn-primary px-5 p-3 rounded-3"
-                                        whileHover={{ scale: 1.05 }}
-                                        whileTap={{ scale: 0.95 }}
-                                    >
-                                        Return to My Schedule
-                                    </motion.button>
-                                </motion.div>
-                            )}
-                        </AnimatePresence>
-                    </div>
+                                        <div className="success-icon-container">
+                                            <CheckCircle size={56} strokeWidth={2.5} />
+                                        </div>
+                                        <h1 className="display-small mb-3 font-outfit">Session Reserved! 🎉</h1>
+                                        <p className="body-large text-secondary mb-5 booking-form-container">
+                                            Your lesson with <strong>{selectedInstructor}</strong> on <strong>{new Date(selectedDate!).toLocaleDateString('en-US', { month: 'long', day: 'numeric' })}</strong> is confirmed.
+                                            We&apos;ve added this to your dashboard and sent a confirmation email.
+                                        </p>
+                                        <motion.button
+                                            onClick={() => setView('overview')}
+                                            className="btn btn-primary px-5 p-3 rounded-3"
+                                            whileHover={{ scale: 1.05 }}
+                                            whileTap={{ scale: 0.95 }}
+                                        >
+                                            Return to My Schedule
+                                        </motion.button>
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
+                        </div>
+                    </>
                 )}
             </div>
 

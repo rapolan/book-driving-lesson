@@ -1,23 +1,25 @@
 .navbar-container {
     position: fixed;
-    top: 1.5rem;
+    top: 1rem;
     left: 50%;
     transform: translateX(-50%);
-    width: 90%;
+    width: calc(100% - 2rem);
     max-width: 1200px;
     height: 4.5rem;
     border-radius: 1.25rem;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 2rem;
+    padding: 0 1.5rem;
     z-index: 1000;
 }
 
 @media (max-width: 768px) {
     .navbar-container {
         padding: 0 1rem;
-        width: 95%;
+        top: 0.75rem;
+        width: calc(100% - 1.5rem);
+        height: 4rem;
     }
 }
 

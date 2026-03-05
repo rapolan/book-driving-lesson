@@ -1,13 +1,13 @@
 .container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 1.25rem;
+  padding: 0 1rem;
   /* Tighter mobile gutters */
 }
 
 @media (min-width: 768px) {
   .container {
-    padding: 0 2rem;
+    padding: 0 2.5rem;
   }
 }
 
@@ -40,6 +40,16 @@
 
   .dashboard-page-section {
     padding-top: 10rem !important;
+  }
+}
+
+.page-top-padding {
+  padding-top: calc(var(--nav-height) + var(--nav-spacing)) !important;
+}
+
+@media (max-width: 768px) {
+  .page-top-padding {
+    padding-top: calc(4.75rem + 1.5rem) !important;
   }
 }
 

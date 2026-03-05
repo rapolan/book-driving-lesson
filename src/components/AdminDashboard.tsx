@@ -100,15 +100,15 @@ const AdminDashboard: React.FC = () => {
     }
 
     return (
-        <div className="section container dashboard-page-section">
+        <div className="section container dashboard-page-section page-top-padding">
             <div className="dashboard-narrow">
-                <div className="dashboard-header flex-wrap gap-4">
+                <div className="dashboard-header d-flex justify-content-between align-items-center flex-wrap gap-4 mb-4">
                     <div>
-                        <h1 className="display-small" style={{ marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                            <ShieldCheck size={40} color="var(--primary)" />
-                            Admin School
-                        </h1>
-                        <p style={{ color: 'var(--text-secondary)' }}>Secure Instructor Control Center</p>
+                        <div className="d-flex align-items-center gap-2 mb-1">
+                            <ShieldCheck size={20} className="text-primary" />
+                            <span className="text-secondary small fw-bold text-uppercase opacity-75">Instructor Control Center</span>
+                        </div>
+                        <h1 className="display-small m-0">Admin School</h1>
                     </div>
                     <div className="d-flex gap-3">
                         <button

@@ -49,22 +49,22 @@ const PlanPage: React.FC = () => {
     ];
 
     return (
-        <div className="plan-page">
+        <div className="plan-page page-top-padding" style={{ backgroundColor: 'var(--bg-primary)', minHeight: '100vh' }}>
 
 
 
             <div className="container" style={{ position: 'relative', zIndex: 1 }}>
                 {/* Header Section */}
-                <header style={{ textAlign: 'center', marginBottom: '8rem' }}>
+                <header style={{ textAlign: 'center', marginBottom: '4rem' }}>
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.6 }}
                     >
                         <h1 className="display-large" style={{ marginBottom: '1.5rem', fontWeight: 800 }}>
-                            Your Path to <span style={{ color: 'var(--primary)' }}>Success.</span>
+                            Your Path to <span className="text-accent">Success.</span>
                         </h1>
-                        <p className="body-large text-secondary" style={{ maxWidth: '750px', margin: '0 auto', lineHeight: 1.6 }}>
+                        <p className="body-large text-secondary" style={{ maxWidth: '800px', margin: '0 auto' }}>
                             We&apos;ve simplified the journey into three easy steps. No stress, no confusion—just a clear road to your California Driver&apos;s License.
                         </p>
                     </motion.div>
@@ -183,7 +183,7 @@ const PlanPage: React.FC = () => {
                                     {step.image.includes('permit') ? (
                                         <div style={{
                                             width: '100%',
-                                            height: '500px',
+                                            minHeight: '400px',
                                             display: 'flex',
                                             alignItems: 'center',
                                             justifyContent: 'center',
@@ -222,7 +222,8 @@ const PlanPage: React.FC = () => {
                                     ) : (
                                         <div style={{
                                             width: '100%',
-                                            height: '500px',
+                                            minHeight: '300px',
+                                            aspectRatio: '16 / 9',
                                             backgroundColor: 'var(--bg-secondary)',
                                             borderRadius: '2rem',
                                             backgroundImage: `url("${step.image}")`,
@@ -259,7 +260,7 @@ const PlanPage: React.FC = () => {
                     >
                         <div className="card-layered textured-asphalt text-center" style={{ maxWidth: '800px', margin: '0 auto', border: '1px solid var(--glass-border)' }}>
                             <h2 className="display-small" style={{ marginBottom: '1.5rem', fontWeight: 800 }}>
-                                Ready to Take the <span className="gradient-text">Wheel?</span>
+                                Ready to Take the <span className="text-accent">Wheel?</span>
                             </h2>
                             <p className="body-large text-secondary" style={{ maxWidth: '600px', margin: '0 auto', marginBottom: '3rem' }}>
                                 The first step to freedom on the road starts right here. Book your first lesson today and secure your spot on our schedule.

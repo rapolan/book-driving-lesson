@@ -7,11 +7,32 @@
     padding: 1.25rem 2rem;
 }
 
-@media (max-width: 992px) {
+@media (max-width: 768px) {
     .lead-card-grid {
         grid-template-columns: 1fr;
-        gap: 1.5rem;
+        gap: 1rem;
         padding: 1.5rem;
+    }
+
+    .admin-login-card {
+        padding: 1.5rem !important;
+    }
+}
+
+.lead-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 400px), 1fr));
+    gap: 1.5rem;
+}
+
+@media (max-width: 768px) {
+    .lead-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .admin-login-card {
+        padding: 1.5rem !important;
     }
 }
 

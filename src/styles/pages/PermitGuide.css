@@ -28,14 +28,14 @@
 }
 
 .age-toggle-container {
-    display: inline-flex;
+    display: flex;
     background-color: var(--bg-secondary);
     padding: 0.5rem;
     border-radius: 1rem;
     border: 1px solid var(--glass-border);
     box-shadow: var(--shadow-sm);
-    width: auto;
-    max-width: 100%;
+    width: fit-content;
+    margin: 0 auto 5rem;
 }
 
 @media (max-width: 480px) {

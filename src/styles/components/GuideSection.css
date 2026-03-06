@@ -43,9 +43,10 @@
 
 @media (max-width: 1024px) {
     .guide-badge-floating {
-        right: 1rem;
+        right: 0;
         top: 1rem;
-        padding: 1.5rem;
+        padding: 1.25rem;
+        max-width: calc(100% - 2rem);
     }
 }
 

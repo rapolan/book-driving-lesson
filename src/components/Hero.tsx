@@ -1,5 +1,5 @@
-import React from 'react';
 import { motion } from 'framer-motion';
+import { ChevronDown } from 'lucide-react';
 import '../styles/components/Hero.css';
 
 const Hero: React.FC = () => {
@@ -44,6 +44,20 @@ const Hero: React.FC = () => {
                     </motion.div>
                 </div>
             </div>
+
+            {/* Subtle Scroll Indicator */}
+            <motion.div
+                className="scroll-indicator"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1, y: [0, 10, 0] }}
+                transition={{
+                    opacity: { delay: 1.5, duration: 1 },
+                    y: { repeat: Infinity, duration: 2, ease: "easeInOut" }
+                }}
+                onClick={() => document.getElementById('booking')?.scrollIntoView({ behavior: 'smooth' })}
+            >
+                <ChevronDown size={32} className="text-secondary opacity-75" />
+            </motion.div>
         </section>
     );
 };

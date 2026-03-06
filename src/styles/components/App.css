@@ -12,11 +12,11 @@
 }
 
 .road-curve-svg-left {
-    left: -100px;
+    left: 0;
 }
 
 .road-curve-svg-right {
-    right: -100px;
+    right: 0;
 }
 
 .app-footer {

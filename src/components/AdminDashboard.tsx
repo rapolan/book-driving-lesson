@@ -18,6 +18,9 @@ interface Lead {
     pickupLocation: string;
     guardians?: Array<{ name: string; phone: string; email: string }>;
     referralCode?: string;
+    notes?: string;
+    certificateNumber?: string;
+    manualStatus?: 'Enrolled' | 'In Progress' | 'Ready for Cert' | 'Certified' | 'Archive';
 }
 
 const AdminDashboard: React.FC = () => {
@@ -26,6 +29,8 @@ const AdminDashboard: React.FC = () => {
     const [password, setPassword] = useState('');
     const [view, setView] = useState<'leads' | 'availability'>('leads');
     const [activeInstructor, setActiveInstructor] = useState<string>("Rob Polan");
+    const [searchTerm, setSearchTerm] = useState('');
+    const [statusFilter, setStatusFilter] = useState<string>('All');
 
     // Default Availability matching BookingCalendar.tsx
     const [availDraft, setAvailDraft] = useState(getInstructorConfig(activeInstructor));
@@ -54,6 +59,12 @@ const AdminDashboard: React.FC = () => {
         }
     };
 
+    const updateLead = (id: string, updates: Partial<Lead>) => {
+        const updatedLeads = leads.map(l => l.id === id ? { ...l, ...updates } : l);
+        setLeads(updatedLeads);
+        localStorage.setItem('driving_leads', JSON.stringify(updatedLeads));
+    };
+
     const deleteLead = (id: string) => {
         if (window.confirm('Remove this lead?')) {
             const updatedLeads = leads.filter(l => l.id !== id);
@@ -61,6 +72,30 @@ const AdminDashboard: React.FC = () => {
             localStorage.setItem('driving_leads', JSON.stringify(updatedLeads));
         }
     };
+
+    // CRM Helpers
+    const getStudentLessonCount = (email: string) => {
+        return leads.filter(l => l.email === email).length;
+    };
+
+    const getAutomatedStatus = (lead: Lead) => {
+        if (lead.manualStatus) return lead.manualStatus;
+        const count = getStudentLessonCount(lead.email);
+        if (count >= 3) return 'Ready for Cert';
+        if (count >= 1) return 'In Progress';
+        return 'Enrolled';
+    };
+
+    const filteredLeads = leads.filter(lead => {
+        const matchesSearch =
+            lead.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            lead.email.toLowerCase().includes(searchTerm.toLowerCase());
+
+        const status = getAutomatedStatus(lead);
+        const matchesStatus = statusFilter === 'All' || status === statusFilter;
+
+        return matchesSearch && matchesStatus;
+    });
 
     const exportLeads = () => {
         const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(leads, null, 2));
@@ -129,91 +164,130 @@ const AdminDashboard: React.FC = () => {
                     </div>
                 </div>
 
+                {view === 'leads' && (
+                    <div className="crm-controls bg-secondary p-3 rounded-4 border border-glass mb-4 d-flex gap-3 flex-wrap">
+                        <div className="flex-grow-1 position-relative">
+                            <input
+                                type="text"
+                                placeholder="Search student name or email..."
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                                className="school-input w-100 ps-5"
+                                style={{ height: '48px' }}
+                            />
+                            <Users size={18} className="position-absolute translate-middle-y top-50 start-0 ms-3 opacity-50" />
+                        </div>
+                        <select
+                            className="school-input"
+                            style={{ height: '48px', width: '200px' }}
+                            value={statusFilter}
+                            onChange={(e) => setStatusFilter(e.target.value)}
+                        >
+                            <option value="All">All Statuses</option>
+                            <option value="Enrolled">Enrolled</option>
+                            <option value="In Progress">In Progress</option>
+                            <option value="Ready for Cert">Ready for Cert</option>
+                            <option value="Certified">Certified</option>
+                            <option value="Archive">Archive</option>
+                        </select>
+                    </div>
+                )}
+
                 {view === 'leads' ? (
                     <div className="d-flex flex-column gap-3">
                         {leads.length === 0 ? (
                             <div className="admin-empty-state">
                                 <Users size={48} style={{ opacity: 0.2, marginBottom: '1rem' }} />
-                                <p className="text-secondary">No leads captured yet. school is quiet.</p>
+                                <p className="text-secondary">No leads captured yet. School is quiet.</p>
                             </div>
                         ) : (
-                            leads.map((lead) => (
-                                <motion.div
-                                    key={lead.id}
-                                    layoutId={lead.id}
-                                    className="card-layered textured textured-asphalt lead-card-grid p-4 mb-3"
-                                >
-                                    <div className="d-flex flex-column align-items-start text-start">
-                                        <div className="lead-name">{lead.name}</div>
-                                        <div className="lead-meta">{lead.instructor} • {lead.birthdate}</div>
-                                        {lead.referralCode && (
-                                            <div className="lead-referral">
-                                                🎁 Referred By: {lead.referralCode}
+                            filteredLeads.map((lead) => {
+                                const status = getAutomatedStatus(lead);
+                                const lessonCount = getStudentLessonCount(lead.email);
+
+                                return (
+                                    <motion.div
+                                        key={lead.id}
+                                        layoutId={lead.id}
+                                        className="card-layered textured textured-asphalt lead-card-crm p-2 mb-2"
+                                        style={{ fontSize: '0.85rem' }}
+                                    >
+                                        <div className="lead-row-grid">
+                                            {/* Status & Name */}
+                                            <div className="d-flex align-items-center gap-2">
+                                                <span className={`status-badge status-${status.toLowerCase().replace(/\s+/g, '-')} compact`}>
+                                                    {status === 'Ready for Cert' ? 'Ready' : status}
+                                                </span>
+                                                <div className="d-flex flex-column">
+                                                    <div className="lead-name-compact fw-bold">{lead.name}</div>
+                                                    <div style={{ fontSize: '0.65rem' }} className="text-secondary opacity-75">
+                                                        {lessonCount} {lessonCount === 1 ? 'Lesson' : 'Lessons'}
+                                                    </div>
+                                                </div>
                                             </div>
-                                        )}
-                                    </div>
 
-                                    <div className="d-flex flex-column align-items-start text-start">
-                                        <div className="lead-date">
-                                            <Calendar size={14} color="var(--primary)" />
-                                            {lead.date}
-                                        </div>
-                                        <div className="lead-time">{lead.time}</div>
-                                    </div>
-
-                                    <div className="d-flex flex-column align-items-start text-start">
-                                        <div className="lead-location">{lead.pickupLocation}</div>
-                                        <div style={{ display: 'flex', gap: '0.4rem' }}>
-                                            <a
-                                                href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(lead.pickupLocation)}`}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className="small text-primary"
-                                                style={{ textDecoration: 'none' }}
-                                            >
-                                                Google Maps
-                                            </a>
-                                            <span style={{ color: 'var(--glass-border)' }}>|</span>
-                                            <a
-                                                href={`https://maps.apple.com/?q=${encodeURIComponent(lead.pickupLocation)}`}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className="small text-primary"
-                                                style={{ textDecoration: 'none' }}
-                                            >
-                                                Apple Maps
-                                            </a>
-                                        </div>
-                                    </div>
-
-                                    <div className="d-flex flex-column align-items-start text-start">
-                                        <div className="lead-permit">{lead.permitNumber}</div>
-                                        <div className="lead-meta">{lead.phone} • {lead.email}</div>
-                                        {lead.guardians && lead.guardians.length > 0 && lead.guardians[0].name && (
-                                            <div className="lead-guardian">
-                                                Guardian: {lead.guardians[0].name} ({lead.guardians[0].phone})
+                                            {/* Contact & Date */}
+                                            <div className="lead-meta-compact opacity-75">
+                                                {lead.date} • {lead.time}
                                             </div>
-                                        )}
-                                    </div>
 
-                                    <div className="d-flex align-items-center justify-content-end gap-2">
-                                        <button
-                                            className="btn-circle btn-sm"
-                                            onClick={() => window.open(`mailto:${lead.email}`)}
-                                            title="Email Student"
-                                        >
-                                            <ExternalLink size={16} />
-                                        </button>
-                                        <button
-                                            className="btn-circle btn-sm text-error"
-                                            onClick={() => deleteLead(lead.id)}
-                                            title="Delete Lead"
-                                        >
-                                            <Trash2 size={16} />
-                                        </button>
-                                    </div>
-                                </motion.div>
-                            ))
+                                            {/* Location & Permit */}
+                                            <div className="lead-meta-compact opacity-75 truncate" title={lead.pickupLocation}>
+                                                {lead.pickupLocation}
+                                            </div>
+
+                                            {/* Notes Area - Smaller and wider */}
+                                            <div className="lead-notes-area">
+                                                <textarea
+                                                    placeholder="Add note..."
+                                                    value={lead.notes || ''}
+                                                    onChange={(e) => updateLead(lead.id, { notes: e.target.value })}
+                                                    className="school-input-compact"
+                                                />
+                                            </div>
+
+                                            {/* Management Area - Actions in row */}
+                                            <div className="d-flex align-items-center gap-2">
+                                                <select
+                                                    className="school-input-compact select-compact"
+                                                    value={lead.manualStatus || ''}
+                                                    onChange={(e) => updateLead(lead.id, { manualStatus: e.target.value as any })}
+                                                >
+                                                    <option value="">Auto</option>
+                                                    <option value="Certified">Cert</option>
+                                                    <option value="Archive">Arch</option>
+                                                </select>
+                                                <input
+                                                    type="text"
+                                                    placeholder="Cert #"
+                                                    value={lead.certificateNumber || ''}
+                                                    onChange={(e) => updateLead(lead.id, { certificateNumber: e.target.value })}
+                                                    className={`school-input-compact ${status === 'Ready for Cert' ? 'border-accent' : ''}`}
+                                                    style={{ width: '80px' }}
+                                                />
+                                            </div>
+
+                                            {/* Delete/Email */}
+                                            <div className="d-flex align-items-center gap-1">
+                                                <button
+                                                    className="btn-icon-compact"
+                                                    onClick={() => window.open(`mailto:${lead.email}`)}
+                                                    title="Email"
+                                                >
+                                                    <ExternalLink size={14} />
+                                                </button>
+                                                <button
+                                                    className="btn-icon-compact text-error"
+                                                    onClick={() => deleteLead(lead.id)}
+                                                    title="Delete"
+                                                >
+                                                    <Trash2 size={14} />
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </motion.div>
+                                );
+                            })
                         )}
                     </div>
                 ) : (
@@ -388,7 +462,7 @@ const AdminDashboard: React.FC = () => {
                     </div>
                 )}
             </div>
-        </div >
+        </div>
     );
 };
 

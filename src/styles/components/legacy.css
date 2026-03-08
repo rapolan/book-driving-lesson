@@ -348,29 +348,6 @@
   pointer-events: none;
 }
 
-.next-lesson-card {
-  background: var(--primary);
-  color: white;
-  border-radius: 1.5rem;
-  padding: 2rem;
-  box-shadow: var(--shadow-lg);
-  position: relative;
-  overflow: hidden;
-  border: none;
-}
-
-.next-lesson-card .text-secondary {
-  color: rgba(255, 255, 255, 0.7) !important;
-}
-
-.next-lesson-card .card-icon {
-  position: absolute;
-  right: -1rem;
-  bottom: -1rem;
-  font-size: 8rem;
-  opacity: 0.1;
-  transform: rotate(-15deg);
-}
 
 .stat-card-modern {
   background: var(--bg-primary);
@@ -427,37 +404,6 @@
   transform: translateX(5px);
 }
 
-.schedule-timeline {
-  position: relative;
-  padding-left: 1.5rem;
-}
-
-.schedule-timeline::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 2px;
-  background: var(--glass-border);
-}
-
-.schedule-item {
-  position: relative;
-  margin-bottom: 2rem;
-}
-
-.schedule-item::before {
-  content: '';
-  position: absolute;
-  left: -1.75rem;
-  top: 0.5rem;
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background: var(--bg-primary);
-  border: 2px solid var(--primary);
-}
 
 .step-road-line {
   position: relative;

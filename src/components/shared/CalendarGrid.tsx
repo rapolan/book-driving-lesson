@@ -30,10 +30,20 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
                     })}
                 </h4>
                 <div className="d-flex gap-2">
-                    <button onClick={() => onMonthChange('prev')} className="btn-circle">
+                    <button
+                        onClick={() => onMonthChange('prev')}
+                        className="btn-circle"
+                        disabled={currentMonth.getTime() <= new Date(new Date().getFullYear(), new Date().getMonth(), 1).getTime()}
+                        style={{ opacity: currentMonth.getTime() <= new Date(new Date().getFullYear(), new Date().getMonth(), 1).getTime() ? 0.3 : 1 }}
+                    >
                         <ChevronLeft size={20} />
                     </button>
-                    <button onClick={() => onMonthChange('next')} className="btn-circle">
+                    <button
+                        onClick={() => onMonthChange('next')}
+                        className="btn-circle"
+                        disabled={currentMonth.getTime() >= new Date(new Date().getFullYear(), new Date().getMonth() + 1, 1).getTime()}
+                        style={{ opacity: currentMonth.getTime() >= new Date(new Date().getFullYear(), new Date().getMonth() + 1, 1).getTime() ? 0.3 : 1 }}
+                    >
                         <ChevronRight size={20} />
                     </button>
                 </div>

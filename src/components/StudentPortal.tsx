@@ -16,7 +16,9 @@ import {
     toLocalISOString,
     parseLocalDate,
     type PaymentMethod,
-    PAYMENT_METHODS
+    PAYMENT_METHODS,
+    isCancellationLate,
+    isLessonPast
 } from '../utils/bookingUtils';
 import StatCard from './shared/StatCard';
 import ResourceCard from './shared/ResourceCard';
@@ -72,6 +74,39 @@ const StudentPortal: React.FC = () => {
     const [isChecklistExpanded, setIsChecklistExpanded] = useState(false);
     const [selectedDayModal, setSelectedDayModal] = useState<number | null>(null);
     const [expandedResource, setExpandedResource] = useState<string | null>(null);
+    const [cancellingLeadId, setCancellingLeadId] = useState<string | null>(null);
+    const [cancelReason, setCancelReason] = useState('');
+    const [isProcessingCancel, setIsProcessingCancel] = useState(false);
+    const [isHistoryExpanded, setIsHistoryExpanded] = useState(false);
+
+    // UI Refs for scrolling
+    const bookingTopRef = React.useRef<HTMLDivElement>(null);
+    const timeSlotsRef = React.useRef<HTMLDivElement>(null);
+    const prevStepRef = React.useRef<number>(0);
+
+    // Surgical scroll logic: Only scroll the booking card into view when moving forward or entering the view
+    useEffect(() => {
+        const isNewView = view === 'book' && prevStepRef.current === -1;
+        const isStepAdvancing = bookingStep > prevStepRef.current;
+
+        if (isNewView || isStepAdvancing) {
+            // Only scroll the booking section into view, not the whole page
+            bookingTopRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        // Update ref for next change
+        prevStepRef.current = view === 'book' ? bookingStep : -1;
+    }, [bookingStep, view]);
+
+    // Targeted scroll-down to time slots when a date is selected (fix for mobile user experience)
+    useEffect(() => {
+        if (selectedDate && bookingStep === 1) {
+            // Small delay to ensure the time slots section is fully rendered/updated
+            setTimeout(() => {
+                timeSlotsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }, 100);
+        }
+    }, [selectedDate, bookingStep]);
 
     useEffect(() => {
         if (hasValidatedMagicLink.current) return;
@@ -90,11 +125,16 @@ const StudentPortal: React.FC = () => {
             // 2. Check for existing session in localStorage
             const storedSession = localStorage.getItem('school_student_session');
             if (storedSession) {
-                const parsed = JSON.parse(storedSession);
-                if (Date.now() < parsed.expires) {
-                    setSession(parsed);
-                    loadStudentData(parsed.email);
-                } else {
+                try {
+                    const parsed = JSON.parse(storedSession);
+                    if (parsed && typeof parsed === 'object' && Date.now() < parsed.expires) {
+                        setSession(parsed);
+                        loadStudentData(parsed.email);
+                    } else {
+                        localStorage.removeItem('school_student_session');
+                    }
+                } catch (e) {
+                    console.error("Failed to parse session:", e);
                     localStorage.removeItem('school_student_session');
                 }
             }
@@ -102,7 +142,14 @@ const StudentPortal: React.FC = () => {
     }, []);
 
     useEffect(() => {
-        const localLeads = JSON.parse(localStorage.getItem('driving_leads') || '[]');
+        let localLeads: any[] = [];
+        try {
+            localLeads = JSON.parse(localStorage.getItem('driving_leads') || '[]');
+            if (!Array.isArray(localLeads)) localLeads = [];
+        } catch (e) {
+            console.error("Failed to parse leads:", e);
+        }
+
         const busy: { [instructor: string]: { [date: string]: string[] } } = {
             "Rob Polan": {},
             "Natalie Polan": {}
@@ -290,16 +337,22 @@ const StudentPortal: React.FC = () => {
             return;
         }
 
-        const latestLead = studentLeads[0];
+        const latestLead = studentLeads[0] || {};
+        const instructorEmail = instructors.find(i => i.name === selectedInstructor)?.email;
 
         const appointment = {
             id: Math.random().toString(36).substr(2, 9),
             ...latestLead,
+            name: latestLead.name || session?.email.split('@')[0],
+            email: latestLead.email || session?.email,
+            phone: latestLead.phone || 'N/A',
+            birthdate: latestLead.birthdate || '',
             instructor: selectedInstructor,
             date: selectedDate,
             time: selectedTime,
             pickupLocation: pickupLocation,
-            timestamp: new Date().toISOString()
+            timestamp: new Date().toISOString(),
+            status: "Pending"
         };
 
         try {
@@ -307,38 +360,46 @@ const StudentPortal: React.FC = () => {
                 EMAILJS_SERVICE_ID,
                 EMAILJS_TEMPLATE_ID,
                 {
-                    from_name: appointment.name,
-                    from_email: appointment.email,
-                    phone: appointment.phone,
-                    birthdate: appointment.birthdate,
-                    permit_number: appointment.permitNumber,
+                    to_email: instructorEmail,
                     instructor_name: selectedInstructor,
-                    instructor_email: instructors.find(i => i.name === selectedInstructor)?.email,
+                    student_name: appointment.name,
+                    student_email: appointment.email,
+                    student_phone: appointment.phone,
+                    student_birthdate: appointment.birthdate,
+                    student_permit: appointment.permitNumber || 'N/A',
                     pickup_location: pickupLocation,
                     appointment_date: selectedDate,
                     appointment_time: selectedTime,
                     payment_method: paymentMethod,
-                    guardians: isMinor(appointment.birthdate) ? appointment.guardians.map((g: any) => `${g.name} (${g.phone}, ${g.email})`).join(', ') : 'N/A'
+                    guardians: isMinor(appointment.birthdate) && Array.isArray(appointment.guardians)
+                        ? appointment.guardians.map((g: any) => `${g.name} (${g.phone}, ${g.email})`).join(', ')
+                        : 'N/A'
                 },
                 EMAILJS_PUBLIC_KEY
             );
 
             const config = getInstructorConfig(selectedInstructor);
             if (config?.googleScriptUrl) {
-                const start = new Date(`${selectedDate} ${selectedTime} `);
+                // Robust date parsing for cross-browser safety
+                const [time, modifier] = selectedTime.split(' ');
+                let [hours, minutes] = time.split(':').map(Number);
+                if (modifier === 'PM' && hours < 12) hours += 12;
+                if (modifier === 'AM' && hours === 12) hours = 0;
+
+                const start = new Date(`${selectedDate}T${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:00`);
                 const end = new Date(start.getTime() + (2 * 60 * 60 * 1000));
 
                 await fetch(config.googleScriptUrl, {
                     method: 'POST',
                     mode: 'no-cors',
                     body: JSON.stringify({
-                        studentName: appointment.name,
-                        studentEmail: appointment.email,
-                        studentPhone: appointment.phone,
+                        studentName: appointment.name || 'Student',
+                        studentEmail: appointment.email || session?.email,
+                        studentPhone: appointment.phone || 'N/A',
                         pickupLocation: pickupLocation,
                         paymentMethod: paymentMethod,
-                        permit: appointment.permitNumber,
-                        guardians: appointment.guardians ? appointment.guardians.map((g: any) => `${g.name} - ${g.phone} (${g.email})`).join('; ') : 'N/A',
+                        permit: appointment.permitNumber || 'N/A',
+                        guardians: Array.isArray(appointment.guardians) ? appointment.guardians.map((g: any) => `${g.name} - ${g.phone} (${g.email})`).join('; ') : 'N/A',
                         startTime: start.toISOString(),
                         endTime: end.toISOString()
                     })
@@ -349,10 +410,75 @@ const StudentPortal: React.FC = () => {
             localStorage.setItem('driving_leads', JSON.stringify([...allLeads, appointment]));
 
             setBookingStep(3);
-            loadStudentData(session.email);
+            loadStudentData(session?.email);
         } catch (error) {
             console.error("Booking failed:", error);
             alert("Failed to book lesson. Please try again or contact us.");
+        }
+    };
+
+    const handleCancelLesson = async (leadId: string) => {
+        const leadToCancel = studentLeads.find(l => l.id === leadId);
+        if (!leadToCancel || !session) return;
+
+        setIsProcessingCancel(true);
+        try {
+            // 1. Notify Instructor via EmailJS
+            const policy = isCancellationLate(leadToCancel.date, leadToCancel.time);
+
+            await emailjs.send(
+                EMAILJS_SERVICE_ID,
+                EMAILJS_TEMPLATE_ID,
+                {
+                    from_name: leadToCancel.name,
+                    from_email: leadToCancel.email,
+                    subject: `LESSON CANCELLATION: ${leadToCancel.name}`,
+                    message: `A lesson has been cancelled.\n\nStudent: ${leadToCancel.name}\nDate: ${leadToCancel.date}\nTime: ${leadToCancel.time}\nReason: ${cancelReason || 'None provided'}\n\nPolicy Status: ${policy.isLate ? 'LATE CANCELLATION ($40 Fee Applies)' : 'Regular Cancellation'}\n\nPickup: ${leadToCancel.pickupLocation}`,
+                    instructor_name: leadToCancel.instructor,
+                    appointment_date: `CANCELLED: ${leadToCancel.date}`,
+                    appointment_time: leadToCancel.time,
+                    notes: `Cancellation Reason: ${cancelReason}`
+                },
+                EMAILJS_PUBLIC_KEY
+            );
+
+            // 2. Sync with Google Calendar if URL exists
+            const config = getInstructorConfig(leadToCancel.instructor);
+            if (config?.googleScriptUrl) {
+                await fetch(config.googleScriptUrl, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    body: JSON.stringify({
+                        action: 'cancel',
+                        studentName: leadToCancel.name,
+                        studentEmail: leadToCancel.email,
+                        date: leadToCancel.date,
+                        time: leadToCancel.time
+                    })
+                });
+            }
+
+            // 3. Update local storage
+            const allLeads = JSON.parse(localStorage.getItem('driving_leads') || '[]');
+            const updatedLeads = allLeads.filter((l: any) => l.id !== leadId);
+            localStorage.setItem('driving_leads', JSON.stringify(updatedLeads));
+
+            // 4. Update UI
+            setStudentLeads(updatedLeads.filter((l: any) => l.email === session?.email || l.guardians?.some((g: any) => g.email === session?.email)));
+            setCancellingLeadId(null);
+            setCancelReason('');
+            alert("Lesson successfully cancelled.");
+
+            // Optional: SMS prompt
+            if (window.confirm("Would you like to also send a courtesy text to your instructor?")) {
+                const phone = "6197213271"; // Known school number
+                window.location.href = `sms:${phone}?body=Hi, I've just cancelled my lesson on ${leadToCancel.date} at ${leadToCancel.time} due to ${cancelReason || 'a schedule conflict'}.`;
+            }
+        } catch (error) {
+            console.error("Cancellation failed:", error);
+            alert("Could not cancel session. Please try again or contact us directly.");
+        } finally {
+            setIsProcessingCancel(false);
         }
     };
 
@@ -407,7 +533,16 @@ const StudentPortal: React.FC = () => {
         );
     }
 
-    const nextLesson = studentLeads.find(l => new Date(l.date).getTime() >= new Date().setHours(0, 0, 0, 0));
+    const now = new Date();
+
+    const upcomingLessons = [...studentLeads]
+        .filter(l => !isLessonPast(l.date, l.time))
+        .sort((a, b) => parseLocalDate(a.date).getTime() - parseLocalDate(b.date).getTime());
+
+    const pastLessons = studentLeads.filter(l => isLessonPast(l.date, l.time));
+    const nextLesson = upcomingLessons[0];
+
+
 
     return (
         <div className="section container portal-page-container dashboard-page-section">
@@ -418,13 +553,13 @@ const StudentPortal: React.FC = () => {
                         <div>
                             <div className="d-flex align-items-center gap-2 mb-1">
                                 <span className="portal-badge">Student Portal</span>
-                                <span className="text-secondary small fw-bold text-uppercase opacity-75">• {studentLeads.length > 0 && studentLeads[0].email !== session.email ? 'Guardian Access' : 'Active Account'}</span>
+                                <span className="text-secondary small fw-bold text-uppercase opacity-75">• {studentLeads.length > 0 && studentLeads[0].email !== session?.email ? 'Guardian Access' : 'Active Account'}</span>
                             </div>
                             <h1 className="display-small m-0">Welcome Back 👋</h1>
                             <p className="text-secondary mt-1">
-                                {studentLeads.length > 0 && studentLeads[0].email !== session.email
+                                {studentLeads.length > 0 && studentLeads[0].email !== session?.email
                                     ? `Managing: ${[...new Set(studentLeads.map(l => l.name))].join(', ')} `
-                                    : `${studentLeads.length > 0 ? studentLeads[0].name : 'Student'} • ${session.email} `}
+                                    : `${studentLeads.length > 0 ? studentLeads[0].name : 'Student'} • ${session?.email} `}
                             </p>
                         </div>
                         <div className="portal-header-actions d-flex gap-3">
@@ -458,7 +593,7 @@ const StudentPortal: React.FC = () => {
                         <div className="grid grid-3 gap-3 gap-md-4 mb-5">
                             <StatCard
                                 icon={Calendar}
-                                value={studentLeads.length}
+                                value={pastLessons.length}
                                 label="Lessons Completed"
                             />
                             <StatCard
@@ -468,12 +603,12 @@ const StudentPortal: React.FC = () => {
                             />
                             <StatCard
                                 icon={Sparkles}
-                                value="Refer & Save $10"
-                                label="Discount applies to both"
+                                value="Refer & Save"
+                                label="You and your friend will save $10 on your next lesson"
                                 iconColorClass="text-danger"
                                 onClick={() => {
                                     if (session?.email) {
-                                        const refLink = `${window.location.origin}/?ref=${encodeURIComponent(session.email)}`;
+                                        const refLink = `${window.location.origin}/?ref=${encodeURIComponent(session?.email)}`;
                                         navigator.clipboard.writeText(refLink);
                                         alert('Referral link copied to clipboard!\n\n' + refLink);
                                     } else {
@@ -489,31 +624,6 @@ const StudentPortal: React.FC = () => {
                                     <Clock size={24} /> Driving Schedule
                                 </h3>
 
-                                {/* Spotlight Area for Next Lesson */}
-                                {nextLesson && (
-                                    <div className="next-lesson-card mb-4 mt-2">
-                                        <Clock className="card-icon" />
-                                        <div className="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-4">
-                                            <div>
-                                                <span className="small fw-bold opacity-75 text-uppercase">Next Scheduled Lesson</span>
-                                                <h2 className="h1 m-0 mt-1 text-white">{new Date(nextLesson.date + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}</h2>
-                                            </div>
-                                            <div className="next-lesson-header-badge">
-                                                <span className="fw-bold">{nextLesson.time}</span>
-                                            </div>
-                                        </div>
-                                        <div className="d-flex gap-3 gap-md-5 flex-wrap">
-                                            <div className="d-flex align-items-center gap-2">
-                                                <User size={18} />
-                                                <span>{nextLesson.instructor}</span>
-                                            </div>
-                                            <div className="d-flex align-items-center gap-2">
-                                                <MapPin size={18} />
-                                                <span>{nextLesson.pickupLocation}</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                )}
 
                                 {studentLeads.length === 0 ? (
                                     <div className="card-layered text-center opacity-50 textured">
@@ -528,31 +638,112 @@ const StudentPortal: React.FC = () => {
                                     </div>
                                 ) : (
                                     <div className="schedule-timeline">
-                                        {studentLeads.map((lead, i) => (
-                                            <div key={i} className="schedule-item">
-                                                <div className="card-layered d-flex justify-content-between align-items-center">
-                                                    <div className="d-flex gap-4 align-items-center">
-                                                        <div className="timeline-date-box">
-                                                            <div className="h2 fw-bold mb-0">{new Date(lead.date + 'T00:00:00').getDate()}</div>
-                                                            <div className="text-secondary small fw-bold text-uppercase">{new Date(lead.date + 'T00:00:00').toLocaleDateString('en-US', { month: 'short' })}</div>
-                                                        </div>
-                                                        <div className="timeline-divider" />
-                                                        <div>
-                                                            <div className="fw-bold">{lead.time}</div>
-                                                            <div className="text-secondary small d-flex align-items-center gap-2">
-                                                                <span>Instructor: {lead.instructor}</span>
-                                                                {lead.name !== studentLeads[0].name && <span className="fw-bold text-primary">• {lead.name}</span>}
+                                        {upcomingLessons.length > 0 && (
+                                            <div className="mb-5">
+                                                <h4 className="small fw-bold text-uppercase opacity-75 mb-4 d-flex align-items-center gap-2">
+                                                    Upcoming Sessions
+                                                    <span className="badge bg-primary-subtle text-primary">{upcomingLessons.length}</span>
+                                                </h4>
+                                                {upcomingLessons.map((lead) => {
+                                                    const isToday = parseLocalDate(lead.date).toDateString() === now.toDateString();
+                                                    const isNext = nextLesson?.id === lead.id;
+
+                                                    return (
+                                                        <div key={lead.id} className={`schedule-item upcoming ${isNext ? 'is-next' : ''}`}>
+                                                            <div className={`card-layered upcoming-lesson-card d-flex justify-content-between align-items-center ${isNext ? 'border-primary' : ''}`}>
+                                                                <div className="d-flex gap-4 align-items-center flex-grow-1">
+                                                                    <div className="timeline-date-box text-center" style={{ minWidth: '70px' }}>
+                                                                        <div className={`h2 fw-bold mb-0 ${isToday ? 'text-primary' : ''}`}>{parseLocalDate(lead.date).getDate()}</div>
+                                                                        <div className="text-secondary small fw-bold text-uppercase">{parseLocalDate(lead.date).toLocaleDateString('en-US', { month: 'short' })}</div>
+                                                                    </div>
+                                                                    <div className="timeline-divider" />
+                                                                    <div className="flex-grow-1 ps-2">
+                                                                        <div className="d-flex align-items-center justify-content-between mb-2">
+                                                                            <span className="fw-bold h4 m-0 p-0 line-height-1">
+                                                                                {lead.email !== session?.email && <span className="text-primary me-2">{lead.name}:</span>}
+                                                                                {lead.time}
+                                                                            </span>
+                                                                            <div className="d-flex align-items-center gap-3">
+                                                                                {isToday && <span className="status-badge-today">Today</span>}
+                                                                                {isNext && !isToday && <span className="status-badge-next">Next Scheduled Lesson</span>}
+                                                                            </div>
+                                                                        </div>
+                                                                        <div className="text-secondary d-flex flex-column gap-1">
+                                                                            <div className="d-flex align-items-center gap-2">
+                                                                                <User size={14} className="opacity-75" />
+                                                                                <span className="small fw-semibold">{lead.instructor}</span>
+                                                                            </div>
+                                                                            <div className="d-flex align-items-center gap-2">
+                                                                                <MapPin size={14} className="opacity-75" />
+                                                                                <span className="small">{lead.pickupLocation}</span>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div className="text-end ms-md-auto mt-2 mt-md-0">
+                                                                    <button
+                                                                        onClick={() => setCancellingLeadId(lead.id)}
+                                                                        className="btn btn-sm btn-accent px-4 py-2 rounded-3 small fw-bold"
+                                                                        style={{ fontSize: '0.75rem' }}
+                                                                    >
+                                                                        Cancel
+                                                                    </button>
+                                                                </div>
                                                             </div>
                                                         </div>
-                                                    </div>
-                                                    <div className="text-end d-none d-sm-block">
-                                                        <div className="text-secondary small d-flex align-items-center justify-content-end gap-1">
-                                                            <MapPin size={12} /> {lead.pickupLocation}
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                                    );
+                                                })}
                                             </div>
-                                        ))}
+                                        )}
+
+                                        {pastLessons.length > 0 && (
+                                            <div className="past-sessions-area">
+                                                <button
+                                                    onClick={() => setIsHistoryExpanded(!isHistoryExpanded)}
+                                                    className="history-toggle-btn w-100 d-flex justify-content-between align-items-center"
+                                                >
+                                                    <h4 className="small fw-bold text-uppercase m-0 text-secondary">Lesson History</h4>
+                                                    <div className="d-flex align-items-center gap-2 text-secondary">
+                                                        <span className="small">{pastLessons.length} Lessons</span>
+                                                        <ChevronRight size={16} className={`transition-all ${isHistoryExpanded ? 'rotate-90' : ''}`} />
+                                                    </div>
+                                                </button>
+
+                                                <AnimatePresence>
+                                                    {isHistoryExpanded && (
+                                                        <motion.div
+                                                            initial={{ height: 0, opacity: 0 }}
+                                                            animate={{ height: 'auto', opacity: 1 }}
+                                                            exit={{ height: 0, opacity: 0 }}
+                                                            transition={{ duration: 0.3 }}
+                                                            className="overflow-hidden mt-4"
+                                                        >
+                                                            <div className="d-flex flex-column gap-2">
+                                                                {pastLessons.map((lead) => (
+                                                                    <div key={lead.id} className="schedule-item past">
+                                                                        <div className="card-layered py-2 px-3 d-flex justify-content-between align-items-center opacity-75 grayscale-hover transition-all">
+                                                                            <div className="d-flex gap-3 align-items-center">
+                                                                                <div className="text-secondary fw-bold small" style={{ minWidth: '45px' }}>
+                                                                                    {parseLocalDate(lead.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                                                                                </div>
+                                                                                <div className="timeline-divider" style={{ height: '20px' }} />
+                                                                                <div className="small text-secondary">
+                                                                                    <span className="fw-bold">
+                                                                                        {lead.email !== session?.email && <span className="me-1">{lead.name}:</span>}
+                                                                                        {lead.time}
+                                                                                    </span> with {lead.instructor}
+                                                                                </div>
+                                                                            </div>
+                                                                            <div className="badge bg-secondary-subtle text-secondary small px-2 py-1">Completed</div>
+                                                                        </div>
+                                                                    </div>
+                                                                ))}
+                                                            </div>
+                                                        </motion.div>
+                                                    )}
+                                                </AnimatePresence>
+                                            </div>
+                                        )}
                                     </div>
                                 )}
                             </div>
@@ -823,17 +1014,17 @@ const StudentPortal: React.FC = () => {
                     </>
                 ) : (
                     <>
-                        <div className="text-center mb-5">
-                            <h2 className="display-small mb-4">
+                        <div className="text-center mb-4">
+                            <h2 className="display-small mb-3">
                                 <span className="text-accent">Schedule a Lesson</span>
                             </h2>
                             <p className="body-large text-secondary mx-auto text-center" style={{ maxWidth: '600px' }}>
                                 Select your preferred instructor and time slot. We'll handle the rest.
                             </p>
                         </div>
-                        <div className="card-layered textured-asphalt">
+                        <div className="card-layered textured-asphalt mx-auto portal-booking-card" style={{ maxWidth: '850px' }} ref={bookingTopRef}>
                             {/* Road Path Stepper */}
-                            <div className="mb-5 px-3 px-md-5">
+                            <div className="mb-4 px-3 px-md-5">
                                 <div className="step-road-line">
                                     <div className="step-road-progress" style={{ width: `${(bookingStep / 2) * 100}% ` }} />
                                     {[0, 1, 2].map((s) => (
@@ -908,22 +1099,24 @@ const StudentPortal: React.FC = () => {
                                             <div className="icon-box-lg border-0 bg-transparent" />
                                         </div>
 
-                                        <div className="grid grid-2 gap-4 gap-md-5">
-                                            <CalendarGrid
-                                                currentMonth={currentMonth}
-                                                selectedDate={selectedDate}
-                                                onDateSelect={(dateKey) => {
-                                                    setSelectedDate(dateKey);
-                                                    setSelectedTime(null);
-                                                }}
-                                                onMonthChange={(direction) => {
-                                                    const newMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + (direction === 'next' ? 1 : -1), 1);
-                                                    setCurrentMonth(newMonth);
-                                                }}
-                                                generateTimeSlots={(date) => generateTimeSlots(date, selectedInstructor, googleBusySlots, busySlots)}
-                                            />
+                                        <div className="grid grid-2-wide gap-4 gap-md-5">
+                                            <div className="calendar-centering-container">
+                                                <CalendarGrid
+                                                    currentMonth={currentMonth}
+                                                    selectedDate={selectedDate}
+                                                    onDateSelect={(dateKey) => {
+                                                        setSelectedDate(dateKey);
+                                                        setSelectedTime(null);
+                                                    }}
+                                                    onMonthChange={(direction) => {
+                                                        const newMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + (direction === 'next' ? 1 : -1), 1);
+                                                        setCurrentMonth(newMonth);
+                                                    }}
+                                                    generateTimeSlots={(date) => generateTimeSlots(date, selectedInstructor, googleBusySlots, busySlots)}
+                                                />
+                                            </div>
 
-                                            <div>
+                                            <div className="timeslot-container" ref={timeSlotsRef}>
                                                 <h4 className="h5 mb-4 fw-bold d-flex align-items-center gap-2">
                                                     <Clock size={18} /> Available Sessions
                                                 </h4>
@@ -1172,7 +1365,114 @@ const StudentPortal: React.FC = () => {
                 )}
             </div>
 
-        </div >
+            {/* Cancellation Confirmation Modal */}
+            <AnimatePresence>
+                {cancellingLeadId && (
+                    <motion.div
+                        className="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center p-3 modal-backdrop"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        style={{ zIndex: 1050 }}
+                        onClick={() => !isProcessingCancel && setCancellingLeadId(null)}
+                    >
+                        <motion.div
+                            className="w-100 modal-container"
+                            style={{ maxWidth: '500px' }}
+                            initial={{ opacity: 0, y: 30, scale: 0.98 }}
+                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                            exit={{ opacity: 0, y: 20, scale: 0.95 }}
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            <div className="modal-frame border-danger">
+                                <div className="modal-header bg-danger text-white">
+                                    <div className="d-flex justify-content-between align-items-center w-100">
+                                        <h3 className="h4 m-0 font-outfit d-flex align-items-center gap-2">
+                                            <AlertCircle size={24} /> Cancel Lesson?
+                                        </h3>
+                                        {!isProcessingCancel && (
+                                            <button onClick={() => setCancellingLeadId(null)} className="btn-close btn-close-white" />
+                                        )}
+                                    </div>
+                                </div>
+
+                                <div className="p-4 p-md-5">
+                                    {(() => {
+                                        const lead = studentLeads.find(l => l.id === cancellingLeadId);
+                                        if (!lead) return null;
+                                        const { isLate, hoursRemaining } = isCancellationLate(lead.date, lead.time);
+
+                                        return (
+                                            <>
+                                                <div className="mb-4">
+                                                    <div className="text-secondary small fw-bold text-uppercase mb-2">Lesson Details</div>
+                                                    <div className="bg-secondary-subtle p-3 rounded-3">
+                                                        <div className="fw-bold">{parseLocalDate(lead.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</div>
+                                                        <div className="text-primary">{lead.time} with {lead.instructor}</div>
+                                                    </div>
+                                                </div>
+
+                                                {isLate ? (
+                                                    <div className="alert-policy alert-late mb-4">
+                                                        <AlertCircle size={18} />
+                                                        <div>
+                                                            <div className="fw-bold small mb-1">Late Cancellation Policy</div>
+                                                            <div className="x-small opacity-90">This lesson starts in {Math.floor(hoursRemaining)} hours. Cancellations within 24 hours incur a <strong>$40 late fee</strong>.</div>
+                                                        </div>
+                                                    </div>
+                                                ) : (
+                                                    <div className="alert-policy alert-within mb-4">
+                                                        <CheckCircle size={18} />
+                                                        <div>
+                                                            <div className="fw-bold small mb-1">Within Policy</div>
+                                                            <div className="x-small opacity-90">You are cancelling more than 24 hours in advance. No fee will be charged.</div>
+                                                        </div>
+                                                    </div>
+                                                )}
+
+                                                <div className="mb-4">
+                                                    <label className="form-label small fw-bold">Reason for Cancellation (Optional)</label>
+                                                    <select
+                                                        className="form-input"
+                                                        value={cancelReason}
+                                                        onChange={(e) => setCancelReason(e.target.value)}
+                                                        disabled={isProcessingCancel}
+                                                    >
+                                                        <option value="">Select a reason...</option>
+                                                        <option value="Illness">Feeling Unwell / Illness</option>
+                                                        <option value="Schedule Conflict">Schedule Conflict</option>
+                                                        <option value="Emergency">Personal Emergency</option>
+                                                        <option value="Vehicle Issue">Vehicle/Transportation Issue</option>
+                                                        <option value="Other">Other</option>
+                                                    </select>
+                                                </div>
+
+                                                <div className="d-flex gap-3">
+                                                    <button
+                                                        className="btn btn-primary flex-grow-1 p-3"
+                                                        disabled={isProcessingCancel}
+                                                        onClick={() => setCancellingLeadId(null)}
+                                                    >
+                                                        Keep Lesson
+                                                    </button>
+                                                    <button
+                                                        className="btn btn-danger flex-grow-1 p-3 d-flex align-items-center justify-content-center gap-2"
+                                                        disabled={isProcessingCancel}
+                                                        onClick={() => handleCancelLesson(cancellingLeadId)}
+                                                    >
+                                                        {isProcessingCancel ? <Loader2 size={18} className="animate-spin" /> : 'Confirm Cancellation'}
+                                                    </button>
+                                                </div>
+                                            </>
+                                        );
+                                    })()}
+                                </div>
+                            </div>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+        </div>
     );
 };
 

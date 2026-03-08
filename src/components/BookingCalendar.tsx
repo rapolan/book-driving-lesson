@@ -489,11 +489,62 @@ const BookingCalendar: React.FC = () => {
                   setSelectedTime(null);
                 }}
                 onMonthChange={(direction) => {
+                  const today = new Date();
+                  const firstOfCurrent = new Date(today.getFullYear(), today.getMonth(), 1);
+                  const firstOfNext = new Date(today.getFullYear(), today.getMonth() + 1, 1);
                   const newMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + (direction === 'next' ? 1 : -1), 1);
-                  setCurrentMonth(newMonth);
+
+                  // Strictly enforce 1-month-out limit
+                  if (newMonth >= firstOfCurrent && newMonth <= firstOfNext) {
+                    setCurrentMonth(newMonth);
+                  }
                 }}
                 generateTimeSlots={(date) => generateTimeSlots(date)}
               />
+
+              {/* Inquiry Fallback for Fully Booked Months */}
+              {(() => {
+                const now = new Date();
+                const currentMonthDays = [];
+                const d = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1);
+                while (d.getMonth() === currentMonth.getMonth()) {
+                  currentMonthDays.push(new Date(d));
+                  d.setDate(d.getDate() + 1);
+                }
+
+                const hasAnyAvailability = currentMonthDays.some(date => {
+                  if (date < new Date(now.getFullYear(), now.getMonth(), now.getDate())) return false;
+                  return generateTimeSlots(date).length > 0;
+                });
+
+                if (!hasAnyAvailability && !isSyncing && selectedInstructor) {
+                  return (
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      className="card-layered textured bg-accent-subtle border-accent-soft p-4 mb-4 text-center"
+                    >
+                      <div className="d-flex align-items-center justify-content-center gap-2 mb-3">
+                        <AlertCircle size={20} className="text-accent" />
+                        <h4 className="h5 m-0 fw-bold">Fully Booked for {currentMonth.toLocaleDateString("en-US", { month: 'long' })}</h4>
+                      </div>
+                      <p className="text-secondary mb-4">
+                        Everything is currently taken, but we sometimes have last-minute openings!
+                        Reach out directly and we'll see if we can fit you in.
+                      </p>
+                      <div className="d-flex flex-wrap gap-3 justify-content-center">
+                        <a href="mailto:alex.rpolan@gmail.com" className="btn btn-accent px-4 py-2 d-flex align-items-center gap-2">
+                          <Mail size={18} /> Email Rob & Nat
+                        </a>
+                        <a href="tel:6197213271" className="btn btn-secondary px-4 py-2 d-flex align-items-center gap-2">
+                          <Phone size={18} /> Text Us
+                        </a>
+                      </div>
+                    </motion.div>
+                  );
+                }
+                return null;
+              })()}
 
               {selectedDate && (
                 <motion.div

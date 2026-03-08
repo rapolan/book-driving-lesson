@@ -975,7 +975,7 @@ const StudentPortal: React.FC = () => {
                                                 </div>
                                             </div>
 
-                                            <div className="p-4 p-md-5">
+                                            <div className="modal-content-scroll">
                                                 <div className="mb-4">
                                                     <h4 className="small fw-bold text-uppercase text-secondary mb-3 d-flex align-items-center gap-2">
                                                         <BookOpen size={14} className="text-primary" />

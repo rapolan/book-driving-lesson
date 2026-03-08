@@ -169,3 +169,36 @@ export const getDaysInMonth = (month: Date) => {
     for (let i = 1; i <= daysInMonth; i++) days.push(new Date(year, m, i));
     return days;
 };
+
+export const isCancellationLate = (dateStr: string, timeStr: string) => {
+    // Standardize time parsing (e.g., "09:00 AM")
+    const [time, modifier] = timeStr.split(' ');
+    let [hours, minutes] = time.split(':').map(Number);
+    if (modifier === 'PM' && hours < 12) hours += 12;
+    if (modifier === 'AM' && hours === 12) hours = 0;
+
+    const lessonDate = new Date(`${dateStr}T${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:00`);
+    const now = new Date();
+
+    const diffMs = lessonDate.getTime() - now.getTime();
+    const diffHours = diffMs / (1000 * 60 * 60);
+
+    return {
+        isLate: diffHours < 24 && diffHours > 0,
+        isPast: diffHours <= 0,
+        hoursRemaining: Math.max(0, diffHours)
+    };
+};
+export const isLessonPast = (dateStr: string, timeStr: string) => {
+    const [time, modifier] = timeStr.split(' ');
+    let [hours, minutes] = time.split(':').map(Number);
+    if (modifier === 'PM' && hours < 12) hours += 12;
+    if (modifier === 'AM' && hours === 12) hours = 0;
+
+    const lessonDate = parseLocalDate(dateStr);
+    lessonDate.setHours(hours, minutes, 0, 0);
+
+    // Lessons are typically 2 hours. Consider it 'past' once it has ended.
+    const lessonEndDate = new Date(lessonDate.getTime() + (2 * 60 * 60 * 1000));
+    return lessonEndDate.getTime() <= Date.now();
+};

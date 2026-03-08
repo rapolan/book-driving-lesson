@@ -40,96 +40,198 @@
     opacity: 0.6;
 }
 
-/* Ultra-Compact High-Density Layout */
+/* Premium CRM Card Layout */
 .lead-card-crm {
-    transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    border: 1px solid var(--glass-border);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid var(--glass-border) !important;
+    backdrop-filter: blur(10px);
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.03) !important;
 }
 
-.lead-row-grid {
+.lead-card-crm:hover {
+    border-color: var(--primary) !important;
+    background: rgba(var(--primary-rgb), 0.05) !important;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15) !important;
+}
+
+.lead-card-layout {
     display: grid;
-    grid-template-columns: 160px 140px 1fr 1fr 180px 60px;
-    gap: 1rem;
+    grid-template-columns: 240px 1fr 280px 80px;
+    gap: 2rem;
     align-items: center;
 }
 
-.lead-name-compact {
-    font-size: 0.85rem;
+/* Identity Column */
+.lead-col-identity {
+    display: flex;
+    flex-direction: column;
+}
+
+.lead-name-premium {
+    font-size: 1.1rem;
+    font-weight: 700;
     color: var(--text-primary);
+    margin-bottom: 0.25rem;
+    font-family: 'Outfit', sans-serif;
+}
+
+.lead-id-subtle {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    opacity: 0.4;
+}
+
+.lesson-count-pill {
+    font-size: 0.65rem;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-weight: 600;
+    color: var(--primary);
+}
+
+/* Details Column */
+.lead-col-details {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+
+.details-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.detail-item {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+}
+
+.detail-item span {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
-.lead-meta-compact {
-    font-size: 0.75rem;
-    color: var(--text-secondary);
+/* Management Column */
+.lead-col-management {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
 }
 
-.status-badge.compact {
-    padding: 0.15rem 0.4rem;
-    font-size: 0.6rem;
+.management-top-row {
+    display: flex;
+    gap: 0.5rem;
 }
 
-.lead-notes-area {
-    width: 100%;
+.input-group-compact {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-group-compact svg {
+    position: absolute;
+    left: 10px;
+    opacity: 0.5;
+}
+
+.input-group-compact .school-input-compact {
+    padding-left: 32px !important;
 }
 
 .school-input-compact {
-    width: 100%;
-    background: rgba(0, 0, 0, 0.2);
-    border: 1px solid var(--glass-border);
-    border-radius: 4px;
-    color: var(--text-primary);
-    font-size: 0.75rem;
-    padding: 4px 8px;
-    height: 30px;
-    transition: all 0.2s;
+    background: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 8px !important;
+    color: var(--text-primary) !important;
+    font-size: 0.8rem !important;
+    height: 38px !important;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 
 .school-input-compact:focus {
-    background: rgba(0, 0, 0, 0.4);
-    border-color: var(--primary);
-    outline: none;
-    height: 60px;
+    background: rgba(255, 255, 255, 0.08) !important;
+    border-color: var(--primary) !important;
+    box-shadow: 0 0 15px rgba(var(--primary-rgb), 0.15) !important;
+    outline: none !important;
 }
 
-textarea.school-input-compact {
+.school-input-compact.border-accent {
+    border-color: rgba(var(--accent-rgb), 0.4) !important;
+    background: rgba(var(--accent-rgb), 0.03) !important;
+}
+
+.notes-container-compact {
+    position: relative;
+    display: flex;
+}
+
+.notes-icon {
+    position: absolute;
+    left: 10px;
+    top: 9px;
+    z-index: 1;
+    opacity: 0.5;
+}
+
+.notes-input {
+    padding-left: 32px !important;
+    height: 38px !important;
+    font-size: 0.75rem;
     resize: none;
-    height: 30px;
+    line-height: 1.4;
+    padding-top: 8px !important;
 }
 
-.select-compact {
-    padding-right: 1.5rem !important;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") !important;
-    background-position: right 0.4rem center !important;
-    background-size: 0.7em !important;
-    appearance: none;
+.notes-input:focus {
+    height: 80px !important;
+    background: rgba(255, 255, 255, 0.08) !important;
+    z-index: 10;
 }
 
-.btn-icon-compact {
-    background: none;
-    border: none;
+/* Actions Column */
+.lead-col-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: center;
+    border-left: 1px solid var(--glass-border);
+    padding-left: 1.5rem;
+}
+
+.btn-icon-premium {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--glass-border);
     color: var(--text-secondary);
-    cursor: pointer;
-    padding: 4px;
-    border-radius: 4px;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
     transition: all 0.2s;
 }
 
-.btn-icon-compact:hover {
-    background: rgba(255, 255, 255, 0.1);
-    color: var(--text-primary);
+.btn-icon-premium:hover {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+    transform: translateY(-2px);
 }
 
-.truncate {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+.btn-icon-premium.text-error:hover {
+    background: var(--error);
+    border-color: var(--error);
 }
+
 
 /* Dashboard Elements */
 .admin-empty-state {
@@ -209,19 +311,59 @@ textarea.school-input-compact {
     color: #ef4444 !important;
 }
 
+/* Tablet: Resilient Layout */
 @media (max-width: 1200px) {
-    .lead-row-grid {
-        grid-template-columns: 140px 110px 1fr 90px 40px;
+    .lead-card-layout {
+        grid-template-columns: 200px 1fr 260px;
+        gap: 1rem;
     }
 
-    .lead-notes-area {
+    .lead-col-actions {
         display: none;
+        /* Hide actions col in tight view, we can add them to management instead */
     }
 }
 
+/* Mobile: Structured Card Layout */
 @media (max-width: 768px) {
-    .lead-row-grid {
-        grid-template-columns: 1fr 1fr;
-        gap: 0.5rem;
+    .lead-card-crm {
+        padding: 1rem !important;
     }
+
+    .lead-card-layout {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 1.5rem;
+    }
+
+    .lead-col-details {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .lead-col-actions {
+        border-left: none;
+        border-top: 1px solid var(--glass-border);
+        padding-left: 0;
+        padding-top: 1rem;
+        flex-direction: row;
+        justify-content: center;
+    }
+}
+
+.crm-controls {
+    background: none !important;
+    border: none !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+}
+
+/* Force hide any scroll artifacts on inputs */
+.school-input-compact,
+.select-compact {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    overflow: hidden;
 }

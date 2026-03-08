@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Users, Calendar, Download, Trash2, ExternalLink, ShieldCheck } from 'lucide-react';
-import { getInstructorConfig } from '../utils/bookingUtils';
+import { Users, Calendar, Download, Trash2, ExternalLink, ShieldCheck, Phone, Mail, MapPin, CreditCard, MessageSquare } from 'lucide-react';
+import { getInstructorConfig, parseLocalDate, isLessonPast } from '../utils/bookingUtils';
 import '../styles/components/AdminDashboard.css';
 
 interface Lead {
@@ -36,8 +36,19 @@ const AdminDashboard: React.FC = () => {
     const [availDraft, setAvailDraft] = useState(getInstructorConfig(activeInstructor));
 
     useEffect(() => {
-        const storedLeads = JSON.parse(localStorage.getItem('driving_leads') || '[]');
-        setLeads(storedLeads.sort((a: Lead, b: Lead) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()));
+        try {
+            const storedLeads = JSON.parse(localStorage.getItem('driving_leads') || '[]');
+            if (Array.isArray(storedLeads)) {
+                setLeads(storedLeads.sort((a: Lead, b: Lead) => {
+                    const timeA = a.timestamp ? new Date(a.timestamp).getTime() : 0;
+                    const timeB = b.timestamp ? new Date(b.timestamp).getTime() : 0;
+                    return timeB - timeA;
+                }));
+            }
+        } catch (e) {
+            console.error("Failed to load leads:", e);
+            setLeads([]);
+        }
     }, []);
 
     useEffect(() => {
@@ -75,7 +86,7 @@ const AdminDashboard: React.FC = () => {
 
     // CRM Helpers
     const getStudentLessonCount = (email: string) => {
-        return leads.filter(l => l.email === email).length;
+        return leads.filter(l => l.email === email && isLessonPast(l.date, l.time)).length;
     };
 
     const getAutomatedStatus = (lead: Lead) => {
@@ -165,8 +176,8 @@ const AdminDashboard: React.FC = () => {
                 </div>
 
                 {view === 'leads' && (
-                    <div className="crm-controls bg-secondary p-3 rounded-4 border border-glass mb-4 d-flex gap-3 flex-wrap">
-                        <div className="flex-grow-1 position-relative">
+                    <div className="crm-controls mb-4 d-flex gap-3 flex-wrap align-items-center">
+                        <div className="flex-grow-1 position-relative" style={{ minWidth: '250px' }}>
                             <input
                                 type="text"
                                 placeholder="Search student name or email..."
@@ -177,19 +188,21 @@ const AdminDashboard: React.FC = () => {
                             />
                             <Users size={18} className="position-absolute translate-middle-y top-50 start-0 ms-3 opacity-50" />
                         </div>
-                        <select
-                            className="school-input"
-                            style={{ height: '48px', width: '200px' }}
-                            value={statusFilter}
-                            onChange={(e) => setStatusFilter(e.target.value)}
-                        >
-                            <option value="All">All Statuses</option>
-                            <option value="Enrolled">Enrolled</option>
-                            <option value="In Progress">In Progress</option>
-                            <option value="Ready for Cert">Ready for Cert</option>
-                            <option value="Certified">Certified</option>
-                            <option value="Archive">Archive</option>
-                        </select>
+                        <div className="d-flex gap-3 flex-grow-1 flex-md-grow-0">
+                            <select
+                                className="school-input flex-grow-1"
+                                style={{ height: '48px', width: '200px', minWidth: '160px' }}
+                                value={statusFilter}
+                                onChange={(e) => setStatusFilter(e.target.value)}
+                            >
+                                <option value="All">All Statuses</option>
+                                <option value="Enrolled">Enrolled</option>
+                                <option value="In Progress">In Progress</option>
+                                <option value="Ready for Cert">Ready for Cert</option>
+                                <option value="Certified">Certified</option>
+                                <option value="Archive">Archive</option>
+                            </select>
+                        </div>
                     </div>
                 )}
 
@@ -202,86 +215,107 @@ const AdminDashboard: React.FC = () => {
                             </div>
                         ) : (
                             filteredLeads.map((lead) => {
+                                if (!lead) return null;
                                 const status = getAutomatedStatus(lead);
-                                const lessonCount = getStudentLessonCount(lead.email);
+                                const lessonCount = lead.email ? getStudentLessonCount(lead.email) : 0;
 
                                 return (
                                     <motion.div
                                         key={lead.id}
                                         layoutId={lead.id}
-                                        className="card-layered textured textured-asphalt lead-card-crm p-2 mb-2"
-                                        style={{ fontSize: '0.85rem' }}
+                                        className="card-layered glass-card lead-card-crm p-3 mb-3"
                                     >
-                                        <div className="lead-row-grid">
-                                            {/* Status & Name */}
-                                            <div className="d-flex align-items-center gap-2">
-                                                <span className={`status-badge status-${status.toLowerCase().replace(/\s+/g, '-')} compact`}>
-                                                    {status === 'Ready for Cert' ? 'Ready' : status}
-                                                </span>
-                                                <div className="d-flex flex-column">
-                                                    <div className="lead-name-compact fw-bold">{lead.name}</div>
-                                                    <div style={{ fontSize: '0.65rem' }} className="text-secondary opacity-75">
+                                        <div className="lead-card-layout">
+                                            {/* Column 1: Identity & Status */}
+                                            <div className="lead-col-identity">
+                                                <div className="d-flex align-items-center gap-2 mb-2">
+                                                    <span className={`status-badge status-${status.toLowerCase().replace(/\s+/g, '-')} compact`}>
+                                                        {status === 'Ready for Cert' ? 'Ready' : status}
+                                                    </span>
+                                                    <div className="lesson-count-pill">
                                                         {lessonCount} {lessonCount === 1 ? 'Lesson' : 'Lessons'}
+                                                    </div>
+                                                </div>
+                                                <div className="lead-name-premium">{lead.name}</div>
+                                                <div className="lead-id-subtle">ID: {lead.id?.slice(0, 8) || 'Unknown'}</div>
+                                            </div>
+
+                                            {/* Column 2: Contact & Logistics */}
+                                            <div className="lead-col-details">
+                                                <div className="details-group">
+                                                    <div className="detail-item">
+                                                        <Phone size={14} className="text-primary opacity-75" />
+                                                        <span>{lead.phone}</span>
+                                                    </div>
+                                                    <div className="detail-item">
+                                                        <Mail size={14} className="text-primary opacity-75" />
+                                                        <span className="truncate">{lead.email}</span>
+                                                    </div>
+                                                </div>
+                                                <div className="details-group">
+                                                    <div className="detail-item fw-bold text-white">
+                                                        <Calendar size={14} className="opacity-75" />
+                                                        <span>{lead.date} • {lead.time}</span>
+                                                    </div>
+                                                    <div className="detail-item opacity-75">
+                                                        <MapPin size={14} />
+                                                        <span className="truncate">{lead.pickupLocation}</span>
                                                     </div>
                                                 </div>
                                             </div>
 
-                                            {/* Contact & Date */}
-                                            <div className="lead-meta-compact opacity-75">
-                                                {lead.date} • {lead.time}
+                                            {/* Column 3: Management & Notes */}
+                                            <div className="lead-col-management">
+                                                <div className="management-top-row">
+                                                    <div className="input-group-compact">
+                                                        <CreditCard size={14} className="opacity-50" />
+                                                        <input
+                                                            type="text"
+                                                            placeholder="Cert #"
+                                                            value={lead.certificateNumber || ''}
+                                                            onChange={(e) => updateLead(lead.id, { certificateNumber: e.target.value })}
+                                                            className={`school-input-compact ${status === 'Ready for Cert' ? 'border-accent' : ''}`}
+                                                            style={{ width: '90px' }}
+                                                        />
+                                                    </div>
+                                                    <select
+                                                        className="school-input-compact select-compact"
+                                                        value={lead.manualStatus || ''}
+                                                        onChange={(e) => updateLead(lead.id, { manualStatus: e.target.value as any })}
+                                                        title="Override Status"
+                                                        style={{ width: '100px' }}
+                                                    >
+                                                        <option value="">Smart (Auto)</option>
+                                                        <option value="Certified">Certified</option>
+                                                        <option value="Archive">Archive</option>
+                                                    </select>
+                                                </div>
+                                                <div className="notes-container-compact">
+                                                    <MessageSquare size={14} className="notes-icon opacity-50" />
+                                                    <textarea
+                                                        placeholder="Quick note..."
+                                                        value={lead.notes || ''}
+                                                        onChange={(e) => updateLead(lead.id, { notes: e.target.value })}
+                                                        className="school-input-compact notes-input"
+                                                    />
+                                                </div>
                                             </div>
 
-                                            {/* Location & Permit */}
-                                            <div className="lead-meta-compact opacity-75 truncate" title={lead.pickupLocation}>
-                                                {lead.pickupLocation}
-                                            </div>
-
-                                            {/* Notes Area - Smaller and wider */}
-                                            <div className="lead-notes-area">
-                                                <textarea
-                                                    placeholder="Add note..."
-                                                    value={lead.notes || ''}
-                                                    onChange={(e) => updateLead(lead.id, { notes: e.target.value })}
-                                                    className="school-input-compact"
-                                                />
-                                            </div>
-
-                                            {/* Management Area - Actions in row */}
-                                            <div className="d-flex align-items-center gap-2">
-                                                <select
-                                                    className="school-input-compact select-compact"
-                                                    value={lead.manualStatus || ''}
-                                                    onChange={(e) => updateLead(lead.id, { manualStatus: e.target.value as any })}
-                                                >
-                                                    <option value="">Auto</option>
-                                                    <option value="Certified">Cert</option>
-                                                    <option value="Archive">Arch</option>
-                                                </select>
-                                                <input
-                                                    type="text"
-                                                    placeholder="Cert #"
-                                                    value={lead.certificateNumber || ''}
-                                                    onChange={(e) => updateLead(lead.id, { certificateNumber: e.target.value })}
-                                                    className={`school-input-compact ${status === 'Ready for Cert' ? 'border-accent' : ''}`}
-                                                    style={{ width: '80px' }}
-                                                />
-                                            </div>
-
-                                            {/* Delete/Email */}
-                                            <div className="d-flex align-items-center gap-1">
+                                            {/* Column 4: Actions (Fixed on right) */}
+                                            <div className="lead-col-actions">
                                                 <button
-                                                    className="btn-icon-compact"
+                                                    className="btn-icon-premium"
                                                     onClick={() => window.open(`mailto:${lead.email}`)}
-                                                    title="Email"
+                                                    title="Email Student"
                                                 >
-                                                    <ExternalLink size={14} />
+                                                    <ExternalLink size={16} />
                                                 </button>
                                                 <button
-                                                    className="btn-icon-compact text-error"
+                                                    className="btn-icon-premium text-error"
                                                     onClick={() => deleteLead(lead.id)}
-                                                    title="Delete"
+                                                    title="Delete Lead"
                                                 >
-                                                    <Trash2 size={14} />
+                                                    <Trash2 size={16} />
                                                 </button>
                                             </div>
                                         </div>
@@ -407,7 +441,7 @@ const AdminDashboard: React.FC = () => {
                                 {availDraft.excludedDates.length === 0 && <p className="small text-secondary italic">No dates blocked.</p>}
                                 {availDraft.excludedDates.map((date: string) => (
                                     <div key={date} className="blocked-date-badge">
-                                        <span className="small">{new Date(date + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+                                        <span className="small">{parseLocalDate(date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
                                         <button
                                             onClick={() => setAvailDraft({
                                                 ...availDraft,

@@ -953,14 +953,14 @@ const StudentPortal: React.FC = () => {
                                         transition={{ duration: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
                                         onClick={(e) => e.stopPropagation()}
                                     >
-                                        {/* The Actual Rounded Frame with Hardware Clipping */}
+                                        {/* Premium Skill Briefing Modal Frame */}
                                         <div className="modal-frame">
                                             {/* High-Color Header */}
                                             <div className="modal-header">
                                                 <div className="d-flex justify-content-between align-items-start">
                                                     <div>
                                                         <div className="d-flex align-items-center gap-2 mb-2">
-                                                            <span className="badge bg-white-transparent">Hardened Frame 🛡️</span>
+                                                            <span className="badge bg-white-transparent">Skill Module 🎓</span>
                                                         </div>
                                                         <h2 className="display-small m-0 text-white font-outfit">
                                                             Day {selectedDayModal}: {curriculumData.days.find((d: any) => d.day === selectedDayModal)?.title}

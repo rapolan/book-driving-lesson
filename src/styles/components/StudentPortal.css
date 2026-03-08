@@ -109,12 +109,16 @@
     box-shadow: 0 24px 60px rgba(0, 0, 0, 0.4);
     overflow: hidden;
     position: relative;
+    display: flex;
+    flex-direction: column;
+    max-height: 90dvh;
 }
 
 .modal-header {
     background-color: var(--primary);
-    padding: 2.5rem;
+    padding: 1.5rem 2.5rem;
     color: white;
+    flex-shrink: 0;
 }
 
 .modal-close-btn {
@@ -137,8 +141,23 @@
     color: white;
 }
 
+.modal-content-scroll {
+    overflow-y: auto;
+    padding: 2rem 2.5rem;
+    flex-grow: 1;
+}
+
+.modal-content-scroll::-webkit-scrollbar {
+    width: 6px;
+}
+
+.modal-content-scroll::-webkit-scrollbar-thumb {
+    background: var(--glass-border);
+    border-radius: 10px;
+}
+
 .skill-mastery-grid {
-    grid-auto-rows: 1fr;
+    grid-auto-rows: min-content;
 }
 
 .skill-mastery-item {

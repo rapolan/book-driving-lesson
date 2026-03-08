@@ -996,15 +996,15 @@ const StudentPortal: React.FC = () => {
                                                         ))}
                                                     </div>
                                                 </div>
+                                            </div>
 
-                                                <div className="text-center mt-4">
-                                                    <button
-                                                        onClick={() => setSelectedDayModal(null)}
-                                                        className="btn btn-primary w-100 p-3 rounded-3"
-                                                    >
-                                                        I've got it!
-                                                    </button>
-                                                </div>
+                                            <div className="modal-footer">
+                                                <button
+                                                    onClick={() => setSelectedDayModal(null)}
+                                                    className="btn btn-primary w-100 p-3 rounded-3"
+                                                >
+                                                    I&apos;ve got it!
+                                                </button>
                                             </div>
                                         </div>
                                     </motion.div>

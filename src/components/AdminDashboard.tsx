@@ -225,8 +225,7 @@ const AdminDashboard: React.FC = () => {
                                 <p className="text-secondary">No leads captured yet. School is quiet.</p>
                             </div>
                         ) : (
-                            filteredLeads.map((lead) => {
-                                if (!lead) return null;
+                            filteredLeads.filter(lead => lead && lead.id).map((lead) => {
                                 const status = getAutomatedStatus(lead);
                                 const lessonCount = lead.email ? getStudentLessonCount(lead.email) : 0;
 

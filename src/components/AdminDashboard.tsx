@@ -31,6 +31,7 @@ const AdminDashboard: React.FC = () => {
     const [activeInstructor, setActiveInstructor] = useState<string>("Rob Polan");
     const [searchTerm, setSearchTerm] = useState('');
     const [statusFilter, setStatusFilter] = useState<string>('All');
+    const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
 
     // Default Availability matching BookingCalendar.tsx
     const [availDraft, setAvailDraft] = useState(getInstructorConfig(activeInstructor));
@@ -76,11 +77,21 @@ const AdminDashboard: React.FC = () => {
         localStorage.setItem('driving_leads', JSON.stringify(updatedLeads));
     };
 
-    const deleteLead = (id: string) => {
-        if (window.confirm('Remove this lead?')) {
+    const handleDeleteClick = (id: string, e: React.MouseEvent) => {
+        e.stopPropagation();
+        if (confirmDeleteId === id) {
+            // Second click: Actually delete
             const updatedLeads = leads.filter(l => l.id !== id);
             setLeads(updatedLeads);
             localStorage.setItem('driving_leads', JSON.stringify(updatedLeads));
+            setConfirmDeleteId(null);
+        } else {
+            // First click: Enter confirmation state
+            setConfirmDeleteId(id);
+            // Optional: Auto-reset after 3 seconds if not confirmed
+            setTimeout(() => {
+                setConfirmDeleteId(current => current === id ? null : current);
+            }, 3000);
         }
     };
 
@@ -311,11 +322,12 @@ const AdminDashboard: React.FC = () => {
                                                     <ExternalLink size={16} />
                                                 </button>
                                                 <button
-                                                    className="btn-icon-premium text-error"
-                                                    onClick={() => deleteLead(lead.id)}
-                                                    title="Delete Lead"
+                                                    className={`btn-icon-premium ${confirmDeleteId === lead.id ? 'confirm-delete-active' : 'text-error'}`}
+                                                    onClick={(e) => handleDeleteClick(lead.id, e)}
+                                                    title={confirmDeleteId === lead.id ? "Click again to confirm" : "Delete Lead"}
                                                 >
-                                                    <Trash2 size={16} />
+                                                    {confirmDeleteId === lead.id ? <Trash2 size={16} fill="white" /> : <Trash2 size={16} />}
+                                                    {confirmDeleteId === lead.id && <span className="ms-1 tiny fw-bold">Confirm?</span>}
                                                 </button>
                                             </div>
                                         </div>

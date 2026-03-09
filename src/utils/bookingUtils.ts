@@ -61,8 +61,14 @@ export const instructors = [
 
 export const getInstructorConfig = (name: string) => {
     const base = instructors.find(i => i.name === name);
-    const stored = JSON.parse(localStorage.getItem(`availability_${name}`) || 'null');
-    return stored || base?.availability;
+    try {
+        const storedStr = localStorage.getItem(`availability_${name}`);
+        const stored = storedStr ? JSON.parse(storedStr) : null;
+        return stored || base?.availability;
+    } catch (e) {
+        console.error(`Failed to parse availability for ${name}:`, e);
+        return base?.availability;
+    }
 };
 
 export const generateTimeSlots = (
@@ -171,34 +177,46 @@ export const getDaysInMonth = (month: Date) => {
 };
 
 export const isCancellationLate = (dateStr: string, timeStr: string) => {
+    if (!dateStr || !timeStr) return { isLate: false, isPast: false, hoursRemaining: 0 };
+
     // Standardize time parsing (e.g., "09:00 AM")
-    const [time, modifier] = timeStr.split(' ');
-    let [hours, minutes] = time.split(':').map(Number);
-    if (modifier === 'PM' && hours < 12) hours += 12;
-    if (modifier === 'AM' && hours === 12) hours = 0;
+    try {
+        const [time, modifier] = timeStr.split(' ');
+        let [hours, minutes] = time.split(':').map(Number);
+        if (modifier === 'PM' && hours < 12) hours += 12;
+        if (modifier === 'AM' && hours === 12) hours = 0;
 
-    const lessonDate = new Date(`${dateStr}T${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:00`);
-    const now = new Date();
+        const lessonDate = new Date(`${dateStr}T${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:00`);
+        const now = new Date();
 
-    const diffMs = lessonDate.getTime() - now.getTime();
-    const diffHours = diffMs / (1000 * 60 * 60);
+        const diffMs = lessonDate.getTime() - now.getTime();
+        const diffHours = diffMs / (1000 * 60 * 60);
 
-    return {
-        isLate: diffHours < 24 && diffHours > 0,
-        isPast: diffHours <= 0,
-        hoursRemaining: Math.max(0, diffHours)
-    };
+        return {
+            isLate: diffHours < 24 && diffHours > 0,
+            isPast: diffHours <= 0,
+            hoursRemaining: Math.max(0, diffHours)
+        };
+    } catch (e) {
+        return { isLate: false, isPast: false, hoursRemaining: 0 };
+    }
 };
 export const isLessonPast = (dateStr: string, timeStr: string) => {
-    const [time, modifier] = timeStr.split(' ');
-    let [hours, minutes] = time.split(':').map(Number);
-    if (modifier === 'PM' && hours < 12) hours += 12;
-    if (modifier === 'AM' && hours === 12) hours = 0;
+    if (!dateStr || !timeStr) return false;
 
-    const lessonDate = parseLocalDate(dateStr);
-    lessonDate.setHours(hours, minutes, 0, 0);
+    try {
+        const [time, modifier] = timeStr.split(' ');
+        let [hours, minutes] = time.split(':').map(Number);
+        if (modifier === 'PM' && hours < 12) hours += 12;
+        if (modifier === 'AM' && hours === 12) hours = 0;
 
-    // Lessons are typically 2 hours. Consider it 'past' once it has ended.
-    const lessonEndDate = new Date(lessonDate.getTime() + (2 * 60 * 60 * 1000));
-    return lessonEndDate.getTime() <= Date.now();
+        const lessonDate = parseLocalDate(dateStr);
+        lessonDate.setHours(hours, minutes, 0, 0);
+
+        // Lessons are typically 2 hours. Consider it 'past' once it has ended.
+        const lessonEndDate = new Date(lessonDate.getTime() + (2 * 60 * 60 * 1000));
+        return lessonEndDate.getTime() <= Date.now();
+    } catch (e) {
+        return false;
+    }
 };

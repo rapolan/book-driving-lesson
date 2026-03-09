@@ -161,9 +161,12 @@ const AdminDashboard: React.FC = () => {
     };
 
     const filteredLeads = leads.filter(lead => {
+        const name = lead.name || "";
+        const email = lead.email || "";
+
         const matchesSearch =
-            lead.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            lead.email.toLowerCase().includes(searchTerm.toLowerCase());
+            name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            email.toLowerCase().includes(searchTerm.toLowerCase());
 
         const status = getAutomatedStatus(lead);
         const matchesStatus = statusFilter === 'All' || status === statusFilter;

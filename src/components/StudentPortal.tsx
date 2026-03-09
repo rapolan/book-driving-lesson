@@ -592,10 +592,16 @@ const StudentPortal: React.FC = () => {
     const now = new Date();
 
     const upcomingLessons = [...studentLeads]
-        .filter(l => !isLessonPast(l.date, l.time))
-        .sort((a, b) => parseLocalDate(a.date).getTime() - parseLocalDate(b.date).getTime());
+        .filter(l => l && l.date && l.time && !isLessonPast(l.date, l.time))
+        .sort((a, b) => {
+            try {
+                return parseLocalDate(a.date).getTime() - parseLocalDate(b.date).getTime();
+            } catch (e) {
+                return 0;
+            }
+        });
 
-    const pastLessons = studentLeads.filter(l => isLessonPast(l.date, l.time));
+    const pastLessons = studentLeads.filter(l => l && l.date && l.time && isLessonPast(l.date, l.time));
     const nextLesson = upcomingLessons[0];
 
 

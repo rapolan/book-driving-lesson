@@ -23,6 +23,7 @@ import {
 import StatCard from './shared/StatCard';
 import ResourceCard from './shared/ResourceCard';
 import CalendarGrid from './shared/CalendarGrid';
+import { supabase } from '../lib/supabase';
 
 
 interface SessionData {
@@ -142,27 +143,33 @@ const StudentPortal: React.FC = () => {
     }, []);
 
     useEffect(() => {
-        let localLeads: any[] = [];
-        try {
-            localLeads = JSON.parse(localStorage.getItem('driving_leads') || '[]');
-            if (!Array.isArray(localLeads)) localLeads = [];
-        } catch (e) {
-            console.error("Failed to parse leads:", e);
-        }
+        const fetchSupabaseAvailability = async () => {
+            try {
+                const { data: supabaseLeads, error } = await supabase
+                    .from('driving_leads')
+                    .select('instructor, date, time');
 
-        const busy: { [instructor: string]: { [date: string]: string[] } } = {
-            "Rob Polan": {},
-            "Natalie Polan": {}
+                if (error) throw error;
+
+                const busy: { [instructor: string]: { [date: string]: string[] } } = {
+                    "Rob Polan": {},
+                    "Natalie Polan": {}
+                };
+
+                supabaseLeads?.forEach((lead: any) => {
+                    const instr = lead.instructor || "Rob Polan";
+                    if (!busy[instr]) busy[instr] = {};
+                    if (!busy[instr][lead.date]) busy[instr][lead.date] = [];
+                    busy[instr][lead.date].push(lead.time);
+                });
+
+                setBusySlots(busy);
+            } catch (e) {
+                console.error("Failed to fetch Supabase availability:", e);
+            }
         };
 
-        localLeads.forEach((lead: any) => {
-            const instr = lead.instructor || "Rob Polan";
-            if (!busy[instr]) busy[instr] = {};
-            if (!busy[instr][lead.date]) busy[instr][lead.date] = [];
-            busy[instr][lead.date].push(lead.time);
-        });
-
-        setBusySlots(busy);
+        fetchSupabaseAvailability();
     }, [view]);
 
     useEffect(() => {
@@ -233,44 +240,54 @@ const StudentPortal: React.FC = () => {
         }
     };
 
-    const loadStudentData = (email: string) => {
-        const allLeads = JSON.parse(localStorage.getItem('driving_leads') || '[]');
-        const filtered = allLeads.filter((l: any) =>
-            l.email === email || l.guardians?.some((g: any) => g.email === email)
-        );
-        const sorted = filtered.sort((a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime());
-        setStudentLeads(sorted);
-        if (sorted.length > 0) {
-            const loc = sorted[0].pickupLocation || '';
-            setPickupLocation(loc);
+    const loadStudentData = async (email: string) => {
+        try {
+            // Fetch leads where student email OR guardian email matches
+            const { data: leads, error } = await supabase
+                .from('driving_leads')
+                .select('*')
+                .or(`email.eq.${email}`); // Supabase OR filter is a bit different for complex scenarios
 
-            // Try to parse existing location
-            const parts = loc.split(',').map((p: string) => p.trim());
-            if (parts.length >= 2) {
-                // Determine if it's an address (has numbers) or school (just names)
-                const hasNumbers = /\d/.test(parts[0]);
+            // Note: Complex OR (like checking nested JSON guardians) might need a RPC or specific filter.
+            // For now, let's filter in JS for the guardian check if needed, or stick to email.
 
-                if (hasNumbers) {
-                    // It&apos;s likely an address. Let's capture the street, and everything else is city/zip
-                    const street = parts[0];
-                    const remaining = parts.slice(1).join(', ').trim();
-                    const lastSpaceIndex = remaining.lastIndexOf(' ');
+            if (error) throw error;
 
-                    const zip = lastSpaceIndex !== -1 ? remaining.substring(lastSpaceIndex).trim() : '';
-                    const city = lastSpaceIndex !== -1 ? remaining.substring(0, lastSpaceIndex).trim() : remaining;
+            // JS filtering for guardian emails to be thorough
+            const filtered = leads?.filter((l: any) =>
+                l.email === email || l.guardians?.some((g: any) => g.email === email)
+            ) || [];
 
+            const sorted = filtered.sort((a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime());
+            setStudentLeads(sorted);
+
+            if (sorted.length > 0) {
+                const loc = sorted[0].pickup_location || '';
+                setPickupLocation(loc);
+
+                // Try to parse existing location
+                const parts = loc.split(',').map((p: string) => p.trim());
+                if (parts.length >= 2) {
+                    const hasNumbers = /\d/.test(parts[0]);
+                    if (hasNumbers) {
+                        const street = parts[0];
+                        const remaining = parts.slice(1).join(', ').trim();
+                        const lastSpaceIndex = remaining.lastIndexOf(' ');
+                        const zip = lastSpaceIndex !== -1 ? remaining.substring(lastSpaceIndex).trim() : '';
+                        const city = lastSpaceIndex !== -1 ? remaining.substring(0, lastSpaceIndex).trim() : remaining;
+                        setPickupType('address');
+                        setPickupAddress({ street, city, zip, schoolName: '' });
+                    } else {
+                        setPickupType('school');
+                        setPickupAddress({ street: '', city: parts.slice(1).join(', '), zip: '', schoolName: parts[0] });
+                    }
+                } else if (loc) {
                     setPickupType('address');
-                    setPickupAddress({ street, city, zip, schoolName: '' });
-                } else {
-                    // It&apos;s likely a school
-                    setPickupType('school');
-                    setPickupAddress({ street: '', city: parts.slice(1).join(', '), zip: '', schoolName: parts[0] });
+                    setPickupAddress({ street: loc, city: '', zip: '', schoolName: '' });
                 }
-            } else if (loc) {
-                // Fallback for single line
-                setPickupType('address');
-                setPickupAddress({ street: loc, city: '', zip: '', schoolName: '' });
             }
+        } catch (e) {
+            console.error("Failed to load student data from Supabase:", e);
         }
     };
 
@@ -281,16 +298,35 @@ const StudentPortal: React.FC = () => {
 
         const emailToUse = loginEmail.trim();
 
-        // Check if student exists (by student email or guardian email)
-        const allLeads = JSON.parse(localStorage.getItem('driving_leads') || '[]');
-        const exists = allLeads.some((l: any) =>
-            l.email?.trim() === emailToUse || l.guardians?.some((g: any) => g.email?.trim() === emailToUse)
-        );
+        try {
+            // Check if student exists in Supabase
+            const { data: leads, error } = await supabase
+                .from('driving_leads')
+                .select('email, guardians')
+                .or(`email.eq.${emailToUse}`);
 
-        if (!exists) {
-            setMessage({ type: 'error', text: 'No record found with this email. Please book a lesson first!' });
-            setIsSending(false);
-            return;
+            if (error) throw error;
+
+            const exists = leads?.some((l: any) =>
+                l.email?.trim() === emailToUse || l.guardians?.some((g: any) => g.email?.trim() === emailToUse)
+            );
+
+            if (!exists) {
+                setMessage({ type: 'error', text: 'No record found with this email. Please book a lesson first!' });
+                setIsSending(false);
+                return;
+            }
+        } catch (e) {
+            console.error("Auth check failed:", e);
+            const localLeads = JSON.parse(localStorage.getItem('driving_leads') || '[]');
+            const existsLocally = localLeads.some((l: any) =>
+                l.email?.trim() === emailToUse || l.guardians?.some((g: any) => g.email?.trim() === emailToUse)
+            );
+            if (!existsLocally) {
+                setMessage({ type: 'error', text: 'No record found with this email. Please book a lesson first!' });
+                setIsSending(false);
+                return;
+            }
         }
 
         const token = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
@@ -406,8 +442,25 @@ const StudentPortal: React.FC = () => {
                 });
             }
 
-            const allLeads = JSON.parse(localStorage.getItem('driving_leads') || '[]');
-            localStorage.setItem('driving_leads', JSON.stringify([...allLeads, appointment]));
+            const appointmentToSave = {
+                name: appointment.name,
+                email: appointment.email,
+                phone: appointment.phone,
+                birthdate: appointment.birthdate,
+                instructor: appointment.instructor,
+                date: appointment.date,
+                time: appointment.time,
+                pickup_location: appointment.pickupLocation,
+                timestamp: appointment.timestamp,
+                guardians: appointment.guardians,
+                manual_status: "Enrolled"
+            };
+
+            const { error: dbError } = await supabase
+                .from('driving_leads')
+                .insert([appointmentToSave]);
+
+            if (dbError) throw dbError;
 
             setBookingStep(3);
             loadStudentData(session?.email);
@@ -458,13 +511,16 @@ const StudentPortal: React.FC = () => {
                 });
             }
 
-            // 3. Update local storage
-            const allLeads = JSON.parse(localStorage.getItem('driving_leads') || '[]');
-            const updatedLeads = allLeads.filter((l: any) => l.id !== leadId);
-            localStorage.setItem('driving_leads', JSON.stringify(updatedLeads));
+            // 3. Update Supabase
+            const { error: dbError } = await supabase
+                .from('driving_leads')
+                .delete()
+                .eq('id', leadId);
+
+            if (dbError) throw dbError;
 
             // 4. Update UI
-            setStudentLeads(updatedLeads.filter((l: any) => l.email === session?.email || l.guardians?.some((g: any) => g.email === session?.email)));
+            setStudentLeads(studentLeads.filter((l: any) => l.id !== leadId));
             setCancellingLeadId(null);
             setCancelReason('');
             alert("Lesson successfully cancelled.");

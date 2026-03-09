@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Users, Calendar, Download, Trash2, ExternalLink, ShieldCheck, Phone, Mail, MapPin, CreditCard, MessageSquare } from 'lucide-react';
+import { Users, Calendar, Download, Trash2, ExternalLink, ShieldCheck, Phone, Mail, MapPin, CreditCard, MessageSquare, Search } from 'lucide-react';
 import { getInstructorConfig, parseLocalDate, isLessonPast } from '../utils/bookingUtils';
+import { supabase } from '../lib/supabase';
 import '../styles/components/AdminDashboard.css';
 
 interface Lead {
@@ -10,17 +11,17 @@ interface Lead {
     email: string;
     phone: string;
     birthdate: string;
-    permitNumber: string;
+    permit_number: string;
     instructor: string;
     date: string;
     time: string;
     timestamp: string;
-    pickupLocation: string;
+    pickup_location: string;
     guardians?: Array<{ name: string; phone: string; email: string }>;
-    referralCode?: string;
+    referral_code?: string;
     notes?: string;
-    certificateNumber?: string;
-    manualStatus?: 'Enrolled' | 'In Progress' | 'Ready for Cert' | 'Certified' | 'Archive';
+    certificate_number?: string;
+    manual_status?: 'Enrolled' | 'In Progress' | 'Ready for Cert' | 'Certified' | 'Archive';
 }
 
 const AdminDashboard: React.FC = () => {
@@ -32,25 +33,48 @@ const AdminDashboard: React.FC = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [statusFilter, setStatusFilter] = useState<string>('All');
     const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
+    const [isLoading, setIsLoading] = useState(false);
+    const [loginEmail, setLoginEmail] = useState('');
 
     // Default Availability matching BookingCalendar.tsx
     const [availDraft, setAvailDraft] = useState(getInstructorConfig(activeInstructor));
 
     useEffect(() => {
-        try {
-            const storedLeads = JSON.parse(localStorage.getItem('driving_leads') || '[]');
-            if (Array.isArray(storedLeads)) {
-                setLeads(storedLeads.sort((a: Lead, b: Lead) => {
-                    const timeA = a.timestamp ? new Date(a.timestamp).getTime() : 0;
-                    const timeB = b.timestamp ? new Date(b.timestamp).getTime() : 0;
-                    return timeB - timeA;
-                }));
+        // Check for existing session
+        supabase.auth.getSession().then(({ data: { session } }) => {
+            if (session) {
+                setIsAuthenticated(true);
+                fetchLeads();
             }
-        } catch (e) {
-            console.error("Failed to load leads:", e);
-            setLeads([]);
-        }
+        });
+
+        // Listen for auth changes
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+            setIsAuthenticated(!!session);
+            if (session) fetchLeads();
+        });
+
+        return () => subscription.unsubscribe();
     }, []);
+
+    const fetchLeads = async () => {
+        setIsLoading(true);
+        try {
+            const { data, error } = await supabase
+                .from('driving_leads')
+                .select('*')
+                .order('timestamp', { ascending: false });
+
+            if (error) throw error;
+
+            // Map Supabase snake_case to React camelCase if needed, or update interface
+            setLeads(data || []);
+        } catch (e) {
+            console.error("Failed to load leads from Supabase:", e);
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
     useEffect(() => {
         setAvailDraft(getInstructorConfig(activeInstructor));
@@ -61,34 +85,62 @@ const AdminDashboard: React.FC = () => {
         alert('Availability updated successfully!');
     };
 
-    const handleLogin = (e: React.FormEvent) => {
+    const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
-        // Simple 'school' password for demonstration
-        if (password === 'School2026') {
+        setIsLoading(true);
+        try {
+            const { error } = await supabase.auth.signInWithPassword({
+                email: loginEmail,
+                password: password,
+            });
+
+            if (error) throw error;
             setIsAuthenticated(true);
-        } else {
-            alert('Incorrect School Code');
+        } catch (error: any) {
+            alert(error.message || 'Error logging in');
+        } finally {
+            setIsLoading(false);
         }
     };
 
-    const updateLead = (id: string, updates: Partial<Lead>) => {
-        const updatedLeads = leads.map(l => l.id === id ? { ...l, ...updates } : l);
-        setLeads(updatedLeads);
-        localStorage.setItem('driving_leads', JSON.stringify(updatedLeads));
+    const handleLogout = async () => {
+        await supabase.auth.signOut();
+        setIsAuthenticated(false);
     };
 
-    const handleDeleteClick = (id: string, e: React.MouseEvent) => {
+    const updateLead = async (id: string, updates: Partial<Lead>) => {
+        try {
+            const { error } = await supabase
+                .from('driving_leads')
+                .update(updates)
+                .eq('id', id);
+
+            if (error) throw error;
+            setLeads(leads.map(l => l.id === id ? { ...l, ...updates } : l));
+        } catch (e) {
+            alert('Failed to update lead');
+            console.error(e);
+        }
+    };
+
+    const handleDeleteClick = async (id: string, e: React.MouseEvent) => {
         e.stopPropagation();
         if (confirmDeleteId === id) {
-            // Second click: Actually delete
-            const updatedLeads = leads.filter(l => l.id !== id);
-            setLeads(updatedLeads);
-            localStorage.setItem('driving_leads', JSON.stringify(updatedLeads));
-            setConfirmDeleteId(null);
+            try {
+                const { error } = await supabase
+                    .from('driving_leads')
+                    .delete()
+                    .eq('id', id);
+
+                if (error) throw error;
+                setLeads(leads.filter(l => l.id !== id));
+                setConfirmDeleteId(null);
+            } catch (e) {
+                alert('Failed to delete lead');
+                console.error(e);
+            }
         } else {
-            // First click: Enter confirmation state
             setConfirmDeleteId(id);
-            // Optional: Auto-reset after 3 seconds if not confirmed
             setTimeout(() => {
                 setConfirmDeleteId(current => current === id ? null : current);
             }, 3000);
@@ -101,7 +153,7 @@ const AdminDashboard: React.FC = () => {
     };
 
     const getAutomatedStatus = (lead: Lead) => {
-        if (lead.manualStatus) return lead.manualStatus;
+        if (lead.manual_status) return lead.manual_status;
         const count = getStudentLessonCount(lead.email);
         if (count >= 3) return 'Ready for Cert';
         if (count >= 1) return 'In Progress';
@@ -141,15 +193,31 @@ const AdminDashboard: React.FC = () => {
                     <h2 className="h2" style={{ marginBottom: '1rem' }}>Instructor Access</h2>
                     <p className="small text-secondary" style={{ marginBottom: '2rem' }}>Enter the school Access Code to view your leads.</p>
                     <form onSubmit={handleLogin}>
-                        <input
-                            type="password"
-                            placeholder="School Code"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            className="school-input text-center h3 mb-4"
-                            style={{ letterSpacing: '0.2em' }}
-                        />
-                        <button type="submit" className="btn btn-primary w-100 p-3 rounded-3">Enter Dashboard</button>
+                        <div className="mb-3">
+                            <input
+                                type="email"
+                                placeholder="Email address"
+                                value={loginEmail}
+                                onChange={(e) => setLoginEmail(e.target.value)}
+                                className="school-input w-100 mb-2"
+                                required
+                            />
+                            <input
+                                type="password"
+                                placeholder="Access Password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                className="school-input w-100"
+                                required
+                            />
+                        </div>
+                        <button
+                            type="submit"
+                            className="btn btn-primary w-100 p-3 rounded-3"
+                            disabled={isLoading}
+                        >
+                            {isLoading ? 'Authenticating...' : 'Access CRM'}
+                        </button>
                     </form>
                 </motion.div>
             </div>
@@ -183,6 +251,7 @@ const AdminDashboard: React.FC = () => {
                         <button onClick={exportLeads} className="btn-circle" style={{ width: '48px', height: '48px' }} title="Export CSV">
                             <Download size={18} />
                         </button>
+                        <button onClick={handleLogout} className="btn btn-secondary btn-sm px-3" style={{ height: '48px' }}>Sign Out</button>
                     </div>
                 </div>
 
@@ -194,10 +263,10 @@ const AdminDashboard: React.FC = () => {
                                 placeholder="Search student name or email..."
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
-                                className="school-input w-100 ps-5"
+                                className="school-input w-100 search-input-with-icon"
                                 style={{ height: '48px' }}
                             />
-                            <Users size={18} className="position-absolute translate-middle-y top-50 start-0 ms-3 opacity-50" />
+                            <Search size={18} className="search-bar-icon" />
                         </div>
                         <div className="d-flex gap-3 flex-grow-1 flex-md-grow-0">
                             <select
@@ -269,7 +338,7 @@ const AdminDashboard: React.FC = () => {
                                                     </div>
                                                     <div className="detail-item opacity-75">
                                                         <MapPin size={14} />
-                                                        <span className="truncate">{lead.pickupLocation}</span>
+                                                        <span className="truncate">{lead.pickup_location}</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -282,16 +351,16 @@ const AdminDashboard: React.FC = () => {
                                                         <input
                                                             type="text"
                                                             placeholder="Cert #"
-                                                            value={lead.certificateNumber || ''}
-                                                            onChange={(e) => updateLead(lead.id, { certificateNumber: e.target.value })}
+                                                            value={lead.certificate_number || ''}
+                                                            onChange={(e) => updateLead(lead.id, { certificate_number: e.target.value })}
                                                             className={`school-input-compact ${status === 'Ready for Cert' ? 'border-accent' : ''}`}
                                                             style={{ width: '90px' }}
                                                         />
                                                     </div>
                                                     <select
                                                         className="school-input-compact select-compact"
-                                                        value={lead.manualStatus || ''}
-                                                        onChange={(e) => updateLead(lead.id, { manualStatus: e.target.value as any })}
+                                                        value={lead.manual_status || ''}
+                                                        onChange={(e) => updateLead(lead.id, { manual_status: e.target.value as any })}
                                                         title="Override Status"
                                                         style={{ width: '100px' }}
                                                     >

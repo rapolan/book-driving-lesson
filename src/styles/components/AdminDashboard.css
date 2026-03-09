@@ -1,3 +1,30 @@
+/* Layout & Spacing Helpers */
+.page-top-padding {
+    padding-top: 8rem !important;
+}
+
+@media (max-width: 768px) {
+    .page-top-padding {
+        padding-top: 6rem !important;
+    }
+}
+
+.admin-login-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8rem 1.5rem 4rem;
+    /* Top padding to clear navbar */
+    background: var(--bg-primary);
+}
+
+@media (max-width: 768px) {
+    .admin-login-container {
+        padding-top: 6rem;
+    }
+}
+
 /* CRM Status Colors */
 .status-badge {
     padding: 0.25rem 0.6rem;
@@ -379,6 +406,24 @@
         flex-direction: row;
         justify-content: center;
     }
+}
+
+.search-bar-icon {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    left: 1rem;
+    opacity: 0.5;
+    pointer-events: none;
+    color: var(--text-primary);
+}
+
+.search-input-with-icon {
+    padding-left: 3rem !important;
+}
+
+.crm-controls select.school-input {
+    padding-right: 1.5rem !important;
 }
 
 .crm-controls {

@@ -31,6 +31,7 @@ import {
   EMAILJS_TEMPLATE_ID,
   EMAILJS_PUBLIC_KEY,
 } from "../utils/bookingUtils";
+import { supabase } from "../lib/supabase";
 import CalendarGrid from "./shared/CalendarGrid";
 
 const BookingCalendar: React.FC = () => {
@@ -93,26 +94,33 @@ const BookingCalendar: React.FC = () => {
   }, [pickupAddress, pickupType]);
 
   useEffect(() => {
-    const simulateFetch = () => {
-      const localLeads = JSON.parse(
-        localStorage.getItem("driving_leads") || "[]",
-      );
-      const busy: { [instructor: string]: { [date: string]: string[] } } = {
-        "Rob Polan": {},
-        "Natalie Polan": {},
-      };
+    const fetchSupabaseAvailability = async () => {
+      try {
+        const { data: supabaseLeads, error } = await supabase
+          .from('driving_leads')
+          .select('instructor, date, time');
 
-      localLeads.forEach((lead: any) => {
-        const instr = lead.instructor || "Rob Polan";
-        if (!busy[instr]) busy[instr] = {};
-        if (!busy[instr][lead.date]) busy[instr][lead.date] = [];
-        busy[instr][lead.date].push(lead.time);
-      });
+        if (error) throw error;
 
-      setBusySlots(busy);
+        const busy: { [instructor: string]: { [date: string]: string[] } } = {
+          "Rob Polan": {},
+          "Natalie Polan": {},
+        };
+
+        supabaseLeads?.forEach((lead: any) => {
+          const instr = lead.instructor || "Rob Polan";
+          if (!busy[instr]) busy[instr] = {};
+          if (!busy[instr][lead.date]) busy[instr][lead.date] = [];
+          busy[instr][lead.date].push(lead.time);
+        });
+
+        setBusySlots(busy);
+      } catch (e) {
+        console.error("Failed to fetch Supabase availability:", e);
+      }
     };
 
-    simulateFetch();
+    fetchSupabaseAvailability();
 
     // Check for pending referral
     const pendingRef = localStorage.getItem("school_pending_referral");
@@ -262,23 +270,35 @@ const BookingCalendar: React.FC = () => {
     const appointmentDate = selectedDate!;
     const appointment = { date: appointmentDate, time: selectedTime! };
 
-    // Save Lead locally
+    // Save Lead to Supabase
     const newLead = {
-      ...formData,
+      name: formData.name,
+      email: formData.email,
+      phone: formData.phone,
+      birthdate: formData.birthdate,
+      permit_number: formData.permitNumber,
       instructor: selectedInstructor,
       date: appointmentDate,
       time: selectedTime,
-      status: "Pending",
-      createdAt: new Date().toISOString(),
+      timestamp: new Date().toISOString(),
+      pickup_location: formData.pickupLocation,
+      guardians: formData.guardians,
+      referral_code: formData.referralCode,
+      manual_status: "Enrolled"
     };
 
-    const existingLeads = JSON.parse(
-      localStorage.getItem("driving_leads") || "[]",
-    );
-    localStorage.setItem(
-      "driving_leads",
-      JSON.stringify([...existingLeads, newLead]),
-    );
+    try {
+      const { error } = await supabase
+        .from('driving_leads')
+        .insert([newLead]);
+
+      if (error) throw error;
+    } catch (e) {
+      console.error("Failed to save lead to Supabase:", e);
+      // Fallback to localStorage just in case of emergency
+      const existingLeads = JSON.parse(localStorage.getItem("driving_leads") || "[]");
+      localStorage.setItem("driving_leads", JSON.stringify([...existingLeads, newLead]));
+    }
 
     // Sync with external services
     await sendBookingEmail(selectedInstructor!, formData, appointment);

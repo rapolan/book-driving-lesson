@@ -35,6 +35,13 @@ const AdminDashboard: React.FC = () => {
     const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(false);
     const [loginEmail, setLoginEmail] = useState('');
+    const [isTestingConnection, setIsTestingConnection] = useState(false);
+    const [connectionStats, setConnectionStats] = useState<{
+        urlFound: boolean;
+        keyFound: boolean;
+        apiSuccess?: boolean;
+        error?: string;
+    } | null>(null);
 
     // Default Availability matching BookingCalendar.tsx
     const [availDraft, setAvailDraft] = useState(getInstructorConfig(activeInstructor));
@@ -83,6 +90,39 @@ const AdminDashboard: React.FC = () => {
     const saveAvailability = () => {
         localStorage.setItem(`availability_${activeInstructor}`, JSON.stringify(availDraft));
         alert('Availability updated successfully!');
+    };
+
+    const testConnection = async () => {
+        setIsTestingConnection(true);
+        setConnectionStats(null);
+
+        const url = import.meta.env.VITE_SUPABASE_URL;
+        const key = import.meta.env.VITE_SUPABASE_ANON_KEY;
+
+        const stats = {
+            urlFound: !!url,
+            keyFound: !!key,
+            apiSuccess: false,
+            error: ''
+        };
+
+        if (url && key) {
+            try {
+                const { error } = await supabase.from('driving_leads').select('count', { count: 'exact', head: true });
+                if (error) {
+                    stats.apiSuccess = false;
+                    stats.error = error.message;
+                } else {
+                    stats.apiSuccess = true;
+                }
+            } catch (e: any) {
+                stats.apiSuccess = false;
+                stats.error = e.message || 'Network error';
+            }
+        }
+
+        setConnectionStats(stats);
+        setIsTestingConnection(false);
     };
 
     const handleLogin = async (e: React.FormEvent) => {
@@ -222,6 +262,56 @@ const AdminDashboard: React.FC = () => {
                             {isLoading ? 'Authenticating...' : 'Access CRM'}
                         </button>
                     </form>
+
+                    <div className="mt-5 pt-4 border-top border-glass text-start">
+                        <div className="d-flex justify-content-between align-items-center mb-3">
+                            <h4 className="small fw-bold text-uppercase opacity-50 m-0">Live Connection Check</h4>
+                            <button
+                                onClick={testConnection}
+                                disabled={isTestingConnection}
+                                className="btn btn-link text-primary small p-0 fw-bold text-decoration-none"
+                                style={{ fontSize: '0.7rem' }}
+                            >
+                                {isTestingConnection ? 'Testing...' : 'Refresh Status'}
+                            </button>
+                        </div>
+
+                        <div className="d-flex flex-column gap-2">
+                            <div className="d-flex justify-content-between align-items-center bg-secondary-subtle p-2 rounded-2">
+                                <span className="small opacity-75">Config: Production URL</span>
+                                <span className={`badge ${import.meta.env.VITE_SUPABASE_URL ? 'bg-success text-white' : 'bg-danger text-white'}`}>
+                                    {import.meta.env.VITE_SUPABASE_URL ? 'Linked √' : 'Missing'}
+                                </span>
+                            </div>
+                            <div className="d-flex justify-content-between align-items-center bg-secondary-subtle p-2 rounded-2">
+                                <span className="small opacity-75">Config: Anon Access Key</span>
+                                <span className={`badge ${import.meta.env.VITE_SUPABASE_ANON_KEY ? 'bg-success text-white' : 'bg-danger text-white'}`}>
+                                    {import.meta.env.VITE_SUPABASE_ANON_KEY ? 'Linked √' : 'Missing'}
+                                </span>
+                            </div>
+
+                            {connectionStats && (
+                                <motion.div
+                                    initial={{ opacity: 0, height: 0 }}
+                                    animate={{ opacity: 1, height: 'auto' }}
+                                    className={`p-3 rounded-3 mt-2 ${connectionStats.apiSuccess ? 'bg-success-subtle text-success' : 'bg-danger-subtle text-danger'}`}
+                                >
+                                    <div className="fw-bold small mb-1">
+                                        {connectionStats.apiSuccess ? '✓ Database Connection Stable' : '✗ Connection Failed'}
+                                    </div>
+                                    {!connectionStats.apiSuccess && (
+                                        <div className="tiny opacity-75">{connectionStats.error || 'Check environment variables and RLS policies.'}</div>
+                                    )}
+                                </motion.div>
+                            )}
+
+                            {!import.meta.env.VITE_SUPABASE_URL && (
+                                <div className="p-3 bg-danger-subtle text-danger rounded-3 mt-3 tiny">
+                                    <strong>Build Error:</strong> Environment variables are not reaching the live site. Please check your Netlify/Vercel dashboard settings and redeploy.
+                                </div>
+                            )}
+                        </div>
+                    </div>
                 </motion.div>
             </div>
         );

@@ -38,7 +38,7 @@ const PermitGuide: React.FC = () => {
                             Start Online Course
                         </a>
                         <p className="small opacity-75">
-                            Prefer a classroom setting? We partner with **Budget Driving School LLC** and recommend their <a href="https://www.budgetdrivingschoolonline.com/driveredclassroom.php" target="_blank" rel="noreferrer" style={{ color: 'var(--primary)', fontWeight: 600 }}>In-person Class Option</a>.
+                            Prefer a classroom setting? We partner with Budget Driving School LLC and recommend their <a href="https://www.budgetdrivingschoolonline.com/driveredclassroom.php" target="_blank" rel="noreferrer" style={{ color: 'var(--primary)', fontWeight: 600 }}>In-person Class Option</a>.
                         </p>
                     </div>
                     <div className="alert-box">

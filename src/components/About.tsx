@@ -20,7 +20,7 @@ const About: React.FC = () => {
                                 Meet Nat & Rob: <span className="text-accent">The Sibling Duo.</span>
                             </h1>
                             <p className="body-large text-secondary" style={{ maxWidth: '800px', margin: '0 auto' }}>
-                                A personalized, family-run approach to safe driving. We are licensed instructors partnered with Budget Driving School LLC to render professional road training services.
+                                A personalized, family-run approach to safe driving, proudly serving the Chula Vista and South Bay San Diego communities. We are licensed instructors partnered with Budget Driving School LLC.
                             </p>
                         </motion.div>
                     </header>

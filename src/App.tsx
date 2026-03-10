@@ -84,10 +84,10 @@ function App() {
       <footer className="section app-footer">
         <div className="container">
           <p className="app-footer-text">
-            © 2026 DrivingLesson.Me • Licensed & Insured Professional Driving Instructors
+            © 2026 DrivingLesson.Me • Professional Driving Lessons in Chula Vista & South Bay San Diego
           </p>
           <p className="app-footer-subtext">
-            Partnered with Budget Driving School LLC.
+            Licensed & Insured Instructors • Partnered with Budget Driving School LLC.
           </p>
         </div>
       </footer>

@@ -31,7 +31,7 @@ const Hero: React.FC = () => {
                             Master the Road with <span className="text-accent">Confidence.</span>
                         </h1>
                         <p className="hero-subtitle">
-                            Expert instruction from a dedicated sibling duo. We guide you and your family through every step of the process with a personal, professional touch.
+                            Expert instruction from a dedicated sibling duo serving Chula Vista & South Bay San Diego. We guide you and your family through every step with a personal, professional touch.
                         </p>
                         <div className="hero-actions">
                             <button

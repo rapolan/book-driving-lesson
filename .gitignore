@@ -22,3 +22,18 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Dev artifact / debug output files
+eslint-report.json
+eslint-report.txt
+eslint-report-utf8.txt
+eslint-final.txt
+ts_errors.log
+ts_errors_utf8.log
+tsc_output.txt
+
+# Local data dumps — may contain sensitive information
+leads.json
+
+# Local utility scripts (not part of the app)
+schools.txt

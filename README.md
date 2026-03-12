@@ -1,6 +1,6 @@
 # DrivingLesson.Me — Driving School Booking App
 
-> **Live site:** [drivinglesson.me](https://drivinglesson.me)  
+> **Live site:** [bookdrivinglesson.me](https://bookdrivinglesson.me)  
 > Expert, personal driving lessons in **Chula Vista & South Bay San Diego**.  
 > Partnered with **Budget Driving School LLC** — Licensed & Insured.
 

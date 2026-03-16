@@ -188,11 +188,9 @@
   cursor: pointer;
 }
 
-@media (prefers-color-scheme: dark) {
-  .instructor-card {
-    background: var(--bg-primary);
-    /* Keep it slightly darker than the main card for depth */
-  }
+.instructor-card {
+  background: var(--bg-primary);
+  /* Keep it slightly darker than the main card for depth */
 }
 
 .instructor-card:hover {
@@ -265,10 +263,8 @@
   color: var(--text-primary);
 }
 
-@media (prefers-color-scheme: dark) {
-  .time-chip {
-    background: var(--bg-primary);
-  }
+.time-chip {
+  background: var(--bg-primary);
 }
 
 .time-chip:hover {
@@ -505,27 +501,24 @@
   color: white;
 }
 
-/* Dark Mode Overrides for Elevation */
-@media (prefers-color-scheme: dark) {
-  .school-instructor-card {
-    background: var(--bg-secondary);
-  }
+.school-instructor-card {
+  background: var(--bg-secondary);
+}
 
-  .school-instructor-card.active {
-    background: rgba(143, 177, 128, 0.1);
-  }
+.school-instructor-card.active {
+  background: rgba(143, 177, 128, 0.1);
+}
 
-  .stat-card-modern {
-    background: var(--bg-secondary);
-  }
+.stat-card-modern {
+  background: var(--bg-secondary);
+}
 
-  .resource-card {
-    background: var(--bg-secondary);
-  }
+.resource-card {
+  background: var(--bg-secondary);
+}
 
-  .resource-card:hover {
-    background: rgba(245, 242, 237, 0.05);
-  }
+.resource-card:hover {
+  background: rgba(245, 242, 237, 0.05);
 }
 
 /* Texture & Motif Utilities */
@@ -568,10 +561,8 @@
   color: var(--text-primary);
 }
 
-@media (prefers-color-scheme: dark) {
-  .school-input {
-    background: rgba(0, 0, 0, 0.3);
-  }
+.school-input {
+  background: rgba(0, 0, 0, 0.3);
 }
 
 .school-input:focus {

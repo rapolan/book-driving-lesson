@@ -74,11 +74,8 @@
   }
 }
 
-@media (prefers-color-scheme: dark) {
-  .card-layered {
-    background: var(--bg-secondary);
-    /* Cards should be slightly lighter in dark mode for elevation */
-  }
+.card-layered {
+  background: var(--bg-secondary);
 }
 
 .card-layered:hover {
@@ -226,12 +223,9 @@ textarea:focus {
   transition: all 0.2s;
 }
 
-@media (prefers-color-scheme: dark) {
-  .form-input {
-    background: rgba(0, 0, 0, 0.2);
-    /* Sunk effect for fields in dark mode */
-    border-color: rgba(245, 242, 237, 0.2);
-  }
+.form-input {
+  background: rgba(0, 0, 0, 0.2);
+  border-color: rgba(245, 242, 237, 0.2);
 }
 
 .form-input:focus {

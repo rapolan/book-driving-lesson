@@ -1,0 +1,21 @@
+name: Supabase Keep-Alive
+
+on:
+  schedule:
+    # Run at 12:00 UTC every day
+    - cron: '0 12 * * *'
+  workflow_dispatch: # Allows manual triggering for testing
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Supabase API
+        run: |
+          curl -X GET "${{ secrets.SUPABASE_URL }}/rest/v1/driving_leads?select=id&limit=1" \
+          -H "apikey: ${{ secrets.SUPABASE_ANON_KEY }}" \
+          -H "Authorization: Bearer ${{ secrets.SUPABASE_ANON_KEY }}" \
+          -f || (echo "Ping failed" && exit 1)
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}

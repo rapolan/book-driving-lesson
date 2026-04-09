@@ -123,9 +123,9 @@
 
 /* Details Column */
 .lead-col-details {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
     min-width: 0;
 }
 

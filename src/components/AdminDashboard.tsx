@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Users, Calendar, Download, Trash2, ExternalLink, ShieldCheck, Phone, Mail, MapPin, CreditCard, MessageSquare, Search } from 'lucide-react';
+import { Users, Calendar, Download, Trash2, ExternalLink, ShieldCheck, Phone, Mail, MapPin, CreditCard, MessageSquare, Search, Archive } from 'lucide-react';
 import { getInstructorConfig, parseLocalDate, isLessonPast } from '../utils/bookingUtils';
 import { supabase } from '../lib/supabase';
 import '../styles/components/AdminDashboard.css';
@@ -169,7 +169,9 @@ const AdminDashboard: React.FC = () => {
             email.toLowerCase().includes(searchTerm.toLowerCase());
 
         const status = getAutomatedStatus(lead);
-        const matchesStatus = statusFilter === 'All' || status === statusFilter;
+        const matchesStatus = statusFilter === 'All' 
+            ? status !== 'Archive' 
+            : status === statusFilter;
 
         return matchesSearch && matchesStatus;
     });
@@ -357,16 +359,14 @@ const AdminDashboard: React.FC = () => {
                                                             placeholder="Cert #"
                                                             value={lead.certificate_number || ''}
                                                             onChange={(e) => updateLead(lead.id, { certificate_number: e.target.value })}
-                                                            className={`school-input-compact ${status === 'Ready for Cert' ? 'border-accent' : ''}`}
-                                                            style={{ width: '90px' }}
+                                                            className={`school-input-compact input-cert-no ${status === 'Ready for Cert' ? 'border-accent' : ''}`}
                                                         />
                                                     </div>
                                                     <select
-                                                        className="school-input-compact select-compact"
+                                                        className="school-input-compact select-compact override-status-select"
                                                         value={lead.manual_status || ''}
                                                         onChange={(e) => updateLead(lead.id, { manual_status: e.target.value as any })}
                                                         title="Override Status"
-                                                        style={{ width: '100px' }}
                                                     >
                                                         <option value="">Smart (Auto)</option>
                                                         <option value="Certified">Certified</option>
@@ -394,12 +394,19 @@ const AdminDashboard: React.FC = () => {
                                                     <ExternalLink size={16} />
                                                 </button>
                                                 <button
+                                                    className={`btn-icon-premium ${status === 'Archive' ? 'btn-archive-active' : ''}`}
+                                                    onClick={() => updateLead(lead.id, { manual_status: status === 'Archive' ? 'Enrolled' : 'Archive' })}
+                                                    title={status === 'Archive' ? "Unarchive Student" : "Archive Student"}
+                                                >
+                                                    <Archive size={16} fill={status === 'Archive' ? "currentColor" : "none"} />
+                                                </button>
+                                                <button
                                                     className={`btn-icon-premium ${confirmDeleteId === lead.id ? 'confirm-delete-active' : 'text-error'}`}
                                                     onClick={(e) => handleDeleteClick(lead.id, e)}
-                                                    title={confirmDeleteId === lead.id ? "Click again to confirm" : "Delete Lead"}
+                                                    title={confirmDeleteId === lead.id ? "Click again to confirm PERMANENT DELETE" : "Delete Lead Permanently"}
                                                 >
                                                     {confirmDeleteId === lead.id ? <Trash2 size={16} fill="white" /> : <Trash2 size={16} />}
-                                                    {confirmDeleteId === lead.id && <span className="ms-1 tiny fw-bold">Confirm?</span>}
+                                                    {confirmDeleteId === lead.id && <span className="ms-1 tiny fw-bold">Delete?</span>}
                                                 </button>
                                             </div>
                                         </div>

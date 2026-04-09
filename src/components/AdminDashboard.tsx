@@ -334,7 +334,7 @@ const AdminDashboard: React.FC = () => {
                                                     </div>
                                                     <div className="detail-item">
                                                         <Mail size={14} className="text-primary opacity-75" />
-                                                        <span className="truncate">{lead.email}</span>
+                                                        <span>{lead.email}</span>
                                                     </div>
                                                 </div>
                                                 <div className="details-group">
@@ -344,7 +344,7 @@ const AdminDashboard: React.FC = () => {
                                                     </div>
                                                     <div className="detail-item opacity-75">
                                                         <MapPin size={14} />
-                                                        <span className="truncate">{lead.pickup_location}</span>
+                                                        <span>{lead.pickup_location}</span>
                                                     </div>
                                                 </div>
                                             </div>

@@ -329,21 +329,21 @@ const AdminDashboard: React.FC = () => {
                                             <div className="lead-col-details">
                                                 <div className="details-group">
                                                     <div className="detail-item">
-                                                        <Phone size={14} className="text-primary opacity-75" />
+                                                        <Phone size={16} className="text-primary opacity-100" />
                                                         <span>{lead.phone}</span>
                                                     </div>
                                                     <div className="detail-item">
-                                                        <Mail size={14} className="text-primary opacity-75" />
+                                                        <Mail size={16} className="text-primary opacity-100" />
                                                         <span>{lead.email}</span>
                                                     </div>
                                                 </div>
                                                 <div className="details-group">
                                                     <div className="detail-item fw-bold text-white">
-                                                        <Calendar size={14} className="opacity-75" />
+                                                        <Calendar size={16} className="opacity-100" />
                                                         <span>{lead.date} • {lead.time}</span>
                                                     </div>
-                                                    <div className="detail-item opacity-75">
-                                                        <MapPin size={14} />
+                                                    <div className="detail-item opacity-100">
+                                                        <MapPin size={16} />
                                                         <span>{lead.pickup_location}</span>
                                                     </div>
                                                 </div>
@@ -353,7 +353,7 @@ const AdminDashboard: React.FC = () => {
                                             <div className="lead-col-management">
                                                 <div className="management-top-row">
                                                     <div className="input-group-compact">
-                                                        <CreditCard size={14} className="opacity-50" />
+                                                        <CreditCard size={16} className="opacity-75" />
                                                         <input
                                                             type="text"
                                                             placeholder="Cert #"
@@ -374,7 +374,7 @@ const AdminDashboard: React.FC = () => {
                                                     </select>
                                                 </div>
                                                 <div className="notes-container-compact">
-                                                    <MessageSquare size={14} className="notes-icon opacity-50" />
+                                                    <MessageSquare size={16} className="notes-icon opacity-75" />
                                                     <textarea
                                                         placeholder="Quick note..."
                                                         value={lead.notes || ''}

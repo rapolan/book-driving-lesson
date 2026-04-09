@@ -84,8 +84,8 @@
 
 .lead-card-layout {
     display: grid;
-    grid-template-columns: minmax(140px, 0.8fr) minmax(280px, 1.8fr) minmax(280px, 1.2fr) auto;
-    gap: 1.5rem;
+    grid-template-columns: minmax(200px, 1fr) minmax(280px, 1.8fr) minmax(280px, 1.2fr) auto;
+    gap: 2rem;
     align-items: center;
     width: 100%;
 }

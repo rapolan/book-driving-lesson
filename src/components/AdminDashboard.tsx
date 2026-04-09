@@ -313,7 +313,7 @@ const AdminDashboard: React.FC = () => {
                                         <div className="lead-card-layout">
                                             {/* Column 1: Identity & Status */}
                                             <div className="lead-col-identity">
-                                                <div className="d-flex align-items-center gap-2 mb-2">
+                                                <div className="d-flex align-items-center gap-2 mb-3">
                                                     <span className={`status-badge status-${status.toLowerCase().replace(/\s+/g, '-')} compact`}>
                                                         {status === 'Ready for Cert' ? 'Ready' : status}
                                                     </span>
